@@ -1,0 +1,19 @@
+from pathlib import Path
+import shutil
+root=Path.cwd();patch=Path(__file__).parent
+for rel in ['src/features/habits/HabitChart.jsx','src/features/habits/HabitDefinitionForm.jsx','src/features/habits/HabitEntryForm.jsx','src/features/habits/revision.css','supabase/phase-04-habits-revision.sql']:
+ src=patch/rel;dst=root/rel;dst.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(src,dst)
+page=root/'src/features/habits/HabitsPage.jsx';text=page.read_text()
+if "import HabitChart from './HabitChart'" not in text:text=text.replace("import HabitCalendar from './HabitCalendar'", "import HabitCalendar from './HabitCalendar'\nimport HabitChart from './HabitChart'")
+if "import './revision.css'" not in text:text=text.replace("import './HabitsPage.css'", "import './HabitsPage.css'\nimport './revision.css'")
+text=text.replace("const[habits,setHabits]=useState(listHabits()),[logs,setLogs]=useState(listHabitLogs()),[definition,setDefinition]=useState(null),[entryState,setEntryState]=useState(null),[detail,setDetail]=useState(null);", "const[habits,setHabits]=useState(listHabits()),[logs,setLogs]=useState(listHabitLogs()),[definition,setDefinition]=useState(null),[entryState,setEntryState]=useState(null),[detail,setDetail]=useState(null),[chartType,setChartType]=useState('line'),[chartPeriod,setChartPeriod]=useState('30D'),[categoryFilter,setCategoryFilter]=useState('All');")
+text=text.replace("function persistLog(h,log){saveHabitLog(h,log);setLogs(listHabitLogs());setEntryState(null)}", "function persistLog(h,log){saveHabitLog(h,log);setLogs(listHabitLogs());setEntryState(null)}function removeLog(log){deleteHabitLog(log);setLogs(listHabitLogs());setEntryState(null)}")
+text=text.replace("import { currentStreak,listHabitLogs,listHabits,saveHabit,saveHabitLog }", "import { currentStreak,deleteHabitLog,listHabitLogs,listHabits,saveHabit,saveHabitLog }")
+text=text.replace("<div className=\"habit-cards\">{habits.map(habit=>", "<div className=\"habit-category-filter\">{['All',...new Set(habits.map(h=>h.category))].map(category=><button key={category} className={categoryFilter===category?'selected':''} onClick={()=>setCategoryFilter(category)}>{category}</button>)}</div><div className=\"habit-cards\">{habits.filter(habit=>categoryFilter==='All'||habit.category===categoryFilter).map(habit=>")
+text=text.replace("<h3>{habit.name}</h3>", "<h3><span className=\"habit-card-icon\">{habit.icon||'✓'}</span> {habit.name}</h3>")
+text=text.replace("<HabitEntryForm habit={entryState.habit} entry={entryState.entry} defaultDate={entryState.date} onCancel={()=>setEntryState(null)} onSave={log=>persistLog(entryState.habit,log)}/>", "<HabitEntryForm habit={entryState.habit} entry={entryState.entry} defaultDate={entryState.date} onCancel={()=>setEntryState(null)} onSave={log=>persistLog(entryState.habit,log)} onDelete={removeLog}/>")
+needle="<HabitCalendar habit={detail} logs={logs} onSelectDate={(date,log)=>setEntryState({habit:detail,entry:log,date})}/><div className=\"habit-completion-list\">"
+replacement="<HabitCalendar habit={detail} logs={logs} onSelectDate={(date,log)=>setEntryState({habit:detail,entry:log,date})}/><div className=\"habit-chart-panel\"><div className=\"habit-chart-toolbar\"><div>{[['line','Line'],['dot','Dots'],['bar','Bars'],['scale','Scale']].map(([value,label])=><button className={chartType===value?'selected':''} onClick={()=>setChartType(value)} key={value}>{label}</button>)}</div><div>{['7D','30D','90D','1Y'].map(value=><button className={chartPeriod===value?'selected':''} onClick={()=>setChartPeriod(value)} key={value}>{value}</button>)}</div></div><HabitChart habit={detail} logs={logs} chartType={chartType||detail.graph_type} period={chartPeriod||detail.graph_period}/></div><div className=\"habit-completion-list\">"
+text=text.replace(needle,replacement)
+page.write_text(text)
+print('Phase 4 revision applied: graph types, custom categories, icons, and historical edit/delete enabled.')
