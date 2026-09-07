@@ -6,6 +6,10 @@ import HabitsPage from './features/habits/HabitsPage'
 import FastingPage from './features/fasting/FastingPage'
 import ExercisesPage from './features/exercises/ExercisesPage'
 import HealthMetricsPage from './features/health/HealthMetricsPage'
+import SnapshotPage from './features/snapshot/SnapshotPage'
+import MyLifePage from './features/my-life/MyLifePage'
+import NewSettingsPage from './features/settings/SettingsPage'
+import SnapshotPageV1 from './features/snapshot/SnapshotPage'
 
 const nav=['Snapshot','My Life','Health Metrics','Exercises','Sports','Habits','Fasting','Log History','Grateful','Settings'];
 const keys=['snapshot','life','health','exercises','sports','habits','fasting','history','grateful','settings'];
@@ -41,5 +45,5 @@ second:'2-digit',
 hour12:false,
 timeZone:tz,
 timeZoneName:'short'
-}).format(time);function go(k){setPage(k);location.hash=k;setMenu(false)}let body={snapshot:<Snapshot/>,life:<Life/>,health:<HealthMetricsPage/>,exercises:<ExercisesPage/>,sports:<SportsPage/>,habits:<HabitsPage/>,fasting:<FastingPage/>,history:<LogHistoryPage/>,grateful:<GratefulPage/>,settings:<SettingsPage {...{theme,setTheme,avatar,setAvatar,tz,setTz}}/>}[page]||<Snapshot/>;return <div className={'app theme-'+theme}><aside className={menu?'open':''}><div className="brand"><Leaf/>fitlife</div><div className="profile">{avatar?<img src={avatar}/>:<b>AS</b>}<div><strong>Abner Serania</strong><small>Synced across devices</small></div></div><nav>{nav.map((n,i)=><button className={page===keys[i]?'active':''} onClick={()=>go(keys[i])}>{n}</button>)}</nav></aside><main><header><button className="menubtn" onClick={()=>setMenu(!menu)}><Menu/></button><div><h1>{g}, Abner</h1><p>Happy {day}</p><small>{date}</small></div><div className="actions"><button><Cloud/>Synced</button><button onClick={()=>go('grateful')}><BookHeart/>Gratitude note</button><button className="primary"><Plus/>Log day</button></div></header>{body}</main></div>}
+}).format(time);function go(k){setPage(k);location.hash=k;setMenu(false)}let body={snapshot:<SnapshotPageV1/>,life:<MyLifePage/>,health:<HealthMetricsPage/>,exercises:<ExercisesPage/>,sports:<SportsPage/>,habits:<HabitsPage/>,fasting:<FastingPage/>,history:<LogHistoryPage/>,grateful:<GratefulPage/>,settings:<NewSettingsPage/>}[page]||<Snapshot/>;return <div className={'app theme-'+theme}><aside className={menu?'open':''}><div className="brand"><Leaf/>fitlife</div><div className="profile">{avatar?<img src={avatar}/>:<b>AS</b>}<div><strong>Abner Serania</strong><small>Synced across devices</small></div></div><nav>{nav.map((n,i)=><button className={page===keys[i]?'active':''} onClick={()=>go(keys[i])}>{n}</button>)}</nav></aside><main><header><button className="menubtn" onClick={()=>setMenu(!menu)}><Menu/></button><div><h1>{g}, Abner</h1><p>Happy {day}</p><small>{date}</small></div><div className="actions"><button><Cloud/>Synced</button><button onClick={()=>go('grateful')}><BookHeart/>Gratitude note</button><button className="primary"><Plus/>Log day</button></div></header>{body}</main></div>}
 
