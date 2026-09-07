@@ -1,0 +1,29 @@
+/* Snapshot Patch v10: live fasting, configurable glance, sports summary */
+.snapshot-v1 .widget-shell[data-snapshot-widget="health"]{display:none!important}
+.snapshot-v1 .compact-fast-card{min-height:420px!important;background:linear-gradient(155deg,#061019,#071a13)!important}
+.snapshot-v1 .fast-live-v10{display:grid;gap:11px}
+.snapshot-v1 .fast-ring-v10{width:180px;height:180px;margin:3px auto 7px;border-radius:50%;display:grid;place-items:center;position:relative;background:conic-gradient(#78ee3d var(--p),#153524 0)}
+.snapshot-v1 .fast-ring-v10::after{content:'';position:absolute;inset:15px;border-radius:50%;background:#061019}
+.snapshot-v1 .fast-ring-v10>div{z-index:1;text-align:center;display:grid;gap:2px}
+.snapshot-v1 .fast-ring-v10 small{font-size:8px;color:#61d9e9;letter-spacing:.08em}
+.snapshot-v1 .fast-ring-v10 b{font-size:24px;line-height:1.05;font-variant-numeric:tabular-nums}
+.snapshot-v1 .fast-ring-v10 span{font-size:8px;color:#78ee3d}
+.snapshot-v1 .fast-goal-v10{justify-self:center;border:1px solid #34593e;background:#0b1b13;color:#eaf5ed;border-radius:999px;padding:6px 12px;font-size:9px}
+.snapshot-v1 .fast-impact-v10,.snapshot-v1 .fast-stage-v10{display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:8px;background:#091a14;border:1px solid #1b3928;border-radius:9px;padding:9px}
+.snapshot-v1 .fast-impact-v10>span,.snapshot-v1 .fast-stage-v10>span{width:31px;height:31px;border-radius:8px;display:grid;place-items:center;background:#153925;color:#78ee3d;font-size:18px}
+.snapshot-v1 .fast-impact-v10 small,.snapshot-v1 .fast-stage-v10 small{display:block;color:#78ee3d;font-size:7px;letter-spacing:.07em}
+.snapshot-v1 .fast-impact-v10 h4,.snapshot-v1 .fast-stage-v10 h4{margin:2px 0;font-size:10px}
+.snapshot-v1 .fast-impact-v10 p,.snapshot-v1 .fast-stage-v10 p{margin:0;color:var(--muted);font-size:8px}
+.snapshot-v1 .fast-impact-v10>b{color:#78ee3d;font-size:11px}
+.snapshot-v1 .fast-link-v10{width:100%;border:1px solid #315b3c;background:#0c1d14;color:#78ee3d;border-radius:9px;padding:9px;display:flex;justify-content:center;align-items:center;gap:5px}
+.snapshot-v1 .glance-grid-v10{display:grid;grid-template-columns:repeat(var(--glance-count,6),minmax(0,1fr));gap:6px}
+.snapshot-v1 .glance-grid-v10 article{min-height:102px;background:#091721;border:1px solid color-mix(in srgb,var(--c) 38%,#17313d);border-radius:9px;padding:8px;display:grid;grid-template-rows:auto auto auto 1fr;gap:2px}
+.snapshot-v1 .glance-grid-v10 svg{color:var(--c);width:18px;height:18px}.snapshot-v1 .glance-grid-v10 small{font-size:8px;color:var(--muted)}.snapshot-v1 .glance-grid-v10 b{font-size:17px}.snapshot-v1 .glance-grid-v10 p{font-size:8px;color:var(--c);margin:0}.snapshot-v1 .glance-grid-v10 i{height:3px;border-radius:999px;background:linear-gradient(90deg,var(--c) var(--progress),#243139 var(--progress));align-self:end}
+.snapshot-v1 .glance-settings-v10{display:flex;align-items:center;gap:4px;border:0;background:transparent;color:#38bdf8;font-size:8px}
+.snapshot-v1 .sports-summary-v10{min-height:275px}.snapshot-v1 .sports-hero-v10{height:130px;border-radius:9px;overflow:hidden;position:relative;background:linear-gradient(135deg,#6542a1,#267798,#a7673d)}
+.snapshot-v1 .sports-hero-v10 img{width:100%;height:100%;object-fit:cover}.snapshot-v1 .sports-hero-v10 span{position:absolute;left:7px;top:7px;background:#6846b2;color:#fff;border-radius:999px;padding:4px 8px;font-size:8px}
+.snapshot-v1 .sports-summary-v10 h3{margin:7px 0 2px}.snapshot-v1 .sports-summary-v10>small{color:var(--muted)}
+.snapshot-v1 .sports-stats-v10{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:8px}.snapshot-v1 .sports-stats-v10 b{font-size:10px}.snapshot-v1 .sports-stats-v10 span{display:block;color:var(--muted);font-size:7px}.snapshot-v1 .sports-link-v10{border:0;background:transparent;color:#38bdf8;display:flex;align-items:center;gap:4px;font-size:8px}
+.snapshot-v1 .glance-modal-v10{position:fixed;inset:0;z-index:300;display:grid}.snapshot-v1 .glance-backdrop-v10{position:absolute;inset:0;background:#000c;border:0}.snapshot-v1 .glance-panel-v10{position:relative;justify-self:end;width:min(400px,100%);height:100%;overflow:auto;background:#061019;border-left:1px solid #17313d;padding:20px}.snapshot-v1 .glance-panel-v10>header{display:flex;justify-content:space-between}.snapshot-v1 .glance-panel-v10>header button{border:1px solid var(--line);background:var(--card2);color:var(--text);border-radius:7px}.snapshot-v1 .glance-options-v10{display:grid;gap:6px;margin-top:12px}.snapshot-v1 .glance-options-v10 label{display:flex;justify-content:space-between;background:#091721;border-radius:8px;padding:9px}.snapshot-v1 .glance-options-v10 input{accent-color:#78ee3d}
+@media(max-width:1120px){.snapshot-v1 .glance-grid-v10{display:flex;overflow-x:auto}.snapshot-v1 .glance-grid-v10 article{min-width:116px}.snapshot-v1 .compact-fast-card{min-height:auto!important}}
+@media(max-width:700px){.snapshot-v1 .fast-ring-v10{width:160px;height:160px}.snapshot-v1 .glance-panel-v10{align-self:end;height:90vh;border-radius:18px 18px 0 0}.snapshot-v1 .sports-stats-v10{min-width:390px}.snapshot-v1 .sports-summary-v10{overflow-x:auto}}
