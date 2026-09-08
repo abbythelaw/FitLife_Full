@@ -1,13 +1,7 @@
-import './styles/enhancements/forms-quick-log.css'
-import './lib/formsCompletion.js'
-import './styles/enhancements/sports-media-delete.css'
-import './lib/sportsMediaCompletion.js'
-import './lib/uxOverhaulV3.js'
-import './styles/uxOverhaulV3.css'
-import './lib/uxOverhaulV2.js'
-import './styles/uxOverhaulV2.css'
-import './lib/globalUXRepair.js'
-import './styles/uxPhase1Repair.css'
+import { UnsavedChangesProvider } from './components/common/UnsavedChangesProvider'
+import GlobalUX from './components/common/GlobalUX'
+import './features/snapshot/SnapshotOverhaulV1.css'
+import './features/snapshot/snapshotOverhaulV1.js'
 import './features/snapshot/SnapshotEnhancementV1.css'
 import './features/snapshot/snapshotEnhancementV1.js'
 import './styles/enhancements/life-journal.css'
@@ -27,7 +21,7 @@ import React from'react';import{createRoot}from'react-dom/client';import App fro
 import './styles/responsive-overrides.css'
 import AuthGate from './features/auth/AuthGate'
 import './lib/fastingSync.js'
-createRoot(document.getElementById('root')).render(<React.StrictMode><AuthGate><App/></AuthGate></React.StrictMode>)
+createRoot(document.getElementById('root')).render(<React.StrictMode><UnsavedChangesProvider><AuthGate><GlobalUX/><App/></AuthGate></UnsavedChangesProvider></React.StrictMode>)
 
 import './styles/fitlife-classic.css'
 
