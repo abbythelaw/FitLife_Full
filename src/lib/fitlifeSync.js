@@ -1,3 +1,4 @@
+import { optimiseImage } from './imageOptimizer'
 import { supabase as fitlifeSupabase } from './supabaseClient'
 
 const SYNC_KEYS = [
@@ -61,7 +62,9 @@ export async function uploadFitLifeMedia(file,folder='general'){
   if(!fitlifeSupabase)throw new Error('Supabase is not configured')
   const {data:{user}}=await fitlifeSupabase.auth.getUser()
   if(!user)throw new Error('Sign in before uploading media')
-  const ext=(file.name?.split('.').pop()||'jpg').replace(/[^a-z0-9]/gi,'').toLowerCase()
+  const optimised=await optimiseImage(file)
+  file=optimised.file
+  const ext=(file.name?.split('.').pop()||'webp').replace(/[^a-z0-9]/gi,'').toLowerCase()
   const path=`${user.id}/${folder}/${Date.now()}-${crypto.randomUUID()}.${ext}`
   const {error}=await fitlifeSupabase.storage.from('fitlife-media').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type})
   if(error)throw error

@@ -1,3 +1,7 @@
+import { UnsavedChangesProvider } from './components/common/UnsavedChangesProvider'
+import GlobalUX from './components/common/GlobalUX'
+import './features/snapshot/SnapshotOverhaulV1.css'
+import './features/snapshot/snapshotOverhaulV1.js'
 import './features/snapshot/SnapshotEnhancementV1.css'
 import './features/snapshot/snapshotEnhancementV1.js'
 import './styles/enhancements/life-journal.css'
@@ -17,7 +21,7 @@ import React from'react';import{createRoot}from'react-dom/client';import App fro
 import './styles/responsive-overrides.css'
 import AuthGate from './features/auth/AuthGate'
 import './lib/fastingSync.js'
-createRoot(document.getElementById('root')).render(<React.StrictMode><AuthGate><App/></AuthGate></React.StrictMode>)
+createRoot(document.getElementById('root')).render(<React.StrictMode><UnsavedChangesProvider><AuthGate><GlobalUX/><App/></AuthGate></UnsavedChangesProvider></React.StrictMode>)
 
 import './styles/fitlife-classic.css'
 
