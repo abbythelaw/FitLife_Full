@@ -1,3 +1,5 @@
+import './features/snapshot/SnapshotEnhancementV1.css'
+import './features/snapshot/snapshotEnhancementV1.js'
 import './styles/enhancements/life-journal.css'
 import './styles/enhancements/log-history.css'
 import './styles/enhancements/fasting.css'
