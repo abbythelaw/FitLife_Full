@@ -1,4 +1,4 @@
-import './lib/liveWorkoutSync.js'
+import './lib/workoutSync.js'
 import './lib/fitlifeSync.js'
 import React from'react';import{createRoot}from'react-dom/client';import App from'./App';import'./styles.css';
 import './styles/responsive-overrides.css'
