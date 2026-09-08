@@ -1,8 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
-
-const url = import.meta.env.VITE_SUPABASE_URL
-const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY
-export const fitlifeSupabase = url && key ? createClient(url, key) : null
+import { supabase as fitlifeSupabase } from './supabaseClient'
 
 const SYNC_KEYS = [
   'fitlife-habits','fitlife-habit-logs','fitlife-sports-entries','fitlife-sports',

@@ -2,6 +2,7 @@ import './lib/fitlifeSync.js'
 import React from'react';import{createRoot}from'react-dom/client';import App from'./App';import'./styles.css';
 import './styles/responsive-overrides.css'
 import AuthGate from './features/auth/AuthGate'
+import './lib/fastingSync.js'
 createRoot(document.getElementById('root')).render(<React.StrictMode><AuthGate><App/></AuthGate></React.StrictMode>)
 
 import './styles/fitlife-classic.css'
