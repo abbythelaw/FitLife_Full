@@ -1,0 +1,22 @@
+.health-card-completion{display:grid;gap:10px;margin-top:12px;padding-top:11px;border-top:1px solid color-mix(in srgb,var(--metric-color) 24%,#29483c)}
+.health-card-completion-summary{display:grid;grid-template-columns:40px minmax(0,1fr);gap:9px;align-items:center}
+.health-card-category-icon{width:40px;height:40px;display:grid;place-items:center;border-radius:10px;background:color-mix(in srgb,var(--metric-color) 18%,transparent);font-size:20px;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--metric-color) 28%,transparent)}
+.health-card-completion-summary small{display:block;color:var(--metric-color);font-size:7px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}
+.health-card-completion-summary b{display:block;margin-top:2px;color:#fff;font-size:11px}
+.health-card-completion-summary span{display:block;margin-top:2px;color:var(--muted);font-size:8px}
+.health-card-streak{display:flex;align-items:center;gap:6px;min-height:38px;padding:7px 9px;border:1px solid #33423c;border-radius:10px;background:linear-gradient(120deg,#231a14,#131c19);color:#f8c177}
+.health-card-streak .streak-flame{font-size:17px;filter:drop-shadow(0 0 7px #ff7a3288)}
+.health-card-streak b{font-size:10px;color:#fff}
+.health-card-streak em{margin-left:auto;color:#f6c945;font-size:9px;font-style:normal}
+.health-card-streak.record-active{border-color:color-mix(in srgb,var(--metric-color) 65%,#f6c945);background:linear-gradient(120deg,color-mix(in srgb,var(--metric-color) 15%,#241a13),#151c19);box-shadow:0 0 18px color-mix(in srgb,var(--metric-color) 13%,transparent)}
+.active-crown{margin-left:auto;font-size:18px;filter:drop-shadow(0 0 7px #ffd84eaa)}
+.health-card-history-compact{display:grid;gap:5px;overflow:hidden}
+.health-card-history-cells{display:grid;grid-template-columns:repeat(30,minmax(4px,1fr));gap:3px}
+.health-card-history-cell{height:12px;border-radius:3px;background:#414845;box-shadow:inset 0 0 0 1px #59615d}
+.health-card-history-cell.partial,.health-card-history-cell.below-range{background:linear-gradient(135deg,var(--metric-color) 0 48%,#414845 48% 100%)}
+.health-card-history-cell.met,.health-card-history-cell.in-range{background:var(--metric-color);box-shadow:0 0 5px color-mix(in srgb,var(--metric-color) 26%,transparent)}
+.health-card-history-cell.above-range{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--metric-color) 84%,#111) 0 3px,color-mix(in srgb,var(--metric-color) 30%,#303935) 3px 6px)}
+.health-card-history-range{display:flex;justify-content:space-between;color:var(--muted);font-size:7px}
+.metric-card .streak-strip,.metric-card .metric-streak-strip,.metric-card .mini-streak{display:none!important}
+.health-summary-grid article:nth-child(2){background:linear-gradient(135deg,#201911,#102019)!important;border-color:#9b6f31!important}.health-summary-grid article:nth-child(2) svg{color:#ff8a3d!important;filter:drop-shadow(0 0 7px #ff8a3d66)}.health-summary-grid article:nth-child(3){background:linear-gradient(135deg,#211d0f,#102019)!important;border-color:#907c2b!important}.health-summary-grid article:nth-child(3) svg{color:#f6c945!important;filter:drop-shadow(0 0 7px #f6c94566)}
+@media(max-width:700px){.health-card-history-cells{grid-template-columns:repeat(30,8px);min-width:max-content}.health-card-history-compact{overflow-x:auto;padding-bottom:4px}.health-card-streak{flex-wrap:wrap}.health-card-streak em{margin-left:0}}

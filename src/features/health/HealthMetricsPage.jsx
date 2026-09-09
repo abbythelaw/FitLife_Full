@@ -1,3 +1,4 @@
+import HealthMetricCardCompletion, { syncHealthReadingSummaries } from './HealthMetricCardCompletion'
 import './HealthMetricPeriodsV5.css'
 import './HealthMetricDateStatusV4.css'
 import './HealthMetricDetailFinalV3.css'
@@ -205,7 +206,7 @@ export default function HealthMetricsPage() {
         <article><HeartPulse /><b>{readingsInRange}/{metrics.length}</b><span>Metrics in target</span></article>
         <article><Flame /><b>{longestStreak} days</b><span>Longest current streak</span></article>
         <article><Trophy /><b>3</b><span>Personal bests this month</span></article>
-        <article><Sparkles /><b>83%</b><span>Data coverage</span></article>
+        <article><Sparkles /><b>83%</b><span>Data coverage</span><HealthMetricCardCompletion metric={metric}/></article>
       </div>
 
       <label className="health-search"><Search size={17} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search metrics" /></label>
@@ -265,7 +266,7 @@ function readingLocalTimestamp(date, time) {
 
 function categoryStyle(category) { return HEALTH_CATEGORY_STYLE[category] || HEALTH_CATEGORY_STYLE.Uncategorized }
 function readHealthLogs() { try { return JSON.parse(localStorage.getItem(HEALTH_READING_KEY) || '[]') } catch { return [] } }
-function writeHealthLogs(rows) { localStorage.setItem(HEALTH_READING_KEY, JSON.stringify(rows)); window.dispatchEvent(new CustomEvent('fitlife:health-readings-changed', { detail: rows })) }
+function writeHealthLogs(rows) { localStorage.setItem(HEALTH_READING_KEY, JSON.stringify(rows)); syncHealthReadingSummaries(rows); window.dispatchEvent(new CustomEvent('fitlife:health-readings-changed', { detail: rows })) }
 function readingStatus(metric, value) {
   const number = Number(value)
   if (!Number.isFinite(number)) return { key: 'no-data', label: 'No data' }
