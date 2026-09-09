@@ -1,3 +1,8 @@
+import './HealthMetricPeriodsV5.css'
+import './HealthMetricDateStatusV4.css'
+import './HealthMetricDetailFinalV3.css'
+import './HealthMetricRefinementV2.css'
+import './HealthMetricDirectPopout.css'
 import { useMemo, useState } from 'react'
 import {
   Activity,
@@ -193,7 +198,7 @@ export default function HealthMetricsPage() {
     <section className="health-dashboard">
       <div className="health-dashboard-heading">
         <div><small>HEALTH METRICS</small><h2>Health Metrics</h2><p>Trends, targets, streaks, and normal ranges in one compact view.</p></div>
-        <button onClick={() => setEditor({ name: '', short: '', unit: '', icon: '✦', color: '#70e236', targetMode: 'minimum', target: 1, chart: 'line', current: 0, decimals: 1 })}><Plus size={18} />Custom metric</button>
+        <button onClick={() => setEditor({ name: '', short: '', unit: '', icon: '✦', color: '#70e236', category: 'Uncategorized', targetMode: 'minimum', target: 1, min: 0, max: 1, tolerance: 0, baselineMode: 'manual', baselineValue: '', chart: 'line', current: 0, decimals: 1 })}><Plus size={18} />Custom metric</button>
       </div>
 
       <div className="health-summary-grid">
@@ -213,38 +218,328 @@ export default function HealthMetricsPage() {
   )
 }
 
+
+const HEALTH_CATEGORY_STYLE = {
+  Recovery: { icon: '🌿', color: '#70e236' },
+  Sleep: { icon: '🌙', color: '#818cf8' },
+  Cardiovascular: { icon: '❤️', color: '#fb7185' },
+  'Body Composition': { icon: '⚖️', color: '#fbbf24' },
+  Metabolic: { icon: '🩸', color: '#fb923c' },
+  Mobility: { icon: '🦵', color: '#38bdf8' },
+  Nutrition: { icon: '🍎', color: '#4ade80' },
+  'Mental Wellbeing': { icon: '🧠', color: '#a78bfa' },
+  'Exercise Related': { icon: '💪', color: '#22d3ee' },
+  Medical: { icon: '🏥', color: '#ef4444' },
+  'General Wellbeing': { icon: '✨', color: '#fde047' },
+  Custom: { icon: '🙂', color: '#94a3b8' },
+  Other: { icon: '🙂', color: '#94a3b8' },
+  Uncategorized: { icon: '🙂', color: '#94a3b8' },
+}
+const HEALTH_READING_KEY = 'fitlife-health-readings-v2'
+
+function localDateKey(value) {
+  if (!value) return ''
+  if (/^\d{4}-\d{2}-\d{2}$/.test(String(value))) return String(value)
+  const raw = String(value)
+  const localPrefix = raw.match(/^(\d{4}-\d{2}-\d{2})T/)?.[1]
+  if (localPrefix) return localPrefix
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return ''
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+function todayLocalKey() {
+  const now = new Date()
+  return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`
+}
+function localTimeValue(value) {
+  const date = value ? new Date(value) : new Date()
+  if (Number.isNaN(date.getTime())) return '12:00'
+  return `${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`
+}
+function readingLocalTimestamp(date, time) {
+  return `${date}T${time || '12:00'}:00`
+}
+
+function categoryStyle(category) { return HEALTH_CATEGORY_STYLE[category] || HEALTH_CATEGORY_STYLE.Uncategorized }
+function readHealthLogs() { try { return JSON.parse(localStorage.getItem(HEALTH_READING_KEY) || '[]') } catch { return [] } }
+function writeHealthLogs(rows) { localStorage.setItem(HEALTH_READING_KEY, JSON.stringify(rows)); window.dispatchEvent(new CustomEvent('fitlife:health-readings-changed', { detail: rows })) }
+function readingStatus(metric, value) {
+  const number = Number(value)
+  if (!Number.isFinite(number)) return { key: 'no-data', label: 'No data' }
+  if (metric.targetMode === 'range') {
+    if (number < Number(metric.min)) return { key: 'below-range', label: 'Below range' }
+    if (number > Number(metric.max)) return { key: 'above-range', label: 'Above range' }
+    return { key: 'in-range', label: 'In range' }
+  }
+  if (metric.targetMode === 'minimum') return number >= Number(metric.target) ? { key: 'met', label: 'Minimum reached' } : { key: 'partial', label: 'Below minimum' }
+  if (metric.targetMode === 'target') return number === Number(metric.target) ? { key: 'met', label: 'Target reached' } : { key: 'partial', label: number < Number(metric.target) ? 'Below target' : 'Above target' }
+  return { key: 'met', label: 'Recorded' }
+}
+function RollingThirtyDayStrip({ metric, readings }) {
+  const [historyPeriod, setHistoryPeriod] = useState('30D')
+  const style = categoryStyle(metric.category)
+  const dayCount = historyPeriod === '90D' ? 90 : historyPeriod === '1Y' ? 365 : 30
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const byDate = new Map()
+  readings.forEach(row => {
+    const savedDate = row.record_date || row.local_date || localDateKey(row.recorded_at || row.date)
+    if (!savedDate || savedDate > todayLocalKey()) return
+    const previous = byDate.get(savedDate)
+    if (!previous || String(row.updated_at || row.recorded_at) > String(previous.updated_at || previous.recorded_at)) byDate.set(savedDate, row)
+  })
+  const days = Array.from({ length: dayCount }, (_, index) => {
+    const date = new Date(today)
+    date.setDate(today.getDate() - (dayCount - 1 - index))
+    const savedDate = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`
+    const row = byDate.get(savedDate)
+    const previousDate = index ? new Date(today.getFullYear(), today.getMonth(), today.getDate() - (dayCount - index)) : null
+    const showMonth = !previousDate || previousDate.getMonth() !== date.getMonth() || previousDate.getFullYear() !== date.getFullYear()
+    return { date, savedDate, row, showMonth, status: row ? readingStatus(metric, row.value) : { key: 'no-data', label: 'No data' } }
+  })
+  const first = days[0].date.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:historyPeriod==='1Y'?'2-digit':undefined})
+  const last = days[days.length-1].date.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:historyPeriod==='1Y'?'2-digit':undefined})
+  return <section className="health-period-strip" style={{ '--metric-color': style.color }}><header><div><h3>Historical readings</h3><p>Cells use saved local record dates only.</p></div><div className="health-period-tabs">{['30D','90D','1Y'].map(item => <button type="button" key={item} className={historyPeriod===item?'active':''} onClick={() => setHistoryPeriod(item)}>{item}</button>)}</div></header><div className="health-period-scroll"><div className={`health-period-grid period-${historyPeriod}`}>{days.map(day => <div className="health-period-day" key={day.savedDate}><span className="health-period-month">{day.showMonth ? day.date.toLocaleDateString('en-GB',{month:'short',year:'2-digit'}) : ''}</span><span className={`health-period-cell ${day.status.key}`} title={`${day.date.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})} · ${day.row ? `${day.row.value} ${metric.unit} · ${day.status.label}` : 'No data'}`}/><time className="health-period-date" dateTime={day.savedDate}>{historyPeriod==='30D' ? day.date.toLocaleDateString('en-GB',{day:'numeric',month:'short'}) : historyPeriod==='90D' && day.date.getDay()===1 ? day.date.toLocaleDateString('en-GB',{day:'numeric',month:'short'}) : ''}</time></div>)}</div></div><div className="health-period-labels"><span>{first}</span><span>{last}</span></div><div className="health-period-legend"><span><i/>No data</span><span className="partial"><i/>Below target/range</span><span className="met"><i/>Target met/in range</span><span className="above"><i/>Above range</span></div></section>
+}
+
+function ReadingEditor({ metric, reading, onClose, onSave }) {
+  const initialDate = reading?.record_date || reading?.local_date || localDateKey(reading?.recorded_at || new Date())
+  const initialTime = localTimeValue(reading?.recorded_at)
+  const [form, setForm] = useState(() => ({
+    value: reading?.value ?? '',
+    record_date: initialDate || todayLocalKey(),
+    record_time: initialTime,
+    notes: reading?.notes || '',
+  }))
+  const [error, setError] = useState('')
+  const style = categoryStyle(metric.category)
+  const today = todayLocalKey()
+  function submit(event) {
+    event.preventDefault()
+    setError('')
+    if (form.record_date > today) {
+      setError('Future readings cannot be saved. Choose today or an earlier date.')
+      return
+    }
+    onSave({
+      ...form,
+      recorded_at: readingLocalTimestamp(form.record_date, form.record_time),
+      local_date: form.record_date,
+      record_date: form.record_date,
+    })
+  }
+  return <div className="health-reading-layer"><section className="health-reading-dialog" style={{ '--metric-color': style.color }}><header><div><small>{reading ? 'EDIT READING' : 'ADD READING'}</small><h2>{metric.name}</h2></div><button onClick={onClose}><X/></button></header><form onSubmit={submit}><label>Value ({metric.unit || 'value'})<input type="number" step="any" value={form.value} onChange={event => setForm({ ...form, value: event.target.value })} autoFocus required/></label><div className="reading-date-time-grid"><label>Record date<input type="date" max={today} value={form.record_date} onChange={event => setForm({ ...form, record_date: event.target.value })} required/><small className="future-date-note">Today or any past date</small></label><label>Record time<input type="time" value={form.record_time} onChange={event => setForm({ ...form, record_time: event.target.value })} required/></label></div><label>Notes<textarea value={form.notes} onChange={event => setForm({ ...form, notes: event.target.value })}/></label>{error&&<p className="reading-error">{error}</p>}<footer><button type="button" onClick={onClose}>Cancel</button><button className="primary">Save reading</button></footer></form></section></div>
+}
+
 function MetricDetail({ metric, onClose }) {
   const [type, setType] = useState(metric.chart || 'line')
   const [period, setPeriod] = useState('30D')
+  const [editingReading, setEditingReading] = useState(null)
+  const [addingReading, setAddingReading] = useState(false)
+  const [version, setVersion] = useState(0)
   const count = period === '7D' ? 7 : period === '90D' ? 90 : period === '1Y' ? 365 : 30
-  const data = useMemo(() => generateSeries(metric, count), [metric, count])
-  const average = data.reduce((sum, row) => sum + row.value, 0) / data.length
-  return (
-    <div className="health-layer"><button className="health-backdrop" onClick={onClose} aria-label="Close" /><section className="metric-detail">
-      <button className="close" onClick={onClose}><X /></button>
-      <span className="health-big-icon">{metric.icon}</span><small>{metric.name.toUpperCase()}</small><h2>{metric.current} {metric.unit}</h2>
-      <div className="chart-controls"><div>{['line', 'dot', 'bar'].map((item) => <button className={type === item ? 'selected' : ''} onClick={() => setType(item)} key={item}>{item}</button>)}</div><div>{['7D', '30D', '90D', '1Y'].map((item) => <button className={period === item ? 'selected' : ''} onClick={() => setPeriod(item)} key={item}>{item}</button>)}</div></div>
-      <MetricChart metric={metric} data={data} type={type} />
-      <div className="detail-target"><Target /><div><small>TARGET OR NORMAL RANGE</small><b>{targetText(metric)}</b></div><span className={targetStatus(metric, metric.current).tone}>{targetStatus(metric, metric.current).label}</span></div>
-      <div className="detail-stats"><article><b>{metric.current}</b><span>Current</span></article><article><b>{average.toFixed(metric.decimals)}</b><span>Average</span></article><article><b>{Math.min(...data.map((row) => row.value)).toFixed(metric.decimals)}</b><span>Minimum</span></article><article><b>{Math.max(...data.map((row) => row.value)).toFixed(metric.decimals)}</b><span>Maximum</span></article></div>
-      <StreakStrip metric={metric} data={data} />
-    </section></div>
-  )
+  const allReadings = readHealthLogs()
+  const readings = allReadings.filter(row => String(row.metric_id) === String(metric.id)).sort((a,b) => String(b.recorded_at).localeCompare(String(a.recorded_at)))
+  const graphData = readings.length ? readings.slice(0,count).reverse().map(row => ({ date: row.recorded_at, value: Number(row.value) })) : generateSeries(metric, count)
+  const values = graphData.map(row => Number(row.value)).filter(Number.isFinite)
+  const average = values.length ? values.reduce((sum,value) => sum + value,0) / values.length : 0
+  const style = categoryStyle(metric.category)
+  const manualBaseline = Number(metric.baselineValue)
+  const rollingWindow = metric.baselineMode === '7d' ? 7 : metric.baselineMode === '90d' ? 90 : 30
+  const rollingValues = readings.slice(0, rollingWindow).map(row => Number(row.value)).filter(Number.isFinite)
+  const baseline = metric.baselineMode === 'manual' && Number.isFinite(manualBaseline)
+    ? manualBaseline
+    : rollingValues.length
+      ? rollingValues.reduce((sum, value) => sum + value, 0) / rollingValues.length
+      : null
+  const currentValue = Number(readings[0]?.value ?? metric.current)
+  const currentStatus = readingStatus(metric, currentValue)
+  const trendValue = baseline != null && Number.isFinite(currentValue) ? currentValue - baseline : null
+  const targetLabel = targetText(metric)
+  function saveReading(form) {
+    if (form.record_date > todayLocalKey()) return
+    const row = { ...(editingReading || {}), id: editingReading?.id || crypto.randomUUID(), metric_id: metric.id, value: Number(form.value), recorded_at: form.recorded_at, record_date: form.record_date, local_date: form.record_date, notes: form.notes, source_type: 'manual', updated_at: new Date().toISOString() }
+    const withoutExisting = allReadings.filter(item => item.id !== row.id && !(String(item.metric_id) === String(metric.id) && (item.record_date || item.local_date || localDateKey(item.recorded_at)) === row.record_date && localTimeValue(item.recorded_at) === form.record_time))
+    writeHealthLogs([row, ...withoutExisting])
+    setAddingReading(false); setEditingReading(null); setVersion(value => value + 1)
+  }
+  function deleteReading(row) {
+    if (!window.confirm('Delete this health reading?')) return
+    writeHealthLogs(allReadings.filter(item => item.id !== row.id)); setVersion(value => value + 1)
+  }
+  return <div className="health-layer"><button className="health-backdrop" onClick={onClose} aria-label="Close"/><section className="metric-detail" style={{ '--metric-color': style.color }}><button className="close" onClick={onClose}><X/></button><header className="metric-detail-header"><div><span className="health-big-icon">{style.icon}</span><small>{metric.name.toUpperCase()}</small><h2>{readings[0]?.value ?? metric.current} {metric.unit}</h2></div><div className="metric-detail-actions"><button className="add-reading" onClick={() => setAddingReading(true)}><Plus size={16}/><span>Add Reading</span></button></div></header><div className="chart-controls"><div>{['line','dot','bar'].map(item => <button className={type===item?'selected':''} onClick={() => setType(item)} key={item}>{item}</button>)}</div><div>{['7D','30D','90D','1Y'].map(item => <button className={period===item?'selected':''} onClick={() => setPeriod(item)} key={item}>{item}</button>)}</div></div><MetricChart metric={{...metric,color:style.color}} data={graphData} type={type}/><div className="health-target-baseline-summary"><article><small>Current</small><b>{Number.isFinite(currentValue) ? `${currentValue} ${metric.unit}` : 'No reading'}</b><span>{readings[0] ? new Date(readings[0].recorded_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : 'Add a reading to begin'}</span></article><article><small>Baseline</small><b>{baseline != null ? `${baseline.toFixed(metric.decimals)} ${metric.unit}` : 'Not set'}</b><span>{metric.baselineMode === 'manual' ? 'Manual baseline' : `${String(metric.baselineMode || '30d').toUpperCase()} rolling average`}</span></article><article><small>Target / normal range</small><b>{targetLabel}</b><span>Configured metric goal</span></article><article className="status-card"><small>Status</small><b>{currentStatus.label}</b><span>{trendValue == null ? 'No trend yet' : `${trendValue >= 0 ? '↑' : '↓'} ${Math.abs(trendValue).toFixed(metric.decimals)} ${metric.unit} vs baseline`}</span></article></div><RollingThirtyDayStrip metric={{...metric,color:style.color}} readings={readings}/><section className="health-reading-history"><header><h3>Reading history</h3><button className="add-reading" onClick={() => setAddingReading(true)}><Plus size={15}/><span>Add Reading</span></button></header>{readings.length?readings.map(row => { const status=readingStatus(metric,row.value); return <article className="health-reading-row" key={row.id}><div><b>{row.value} {metric.unit}</b><small>{new Date(row.recorded_at).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:false})}{row.notes?` · ${row.notes}`:''}</small></div><span className={`reading-status ${status.key}`}>{status.label}</span><div className="reading-actions"><button onClick={() => setEditingReading(row)} aria-label="Edit reading">✎</button><button onClick={() => deleteReading(row)} aria-label="Delete reading">×</button></div></article> }):<div className="health-reading-empty">No readings recorded yet.<br/><button onClick={() => setAddingReading(true)}>Add the first reading</button></div>}</section></section>{(addingReading||editingReading)&&<ReadingEditor metric={metric} reading={editingReading} onClose={() => {setAddingReading(false);setEditingReading(null)}} onSave={saveReading}/>}</div>
 }
 
 function MetricEditor({ metric, onClose, onSave }) {
-  const [form, setForm] = useState(metric)
+  const initial = useMemo(() => ({
+    category: 'Uncategorized',
+    targetMode: 'minimum',
+    target: 1,
+    min: 0,
+    max: 1,
+    tolerance: 0,
+    baselineMode: 'manual',
+    baselineValue: '',
+    decimals: 1,
+    ...metric,
+  }), [metric])
+  const [form, setForm] = useState(initial)
+  const [saving, setSaving] = useState(false)
+  const dirty = JSON.stringify(form) !== JSON.stringify(initial)
+  const categories = [
+    'Recovery',
+    'Sleep',
+    'Cardiovascular',
+    'Body Composition',
+    'Metabolic',
+    'Mobility',
+    'Nutrition',
+    'Mental Wellbeing',
+    'Exercise Related',
+    'Medical',
+    'General Wellbeing',
+    'Custom',
+    'Uncategorized',
+  ]
+
+  function requestClose() {
+    if (!dirty || window.confirm('Discard unsaved changes?')) onClose()
+  }
+
+  async function save() {
+    if (saving || !form.name.trim()) return
+    setSaving(true)
+    try {
+      const autoStyle = categoryStyle(form.category)
+      await onSave({
+        ...form,
+        icon: autoStyle.icon,
+        color: autoStyle.color,
+        short: form.name,
+        target: form.targetMode === 'range' ? null : Number(form.target || 0),
+        min: form.targetMode === 'range' ? Number(form.min || 0) : null,
+        max: form.targetMode === 'range' ? Number(form.max || 0) : null,
+        tolerance: form.targetMode === 'target' ? Number(form.tolerance || 0) : null,
+        baselineValue: form.baselineMode === 'manual' && form.baselineValue !== ''
+          ? Number(form.baselineValue)
+          : null,
+      })
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const targetCopy = form.targetMode === 'minimum'
+    ? `Minimum ${form.target || 'not set'} ${form.unit || ''}`
+    : form.targetMode === 'target'
+      ? `Target ${form.target || 'not set'} ${form.unit || ''}${form.tolerance ? ` ±${form.tolerance}` : ''}`
+      : form.targetMode === 'range'
+        ? `Range ${form.min ?? '—'}–${form.max ?? '—'} ${form.unit || ''}`
+        : 'Tracking only'
+
+  const statusCopy = form.targetMode === 'range'
+    ? 'In range when recorded between the limits'
+    : form.targetMode === 'minimum'
+      ? 'Minimum reached when the value meets the threshold'
+      : form.targetMode === 'target'
+        ? 'Target status uses the configured tolerance'
+        : 'Values will be recorded without target scoring'
+
   return (
-    <div className="health-layer"><button className="health-backdrop" onClick={onClose} aria-label="Close" /><aside className="metric-editor"><button className="close" onClick={onClose}><X /></button><small>EDIT METRIC</small><h2>{form.name || 'Custom metric'}</h2>
-      <label>Name<input value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} /></label>
-      <label>Short axis label<input value={form.short || ''} onChange={(event) => setForm({ ...form, short: event.target.value })} /></label>
-      <label>Unit<input value={form.unit} onChange={(event) => setForm({ ...form, unit: event.target.value })} /></label>
-      <label>Icon<input value={form.icon} onChange={(event) => setForm({ ...form, icon: event.target.value })} /></label>
-      <label>Colour<input type="color" value={form.color} onChange={(event) => setForm({ ...form, color: event.target.value })} /></label>
-      <label>Default graph<select value={form.chart} onChange={(event) => setForm({ ...form, chart: event.target.value })}><option value="line">Line</option><option value="dot">Dot plot</option><option value="bar">Bar</option></select></label>
-      <label>Target mode<select value={form.targetMode} onChange={(event) => setForm({ ...form, targetMode: event.target.value })}><option value="minimum">Minimum</option><option value="maximum">Maximum</option><option value="range">Range</option><option value="track_only">Track only</option></select></label>
-      {form.targetMode === 'range' ? <div className="editor-range"><label>Minimum<input type="number" value={form.min} onChange={(event) => setForm({ ...form, min: Number(event.target.value) })} /></label><label>Maximum<input type="number" value={form.max} onChange={(event) => setForm({ ...form, max: Number(event.target.value) })} /></label></div> : form.targetMode !== 'track_only' && <label>Target<input type="number" value={form.target} onChange={(event) => setForm({ ...form, target: Number(event.target.value) })} /></label>}
-      <button className="save-metric" onClick={() => onSave(form)}>Save metric</button>
-    </aside></div>
+    <div className="health-layer metric-popout-layer">
+      <button
+        type="button"
+        className="health-backdrop"
+        onClick={requestClose}
+        aria-label="Close metric editor"
+      />
+      <section
+        className="metric-editor metric-editor-popout"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="metric-editor-title"
+      >
+        <header className="metric-popout-header">
+          <div>
+            <small>{metric.id ? 'EDIT HEALTH METRIC' : 'ADD CUSTOM METRIC'}</small>
+            <h2 id="metric-editor-title">{form.name || 'New health metric'}</h2>
+          </div>
+          <button type="button" className="close" onClick={requestClose} aria-label="Close metric editor"><X /></button>
+        </header>
+
+        <div className="metric-popout-body">
+          <div className="metric-popout-layout">
+            <div className="metric-popout-fields">
+              <section className="metric-popout-section">
+                <header><div><h3>Metric identity</h3><p>Name, category, unit, icon, and display appearance.</p></div></header>
+                <div className="metric-popout-grid">
+                  <label>Metric name<input value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} autoFocus /></label>
+                  <label>Health category<select value={form.category} onChange={(event) => setForm({ ...form, category: event.target.value })}>{categories.map((category) => <option key={category} value={category}>{category}</option>)}</select></label>
+                  <label>Unit<input value={form.unit || ''} onChange={(event) => setForm({ ...form, unit: event.target.value })} /></label>
+                </div>
+              </section>
+
+              <section className="metric-popout-section">
+                <header><div><h3>Goal model</h3><p>Choose how FitLife evaluates this metric.</p></div></header>
+                <div className="metric-goal-toggle">
+                  {[['minimum', 'Minimum'], ['target', 'Target'], ['range', 'Range'], ['track_only', 'Track only']].map(([value, label]) => (
+                    <button type="button" key={value} className={form.targetMode === value ? 'active' : ''} onClick={() => setForm({ ...form, targetMode: value })}>{label}</button>
+                  ))}
+                </div>
+                {form.targetMode === 'range' ? (
+                  <div className="metric-popout-grid">
+                    <label>Minimum<input type="number" step="any" value={form.min ?? ''} onChange={(event) => setForm({ ...form, min: event.target.value })} /></label>
+                    <label>Maximum<input type="number" step="any" value={form.max ?? ''} onChange={(event) => setForm({ ...form, max: event.target.value })} /></label>
+                  </div>
+                ) : form.targetMode !== 'track_only' ? (
+                  <div className="metric-popout-grid">
+                    <label>{form.targetMode === 'minimum' ? 'Minimum value' : 'Target value'}<input type="number" step="any" value={form.target ?? ''} onChange={(event) => setForm({ ...form, target: event.target.value })} /></label>
+                  </div>
+                ) : null}
+              </section>
+
+              <section className="metric-popout-section">
+                <header><div><h3>Baseline</h3><p>Compare current readings with a manual or rolling baseline.</p></div></header>
+                <div className="metric-popout-grid">
+                  <label>Baseline mode<select value={form.baselineMode} onChange={(event) => setForm({ ...form, baselineMode: event.target.value })}><option value="manual">Manual</option><option value="7d">7-day average</option><option value="30d">30-day average</option><option value="90d">90-day average</option></select></label>
+                  {form.baselineMode === 'manual' && <label>Baseline value<input type="number" step="any" value={form.baselineValue ?? ''} onChange={(event) => setForm({ ...form, baselineValue: event.target.value })} /></label>}
+                </div>
+              </section>
+
+              <section className="metric-popout-section">
+                <header><div><h3>Chart and precision</h3><p>Control the default visual and number formatting.</p></div></header>
+                <div className="metric-popout-grid">
+                  <label>Default graph<select value={form.chart} onChange={(event) => setForm({ ...form, chart: event.target.value })}><option value="line">Line</option><option value="dot">Dot plot</option><option value="bar">Bar</option></select></label>
+                  <label>Decimal places<input type="number" min="0" max="4" value={form.decimals ?? 1} onChange={(event) => setForm({ ...form, decimals: Number(event.target.value) })} /></label>
+                </div>
+              </section>
+            </div>
+
+            <aside className="metric-live-preview">
+              <small>LIVE PREVIEW</small>
+              <article className="metric-preview-card" style={{ '--preview-color': categoryStyle(form.category).color, '--metric-color': categoryStyle(form.category).color }}>
+                <span className="preview-icon">{categoryStyle(form.category).icon}</span>
+                <small>{form.category || 'Health Metric'}</small>
+                <h3>{form.name || 'New metric'}</h3>
+                <div className="preview-value">{form.current ?? '—'} <span>{form.unit}</span></div>
+                <div className="preview-status">{statusCopy}</div>
+                <div className="preview-target">{targetCopy}</div>
+              </article>
+            </aside>
+          </div>
+        </div>
+
+        <footer className="metric-popout-footer">
+          <span className="unsaved-indicator">{dirty ? 'Unsaved changes' : ''}</span>
+          <div>
+            <button type="button" onClick={requestClose} disabled={saving}>Cancel</button>
+            <button type="button" className="save-metric" onClick={save} disabled={saving || !form.name.trim()}>{saving ? 'Saving…' : 'Save metric'}</button>
+          </div>
+        </footer>
+      </section>
+    </div>
   )
 }

@@ -1,41 +1,5 @@
-import { ImagePlus, Star, Trash2 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { ImagePlus,Star,Trash2,ChevronLeft,ChevronRight } from 'lucide-react'
+import { useEffect,useState } from 'react'
+import PhotoPositioner from '../../components/photo/PhotoPositioner'
 import { compressImageToDataUrl } from './imagePersistence'
-
-export default function MediaEditor({ existing = [], positionX = 50, positionY = 50, onChange }) {
-  const [photos, setPhotos] = useState(existing.filter(photo => photo?.preview || photo?.url || photo?.signed_url || photo?.data_url))
-  const [featured, setFeatured] = useState(0)
-  const [x, setX] = useState(positionX)
-  const [y, setY] = useState(positionY)
-  const [busy, setBusy] = useState(false)
-
-  useEffect(() => {
-    onChange?.({ photos, featured, positionX: Number(x), positionY: Number(y) })
-  }, [photos, featured, x, y])
-
-  async function addFiles(fileList) {
-    setBusy(true)
-    const additions = []
-    for (const file of Array.from(fileList || [])) {
-      try {
-        const dataUrl = await compressImageToDataUrl(file)
-        additions.push({ id: crypto.randomUUID(), data_url: dataUrl, preview: dataUrl, name: file.name, type: 'image/webp' })
-      } catch (error) {
-        console.error('Unable to process image', error)
-      }
-    }
-    setPhotos(current => [...current, ...additions])
-    setBusy(false)
-  }
-
-  const source = photo => photo.signed_url || photo.url || photo.data_url || photo.preview
-  return <div className="media-editor">
-    <label className="media-upload"><ImagePlus/><span>{busy ? 'Preparing photographs…' : 'Add photographs'}</span><small>Images are compressed before saving</small><input type="file" accept="image/*,.heic,.heif" multiple disabled={busy} onChange={event => addFiles(event.target.files)}/></label>
-    {photos.length > 0 && <>
-      <div className="media-thumbnails">{photos.map((photo,index)=><figure className={featured===index?'featured':''} key={photo.id||index}><img src={source(photo)} onError={event=>{event.currentTarget.style.display='none'}}/><button type="button" className="media-feature" onClick={()=>setFeatured(index)} title="Use as featured photo"><Star fill={featured===index?'currentColor':'none'}/></button><button type="button" className="media-remove" onClick={()=>{const next=photos.filter((_,i)=>i!==index);setPhotos(next);setFeatured(Math.min(featured,Math.max(0,next.length-1)))}}><Trash2/></button></figure>)}</div>
-      <div className="media-position-preview"><img src={source(photos[featured])} style={{objectPosition:`${x}% ${y}%`}}/></div>
-      <label className="media-slider">Horizontal photo position<input type="range" min="0" max="100" value={x} onChange={event=>setX(event.target.value)}/></label>
-      <label className="media-slider">Vertical photo position<input type="range" min="0" max="100" value={y} onChange={event=>setY(event.target.value)}/></label>
-    </>}
-  </div>
-}
+export default function MediaEditor({existing=[],positionX=50,positionY=50,onChange}){const[photos,setPhotos]=useState(existing.filter(p=>p?.preview||p?.url||p?.signed_url||p?.data_url).map((p,i)=>({...p,id:p.id||crypto.randomUUID(),position_x:p.position_x??positionX,position_y:p.position_y??positionY,crop_scale:p.crop_scale??1,sort_order:p.sort_order??i}))),[featured,setFeatured]=useState(0),[active,setActive]=useState(0),[busy,setBusy]=useState(false);useEffect(()=>onChange?.({photos,featured,positionX:photos[featured]?.position_x??50,positionY:photos[featured]?.position_y??50}),[photos,featured]);async function add(files){setBusy(true);const next=[];for(const file of Array.from(files||[])){try{const data_url=await compressImageToDataUrl(file,1600,.8);next.push({id:crypto.randomUUID(),data_url,preview:data_url,type:'image/webp',position_x:50,position_y:50,crop_scale:1,sort_order:photos.length+next.length})}catch(e){console.error(e)}}setPhotos(x=>[...x,...next]);setBusy(false)}const source=p=>p?.signed_url||p?.url||p?.data_url||p?.preview;const photo=photos[active];function updatePosition(value){setPhotos(list=>list.map((p,i)=>i===active?{...p,position_x:value.x,position_y:value.y,crop_scale:value.scale}:p))}function remove(index){const next=photos.filter((_,i)=>i!==index).map((p,i)=>({...p,sort_order:i}));setPhotos(next);setActive(Math.min(active,Math.max(0,next.length-1)));setFeatured(Math.min(featured,Math.max(0,next.length-1)))}return <section className="media-editor-direct"><label className="media-upload"><ImagePlus/>{busy?'Preparing photographs…':'Add photographs'}<small>Images are compressed before saving</small><input type="file" accept="image/*,.heic,.heif" multiple onChange={e=>add(e.target.files)}/></label>{photo&&<><div className="media-editor-nav"><button type="button" disabled={active===0} onClick={()=>setActive(active-1)}><ChevronLeft/></button><span>Photo {active+1} of {photos.length}</span><button type="button" disabled={active===photos.length-1} onClick={()=>setActive(active+1)}><ChevronRight/></button></div><PhotoPositioner src={source(photo)} value={{x:photo.position_x,y:photo.position_y,scale:photo.crop_scale}} onChange={updatePosition}/></>}<div className="media-thumbnails">{photos.map((p,i)=><figure className={i===featured?'featured':''} key={p.id} onClick={()=>setActive(i)}><img src={source(p)}/><button type="button" className="media-feature" onClick={e=>{e.stopPropagation();setFeatured(i)}} title="Set featured"><Star/></button><button type="button" className="media-remove" onClick={e=>{e.stopPropagation();remove(i)}} title="Remove photo"><Trash2/></button></figure>)}</div></section>}
