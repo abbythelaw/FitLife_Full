@@ -3,6 +3,7 @@ import {useEffect,useMemo,useState} from 'react'
 import {CalendarDays,ChevronDown,Clock3,Edit3,Flame,Pause,Play,Plus,Sparkles,Timer,X} from 'lucide-react'
 import './FastingPage.css'
 import {listFasts,saveFast} from './fastingStore'
+import {listFasts,saveFast} from './fastingStore'
 import FastingCalendar from './FastingCalendar'
 import FastingAnalytics from './FastingAnalytics'
 

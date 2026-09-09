@@ -1,0 +1,44 @@
+cd /workspaces/FitLife_Full
+
+python3 - <<'PY'
+from pathlib import Path
+from textwrap import dedent
+base=Path('src/features/fasting')
+page=base/'FastingPage.jsx'
+if not page.exists(): raise SystemExit('Apply Patch 1 first.')
+page.with_name(page.name+'.before-fasting-p2').write_text(page.read_text())
+(base/'fastingStore.js').write_text(dedent(r'''
+const KEY='fitlife-fasting-sessions',LEGACY='fitlife-fasting-sessions-v4',HISTORY='fitlife-log-history'
+const parse=(raw,fallback=[])=>{try{return JSON.parse(raw)??fallback}catch{return fallback}}
+export function listFasts(){const map=new Map;for(const row of [...parse(localStorage.getItem(KEY),[]),...parse(localStorage.getItem(LEGACY),[])]){const id=String(row.id||row.client_session_id||row.started_at);if(!map.has(id)||String(row.updated_at||'')>String(map.get(id)?.updated_at||''))map.set(id,{...row,id})}return [...map.values()].sort((a,b)=>String(b.started_at).localeCompare(String(a.started_at)))}
+const duration=row=>Math.max(0,(new Date(row.ended_at||row.expected_end_at||Date.now())-new Date(row.started_at))/36e5)
+function history(row,remove=false){let rows=parse(localStorage.getItem(HISTORY),[]);const id=`fasting:${row.id}`;rows=rows.filter(x=>x.id!==id);if(!remove){const h=duration(row),done=row.status==='completed';rows.unshift({id,source_id:row.id,type:'Fasting',title:done?`${row.protocol||'Custom'} fast completed`:`${row.protocol||'Custom'} fast started`,date:String(row.started_at).slice(0,10),time:String(row.started_at).slice(11,16),displayDate:String(row.started_at).slice(0,10),summary:done?`${h.toFixed(1)}h · ${h>=Number(row.target_hours||0)?'Target met':'Ended early'}`:`Target ${Number(row.target_hours||0).toFixed(1)}h`,status:row.sync_status||'pending'})}localStorage.setItem(HISTORY,JSON.stringify(rows));window.dispatchEvent(new CustomEvent('fitlife:history-changed',{detail:rows}));window.dispatchEvent(new CustomEvent('fitlife:log-history-changed'))}
+export function saveFast(row){const id=row.id||row.client_session_id||crypto.randomUUID();const item={...row,id,client_session_id:row.client_session_id||id,updated_at:new Date().toISOString()};let next=[item,...listFasts().filter(x=>x.id!==id)];if(item.status==='active')next=next.map(x=>x.id!==id&&x.status==='active'?{...x,status:'completed',ended_at:x.ended_at||item.started_at}:x);for(const key of [KEY,LEGACY])localStorage.setItem(key,JSON.stringify(next));history(item);window.dispatchEvent(new CustomEvent('fitlife:fasting-changed',{detail:next}));return item}
+export function deleteFast(row){const next=listFasts().filter(x=>x.id!==row.id);for(const key of [KEY,LEGACY])localStorage.setItem(key,JSON.stringify(next));history(row,true);window.dispatchEvent(new CustomEvent('fitlife:fasting-changed',{detail:next}));return next}
+'''))
+text=page.read_text()
+text=text.replace("import './FastingPage.css'","import './FastingPage.css'\nimport {listFasts,saveFast} from './fastingStore'")
+text=text.replace("const read=()=>{try{return JSON.parse(localStorage.getItem(KEY))||[]}catch{return[]}}\nconst write=v=>{localStorage.setItem(KEY,JSON.stringify(v));window.dispatchEvent(new CustomEvent('fitlife:fasting-changed',{detail:v}))}","const read=listFasts")
+text=text.replace("write(next);setSessions(next);setEditor(null)","saveFast(next[0]);setSessions(listFasts());setEditor(null)")
+page.write_text(text)
+(base/'fasting-migration.sql').write_text(dedent('''
+create table if not exists public.fasting_sessions (
+ id uuid primary key default gen_random_uuid(), user_id uuid not null references auth.users(id) on delete cascade,
+ client_session_id text not null, started_at timestamptz not null, ended_at timestamptz,
+ target_hours numeric not null default 16, status text not null default 'active', payload jsonb not null default '{}'::jsonb,
+ device_id text, updated_at timestamptz not null default now(), unique(user_id,client_session_id)
+);
+alter table public.fasting_sessions enable row level security;
+drop policy if exists fasting_select_own on public.fasting_sessions;
+create policy fasting_select_own on public.fasting_sessions for select using (auth.uid()=user_id);
+drop policy if exists fasting_insert_own on public.fasting_sessions;
+create policy fasting_insert_own on public.fasting_sessions for insert with check (auth.uid()=user_id);
+drop policy if exists fasting_update_own on public.fasting_sessions;
+create policy fasting_update_own on public.fasting_sessions for update using (auth.uid()=user_id) with check (auth.uid()=user_id);
+drop policy if exists fasting_delete_own on public.fasting_sessions;
+create policy fasting_delete_own on public.fasting_sessions for delete using (auth.uid()=user_id);
+'''))
+print('[OK] Patch 2 installed. Run fasting-migration.sql in Supabase SQL Editor.')
+PY
+
+npm run build
