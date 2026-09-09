@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Bike, BookHeart, CheckCircle2, ChevronDown, ChevronRight, Dumbbell, Edit3, HeartPulse, Plus, Search, Timer, Trash2, X } from 'lucide-react'
 import './LogHistoryPage.css'
 import './phase-03-history.css'
@@ -9,92 +9,11 @@ const typeIcons={Habit:CheckCircle2,Fasting:Timer,Grateful:BookHeart,Workout:Dum
 const formatDate=value=>{const date=new Date(`${value}T12:00:00`);return new Intl.DateTimeFormat('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(date)}
 const dateKey=entry=>entry.date||entry.entry_date||'Unknown'
 
-
-function normalizeHistoryEntry(entry) {
-  if (
-    entry.source_type !== 'health_metric_reading' &&
-    entry.event_type !== 'health_metric_reading'
-  ) {
-    return entry
-  }
-
-  const occurredAt = entry.occurred_at || ''
-  const date =
-    entry.record_date ||
-    entry.local_date ||
-    occurredAt.slice(0, 10)
-
-  const timeMatch = occurredAt.match(/T(\d{2}:\d{2})/)
-
-  return {
-    ...entry,
-    type: 'Health',
-    date,
-    time: entry.time || timeMatch?.[1] || '12:00',
-    displayDate: date,
-    title: entry.title || 'Health metric',
-    summary:
-      entry.summary ||
-      `${entry.value ?? '—'} ${entry.unit || ''}` +
-        `${entry.status ? ` · ${entry.status}` : ''}`,
-    status: entry.sync_status || entry.status_sync || 'synced',
-  }
-}
-
-function readHistoryEntries() {
-  try {
-    const rows = JSON.parse(
-      localStorage.getItem('fitlife-log-history') || '[]'
-    )
-
-    return Array.isArray(rows)
-      ? rows.map(normalizeHistoryEntry)
-      : []
-  } catch {
-    return []
-  }
-}
-
 export default function LogHistoryPage(){
- const[entries,setEntries]=useState(()=>{const rows=readHistoryEntries();return rows.length?rows:starterEntries.map(normalizeHistoryEntry)}),[filter,setFilter]=useState('All'),[search,setSearch]=useState(''),[editing,setEditing]=useState(null),[deleting,setDeleting]=useState(null),[collapsed,setCollapsed]=useState({}),[addingDate,setAddingDate]=useState(null)
-
- useEffect(()=>{
-   const refresh=()=>{
-     setEntries(readHistoryEntries())
-   }
-
-   window.addEventListener(
-     'fitlife:log-history-changed',
-     refresh
-   )
-   window.addEventListener(
-     'fitlife:health-readings-changed',
-     refresh
-   )
-   window.addEventListener(
-     'storage',
-     refresh
-   )
-
-   return ()=>{
-     window.removeEventListener(
-       'fitlife:log-history-changed',
-       refresh
-     )
-     window.removeEventListener(
-       'fitlife:health-readings-changed',
-       refresh
-     )
-     window.removeEventListener(
-       'storage',
-       refresh
-     )
-   }
- },[])
-
+ const[entries,setEntries]=useState(()=>{try{return JSON.parse(localStorage.getItem('fitlife-log-history'))||starterEntries}catch{return starterEntries}}),[filter,setFilter]=useState('All'),[search,setSearch]=useState(''),[editing,setEditing]=useState(null),[deleting,setDeleting]=useState(null),[collapsed,setCollapsed]=useState({}),[addingDate,setAddingDate]=useState(null)
  const visible=useMemo(()=>{const q=search.trim().toLowerCase();return entries.filter(e=>(filter==='All'||e.type===filter)&&(!q||e.title.toLowerCase().includes(q)||(e.summary||'').toLowerCase().includes(q))).sort((a,b)=>`${dateKey(b)} ${b.time||''}`.localeCompare(`${dateKey(a)} ${a.time||''}`))},[entries,filter,search])
  const groups=useMemo(()=>visible.reduce((all,e)=>{const key=dateKey(e);(all[key]??=[]).push(e);return all},{}),[visible])
- function persist(next){const normalized=next.map(normalizeHistoryEntry);setEntries(normalized);localStorage.setItem('fitlife-log-history',JSON.stringify(normalized))}
+ function persist(next){setEntries(next);localStorage.setItem('fitlife-log-history',JSON.stringify(next))}
  function saveEdit(e){e.preventDefault();persist(entries.map(row=>row.id===editing.id?{...editing,status:navigator.onLine?'pending':'offline'}:row));setEditing(null)}
  function confirmDelete(){persist(entries.filter(row=>row.id!==deleting.id));setDeleting(null)}
  function chooseType(type,date){setAddingDate(null);if(type==='Sports'){location.hash='sports';window.dispatchEvent(new CustomEvent('fitlife:add-sports',{detail:{date}}))}else if(type==='Grateful'){location.hash='grateful';window.dispatchEvent(new CustomEvent('fitlife:add-gratitude',{detail:{date}}))}else alert(`${type} form will use ${formatDate(date)} when its source tab is completed.`)}

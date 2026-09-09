@@ -297,52 +297,8 @@ export default function HealthMetricsPage() {
         localStorage.setItem(key, JSON.stringify(remaining))
       })
       const nextMetrics = metrics.filter(item => String(item.id) !== metricId)
-
-      // Remove the metric definition immediately.
       setMetrics(nextMetrics)
-      localStorage.setItem(
-        'fitlife-health-defs-v2',
-        JSON.stringify(nextMetrics)
-      )
-
-      // Remove the deleted metric from Snapshot / Today at a Glance.
-      let selectedCards = []
-      try {
-        selectedCards = JSON.parse(
-          localStorage.getItem('fitlife-glance-selected') || '[]'
-        )
-      } catch {
-        selectedCards = []
-      }
-
-      const cleanedSelectedCards = selectedCards.filter(
-        id => String(id) !== metricId
-      )
-
-      localStorage.setItem(
-        'fitlife-glance-selected',
-        JSON.stringify(cleanedSelectedCards)
-      )
-
-      // Notify Snapshot in the current browser tab.
-      window.dispatchEvent(new CustomEvent('fitlife-health-metrics-changed', {
-        detail: {
-          type: 'deleted',
-          metricId,
-          metrics: nextMetrics,
-          selectedCards: cleanedSelectedCards
-        }
-      }))
-
-      window.dispatchEvent(new StorageEvent('storage', {
-        key: 'fitlife-health-defs-v2',
-        newValue: JSON.stringify(nextMetrics)
-      }))
-
-      window.dispatchEvent(new StorageEvent('storage', {
-        key: 'fitlife-glance-selected',
-        newValue: JSON.stringify(cleanedSelectedCards)
-      }))
+      localStorage.setItem('fitlife-health-defs-v2', JSON.stringify(nextMetrics))
       for (const key of ['fitlife-log-history', 'fitlife-my-life-events', 'fitlife-bivariate-history']) {
         let rows = []
         try { rows = JSON.parse(localStorage.getItem(key) || '[]') } catch {}

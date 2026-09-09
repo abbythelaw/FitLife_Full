@@ -344,152 +344,36 @@ function latestHealthReading(metricId) {
 }
 
 function liveHealthMetrics() {
-  const definitions = read(
-    'fitlife-health-defs-v2',
-    []
-  )
+  return BASE_METRICS.map(metric => {
+    const reading = latestHealthReading(metric.id)
 
-  if (!definitions.length) {
-    return BASE_METRICS.map(metric => {
-      const reading = latestHealthReading(metric.id)
+    if (!reading) return metric
 
-      if (!reading) return metric
+    const number = Number(reading.value)
+    const definition = read('fitlife-health-defs-v2', [])
+      .find(item => String(item.id) === String(metric.id))
 
-      return {
-        ...metric,
-        value: Number(reading.value)
-          .toLocaleString('en-GB'),
-      }
-    })
-  }
+    const unit = definition?.unit || ''
+    const decimals = Number(definition?.decimals ?? 0)
 
-  const categoryStyles = {
-    Recovery: {
-      color: '#70e236',
-      Icon: Activity,
-    },
-    Sleep: {
-      color: '#818cf8',
-      Icon: Moon,
-    },
-    Cardiovascular: {
-      color: '#fb7185',
-      Icon: HeartPulse,
-    },
-    'Body Composition': {
-      color: '#fbbf24',
-      Icon: Target,
-    },
-    Metabolic: {
-      color: '#fb923c',
-      Icon: Activity,
-    },
-    Mobility: {
-      color: '#38bdf8',
-      Icon: Footprints,
-    },
-    Nutrition: {
-      color: '#4ade80',
-      Icon: Target,
-    },
-    'Mental Wellbeing': {
-      color: '#a78bfa',
-      Icon: Activity,
-    },
-    'Exercise Related': {
-      color: '#22d3ee',
-      Icon: Dumbbell,
-    },
-    Medical: {
-      color: '#ef4444',
-      Icon: HeartPulse,
-    },
-    'General Wellbeing': {
-      color: '#fde047',
-      Icon: Activity,
-    },
-    Custom: {
-      color: '#94a3b8',
-      Icon: Activity,
-    },
-    Other: {
-      color: '#94a3b8',
-      Icon: Activity,
-    },
-    Uncategorized: {
-      color: '#94a3b8',
-      Icon: Activity,
-    },
-  }
-
-  return definitions.map(definition => {
-    const reading = latestHealthReading(
-      definition.id
-    )
-
-    const style =
-      categoryStyles[definition.category] ||
-      categoryStyles.Uncategorized
-
-    const number = Number(reading?.value)
-    const hasReading = Number.isFinite(number)
-
-    let status = 'No reading yet'
-
-    if (hasReading) {
-      if (definition.targetMode === 'minimum') {
-        status =
-          number >= Number(definition.target)
-            ? 'Target reached'
-            : 'Under target'
-      } else if (
-        definition.targetMode === 'maximum'
-      ) {
-        status =
-          number <= Number(definition.target)
-            ? 'Within target'
-            : 'Over target'
-      } else if (
-        definition.targetMode === 'range'
-      ) {
-        status =
-          number < Number(definition.min)
+    return {
+      ...metric,
+      value: Number.isFinite(number)
+        ? `${number.toLocaleString('en-GB', {
+            maximumFractionDigits: decimals
+          })}${unit ? ` ${unit}` : ''}`
+        : metric.value,
+      status: definition?.targetMode === 'minimum'
+        ? number >= Number(definition.target)
+          ? 'Target reached'
+          : 'Under target'
+        : definition?.targetMode === 'range'
+          ? number < Number(definition.min)
             ? 'Under range'
             : number > Number(definition.max)
               ? 'Over range'
               : 'In range'
-      } else {
-        status = 'Recorded'
-      }
-    }
-
-    const decimals = Number(
-      definition.decimals ?? 0
-    )
-
-    const formattedValue = hasReading
-      ? number.toLocaleString(
-          'en-GB',
-          {
-            maximumFractionDigits: decimals,
-          }
-        )
-      : 'No data'
-
-    return {
-      id: definition.id,
-      label: definition.name,
-      value:
-        formattedValue +
-        (
-          hasReading && definition.unit
-            ? ` ${definition.unit}`
-            : ''
-        ),
-      status,
-      color: style.color,
-      Icon: style.Icon,
-      target: 'health',
+          : metric.status
     }
   })
 }
@@ -507,14 +391,6 @@ function Glance({ habits, logs, fasting, workouts }) {
       refresh
     )
     window.addEventListener(
-      'fitlife:health-target-model-changed',
-      refresh
-    )
-    window.addEventListener(
-      'fitlife:health-metric-deleted',
-      refresh
-    )
-    window.addEventListener(
       'fitlife:log-history-changed',
       refresh
     )
@@ -523,14 +399,6 @@ function Glance({ habits, logs, fasting, workouts }) {
     return () => {
       window.removeEventListener(
         'fitlife:health-readings-changed',
-        refresh
-      )
-      window.removeEventListener(
-        'fitlife:health-target-model-changed',
-        refresh
-      )
-      window.removeEventListener(
-        'fitlife:health-metric-deleted',
         refresh
       )
       window.removeEventListener(
@@ -554,50 +422,8 @@ function Glance({ habits, logs, fasting, workouts }) {
     {id:'habits',label:'Habits',value:`${logs.filter(x=>x.completed&&x.log_date===dateKey()).length}/${Math.max(1,habits.length)}`,status:'Completed today',color:'#f1c34d',Icon:Target,target:'habits'},
     {id:'workout',label:'Workout',value:workouts[0]?`${workouts[0].duration_minutes} min`:'Not logged',status:'Exercises',color:'#38bdf8',Icon:Dumbbell,target:'exercises'}
   ]
-  const validIds = new Set(list.map(item => item.id))
-  const validSelected = selected.filter(id => validIds.has(id))
-  const shown = list
-    .filter(item => validSelected.includes(item.id))
-    .slice(0, max)
-
-  useEffect(() => {
-    if (
-      validSelected.length !== selected.length ||
-      validSelected.some(
-        (id, index) => id !== selected[index]
-      )
-    ) {
-      setSelected(validSelected)
-      localStorage.setItem(
-        'fitlife-glance-selected',
-        JSON.stringify(validSelected)
-      )
-    }
-  }, [
-    selected,
-    list.map(item => item.id).join('|')
-  ])
-
-  function toggle(id) {
-    const current = selected.filter(
-      selectedId => validIds.has(selectedId)
-    )
-
-    const exists = current.includes(id)
-
-    if (!exists && current.length >= max) return
-
-    const next = exists
-      ? current.filter(item => item !== id)
-      : [...current, id]
-
-    setSelected(next)
-
-    localStorage.setItem(
-      'fitlife-glance-selected',
-      JSON.stringify(next)
-    )
-  }
+  const shown=list.filter(x=>selected.includes(x.id)).slice(0,max)
+  function toggle(id){const exists=selected.includes(id);if(!exists&&selected.length>=max)return;const next=exists?selected.filter(x=>x!==id):[...selected,id];setSelected(next);localStorage.setItem('fitlife-glance-selected',JSON.stringify(next))}
   function changeMaximum(value){setMax(value);localStorage.setItem('fitlife-glance-max',String(value));if(selected.length>value){const next=selected.slice(0,value);setSelected(next);localStorage.setItem('fitlife-glance-selected',JSON.stringify(next))}}
   return <section className="su-card"><header><div><h3>Today at a glance</h3><span>{shown.length} of {max} cards</span></div><button onClick={()=>setOpen(true)}>Choose cards</button></header><div className="su-glance-cards">{shown.map(item=>{const Icon=item.Icon;return <article key={item.id} style={{'--c':item.color}} onClick={()=>navigate(item.target,item.id)}><Icon/><small>{item.label}</small><b>{item.value}</b><p>{item.status}</p><i/></article>})}</div>{open&&<div className="su-layer"><button className="su-backdrop" onClick={()=>setOpen(false)} aria-label="Close card settings"/><aside className="su-chooser"><button onClick={()=>setOpen(false)} aria-label="Close"><X/></button><h2>Today at a glance</h2><h3>Maximum cards</h3><div className="su-limit">{[4,5,6,8].map(value=><button className={max===value?'on':''} key={value} onClick={()=>changeMaximum(value)}>{value}</button>)}</div>{list.map(item=>{const checked=selected.includes(item.id);const disabled=!checked&&selected.length>=max;return <label className={disabled?'disabled':''} key={item.id}><span>{item.label}</span><input type="checkbox" checked={checked} disabled={disabled} onChange={()=>toggle(item.id)}/></label>})}</aside></div>}</section>
 }

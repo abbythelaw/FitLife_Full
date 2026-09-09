@@ -16,23 +16,6 @@ const number = value => {
   return Number.isFinite(parsed) ? parsed : 0
 }
 
-const durationDigits = value => String(value ?? '').replace(/\D/g, '').slice(-6).padStart(6, '0')
-const formatDurationDigits = value => {
-  const digits = durationDigits(value)
-  return `${digits.slice(0, 2)}:${digits.slice(2, 4)}:${digits.slice(4, 6)}`
-}
-const secondsToDuration = value => {
-  const total = Math.max(0, Math.round(Number(value) || 0))
-  const hours = Math.floor(total / 3600)
-  const minutes = Math.floor((total % 3600) / 60)
-  const seconds = total % 60
-  return [hours, minutes, seconds].map(part => String(part).padStart(2, '0')).join(':')
-}
-const durationToSeconds = value => {
-  const [hours, minutes, seconds] = formatDurationDigits(value).split(':').map(Number)
-  return hours * 3600 + minutes * 60 + seconds
-}
-
 const FIELD_LABELS = {
   maxHr: 'Maximum heart rate',
   elevation: 'Elevation gain, m',
@@ -100,121 +83,48 @@ function readWeight() {
   }
 }
 
-function baseMetForSport(category, distance, duration) {
-  const sport = String(category || '').toLowerCase()
-  const hours = Number(duration) / 60
-  const speed = Number(distance) > 0 && hours > 0
-    ? Number(distance) / hours
-    : 0
+function estimateCalories({category, duration, distance, weight, rpe}) {
+  if (!duration || !weight) return 0
 
-  if (sport.includes('trail running')) return 9
+  const hours = duration / 60
+  const sport = category.toLowerCase()
+  let met = 4
+
   if (sport.includes('running')) {
-    if (speed >= 13) return 13
-    if (speed >= 11) return 11
-    if (speed >= 9) return 9.5
-    if (speed >= 7) return 8
-    return 7
-  }
-
-  if (sport.includes('walking')) {
-    if (speed >= 7) return 7
-    if (speed >= 6) return 5.8
-    if (speed >= 5) return 4.3
-    return 3.5
-  }
-
-  if (sport.includes('hiking')) return 6.5
-
-  if (sport.includes('indoor cycling')) return 7.5
-  if (sport.includes('cycling')) {
-    if (speed >= 30) return 12
-    if (speed >= 25) return 10
-    if (speed >= 20) return 8
-    if (speed >= 15) return 6
-    return 4.5
-  }
-
-  if (sport.includes('swimming')) return 7
-  if (sport.includes('rowing')) return 7
-  if (sport.includes('hyrox')) return 10
-  if (sport.includes('spartan') || sport.includes('ocr')) return 10
-  if (sport.includes('triathlon')) return 9
-  if (sport.includes('hiit')) return 9
-  if (sport.includes('boxing')) return 8
-  if (sport.includes('football')) return 8
-  if (sport.includes('basketball')) return 7.5
-  if (sport.includes('tennis')) return 7
-  if (sport.includes('badminton')) return 6
-  if (sport.includes('strength')) return 5
-  if (sport.includes('bouldering')) return 6
-  if (sport.includes('climbing')) return 6
-  if (sport.includes('yoga')) return 2.8
-  if (sport.includes('pilates')) return 3
-  if (sport.includes('mobility')) return 2.5
-
-  return 4
-}
-
-function estimateCalories({
-  category,
-  duration,
-  distance,
-  weight,
-  averageHr,
-  rpe
-}) {
-  const minutes = Number(duration)
-  const bodyWeight = Number(weight)
-  const heartRate = Number(averageHr)
-
-  if (!minutes || !bodyWeight) {
-    return {
-      value: 0,
-      method: 'unavailable',
-      confidence: 'low'
+    if (distance && hours) {
+      const speed = distance / hours
+      met = speed >= 12 ? 12.5 : speed >= 10 ? 10 : speed >= 8 ? 8.3 : 6
+    } else {
+      met = 8
     }
+  } else if (sport.includes('walking')) {
+    const speed = distance && hours ? distance / hours : 4.5
+    met = speed >= 6.5 ? 6.5 : speed >= 5.5 ? 4.8 : 3.5
+  } else if (sport.includes('hiking')) {
+    met = 6
+  } else if (sport.includes('cycling')) {
+    met = sport.includes('indoor') ? 7 : 8
+  } else if (sport.includes('swimming')) {
+    met = 7
+  } else if (sport.includes('hyrox') || sport.includes('spartan')) {
+    met = 10
+  } else if (
+    sport.includes('hiit') ||
+    sport.includes('boxing') ||
+    sport.includes('football')
+  ) {
+    met = 8
+  } else if (sport.includes('tennis') || sport.includes('badminton')) {
+    met = 6
+  } else if (sport.includes('strength')) {
+    met = 5
+  } else if (sport.includes('yoga') || sport.includes('mobility')) {
+    met = 2.8
   }
 
-  const hours = minutes / 60
-  const baseMet = baseMetForSport(category, distance, duration)
+  if (rpe) met *= Math.max(0.75, Math.min(1.25, rpe / 6))
 
-  // HR is the primary intensity modifier when available.
-  // The bands deliberately create meaningful differences between
-  // lower-, moderate-, and higher-heart-rate sessions.
-  if (heartRate >= 40 && heartRate <= 230) {
-    let intensityMultiplier = 1
-
-    if (heartRate < 90) intensityMultiplier = 0.65
-    else if (heartRate < 110) intensityMultiplier = 0.78
-    else if (heartRate < 130) intensityMultiplier = 0.92
-    else if (heartRate < 145) intensityMultiplier = 1.05
-    else if (heartRate < 160) intensityMultiplier = 1.18
-    else if (heartRate < 175) intensityMultiplier = 1.34
-    else intensityMultiplier = 1.5
-
-    const adjustedMet = Math.max(
-      1.5,
-      Math.min(18, baseMet * intensityMultiplier)
-    )
-
-    return {
-      value: Math.round(adjustedMet * bodyWeight * hours),
-      method: 'heart_rate_met',
-      confidence: 'medium-high'
-    }
-  }
-
-  // RPE is only a secondary fallback when HR is unavailable.
-  const rpeValue = Number(rpe)
-  const rpeMultiplier = rpeValue
-    ? Math.max(0.85, Math.min(1.15, 0.8 + rpeValue * 0.04))
-    : 1
-
-  return {
-    value: Math.round(baseMet * rpeMultiplier * bodyWeight * hours),
-    method: rpeValue ? 'sport_met_rpe' : 'sport_met',
-    confidence: rpeValue ? 'medium' : 'low'
-  }
+  return Math.max(1, Math.round(met * weight * hours))
 }
 
 export default function SportsEntryForm({
@@ -236,11 +146,9 @@ export default function SportsEntryForm({
     initial.entry_date || defaultDate || today()
   )
   const [start, setStart] = useState(initial.start_time || '07:30')
-  const [durationInput, setDurationInput] = useState(() =>
-    secondsToDuration(initial.duration_seconds ?? Number(initial.duration_minutes || 45) * 60)
+  const [duration, setDuration] = useState(
+    initial.duration_minutes || 45
   )
-  const durationSeconds = useMemo(() => durationToSeconds(durationInput), [durationInput])
-  const duration = durationSeconds / 60
   const [distance, setDistance] = useState(initial.distance_km || '')
   const [avgHr, setAvgHr] = useState(initial.average_hr || '')
   const [maxHr, setMaxHr] = useState(initial.max_hr || '')
@@ -264,16 +172,13 @@ export default function SportsEntryForm({
   const template = useMemo(() => templateFor(category), [category])
   const weight = useMemo(readWeight, [])
 
-  const calorieEstimate = useMemo(() => estimateCalories({
+  const estimatedCalories = useMemo(() => estimateCalories({
     category,
     duration: number(duration),
     distance: number(distance),
     weight,
-    averageHr: number(avgHr),
     rpe: number(rpe)
-  }), [category, duration, distance, weight, avgHr, rpe])
-
-  const estimatedCalories = calorieEstimate.value
+  }), [category, duration, distance, weight, rpe])
 
   const calories = manualCalories
     ? number(calorieValue)
@@ -352,27 +257,19 @@ export default function SportsEntryForm({
         entry_date: date,
         start_time: start,
         end_time: end,
-        duration_seconds: durationSeconds,
-        duration_minutes: durationSeconds / 60,
-        duration_display: secondsToDuration(durationSeconds),
+        duration_minutes: number(duration),
         distance_km: number(distance),
         pace_min_km: pace,
         average_speed_kmh: speed,
         calories,
         estimated_calories: estimatedCalories,
         calories_overridden: manualCalories,
-        calorie_method: manualCalories
-          ? 'manual'
-          : calorieEstimate.method,
-        calorie_confidence: manualCalories
-          ? 'manual'
-          : calorieEstimate.confidence,
+        calorie_method: manualCalories ? 'manual' : 'estimated_met',
         calorie_weight_kg: weight || null,
-        calorie_average_hr: number(avgHr) || null,
         average_hr: number(avgHr) || null,
         max_hr: number(maxHr) || null,
         rpe: number(rpe) || null,
-        training_load: (durationSeconds / 60) * number(rpe),
+        training_load: number(duration) * number(rpe),
         sport_details: details,
         notes
       }, media)
@@ -433,26 +330,14 @@ export default function SportsEntryForm({
         </label>
 
         <label>
-          Duration, HH:MM:SS
+          Duration, minutes
           <input
-            className="sports-duration-input"
-            type="text"
-            inputMode="numeric"
-            autoComplete="off"
-            maxLength="8"
-            value={durationInput}
-            placeholder="00:00:00"
-            onFocus={event => event.currentTarget.select()}
-            onChange={event => changed(setDurationInput, formatDurationDigits(event.target.value))}
-            onKeyDown={event => {
-              if (event.key !== 'Backspace') return
-              event.preventDefault()
-              const digits = durationDigits(durationInput).replace(/^0+/, '').slice(0, -1)
-              changed(setDurationInput, formatDurationDigits(digits))
-            }}
+            type="number"
+            min="1"
+            value={duration}
+            onChange={event => changed(setDuration, event.target.value)}
             required
           />
-          <small className="sports-duration-help">Type numbers only. Example: 13000 becomes 01:30:00.</small>
         </label>
 
         <label>

@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import './HealthMetricCardHistoryV7.css'
 import './HealthMetricCardCompletion.css'
 
 const READING_KEY = 'fitlife-health-readings-v2'
@@ -143,35 +144,90 @@ export default function HealthMetricCardCompletion({ metric }) {
   const latest = readings[0]
   const latestStatus = latest ? readingStatus(metric, latest.value) : { label: 'No reading yet', key: 'no-data' }
 
-  return <section className="health-card-completion" style={{ '--metric-color': style.color }}>
-    <div className="health-card-completion-summary">
-      <span className="health-card-category-icon" aria-hidden="true">{style.icon}</span>
-      <div>
-        <small>{metric.category || 'Uncategorized'}</small>
-        <b>{latestStatus.label}</b>
-        <span>{targetCopy(metric)}</span>
-      </div>
-    </div>
+  return (
+    <section
+      className="health-card-completion"
+      style={{ '--metric-color': style.color }}
+    >
+      <div
+        className={`health-card-streak ${
+          streak.activeRecord ? 'record-active' : ''
+        }`}
+      >
+        <span className="streak-flame" aria-hidden="true">
+          🔥
+        </span>
 
-    <div className={`health-card-streak ${streak.activeRecord ? 'record-active' : ''}`}>
-      <span className="streak-flame">🔥</span>
-      <b>Current: {streak.current} {streak.current === 1 ? 'day' : 'days'}</b>
-      {streak.activeRecord
-        ? <span className="active-crown" title="Personal record active">👑</span>
-        : streak.best > 0 && <em>(👑: {streak.best} {streak.best === 1 ? 'day' : 'days'})</em>}
-    </div>
+        <b>
+          Current: {streak.current}{' '}
+          {streak.current === 1 ? 'day' : 'days'}
+        </b>
 
-    <div className="health-card-history-compact">
-      <div className="health-card-history-cells">
-        {days.map(day => <span
-          key={day.savedDate}
-          className={`health-card-history-cell ${day.status.key}`}
-          title={`${day.date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })} · ${day.row ? `${day.row.value} ${metric.unit || ''} · ${day.status.label}` : 'No data'}`}
-        />)}
+        {streak.activeRecord ? (
+          <span
+            className="active-crown"
+            title="Personal record active"
+            aria-label="Personal record active"
+          >
+            👑
+          </span>
+        ) : (
+          streak.best > 0 && (
+            <em>
+              (👑: {streak.best}{' '}
+              {streak.best === 1 ? 'day' : 'days'})
+            </em>
+          )
+        )}
       </div>
-      <div className="health-card-history-range"><time>{firstDate}</time><time>{lastDate}</time></div>
-    </div>
-  </section>
+
+      <section
+        className="health-card-history-section"
+        aria-label="Last 30 days of saved readings"
+      >
+        <div className="health-card-history-label">
+          <span>Last 30 days</span>
+          <span>Saved readings</span>
+        </div>
+
+        <div className="health-card-history-compact">
+          <div className="health-card-history-cells">
+            {days.map((day) => (
+              <span
+                key={day.savedDate}
+                className={
+                  `health-card-history-cell ${day.status.key}`
+                }
+                title={
+                  `${
+                    day.date.toLocaleDateString(
+                      'en-GB',
+                      {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                      }
+                    )
+                  } · ${
+                    day.row
+                      ? `${day.row.value} ${
+                          metric.unit || ''
+                        } · ${day.status.label}`
+                      : 'No data'
+                  }`
+                }
+              />
+            ))}
+          </div>
+
+          <div className="health-card-history-range">
+            <time>{firstDate}</time>
+            <time>{lastDate}</time>
+          </div>
+        </div>
+      </section>
+    </section>
+  )
 }
 
 export function syncHealthReadingSummaries(rows = []) {

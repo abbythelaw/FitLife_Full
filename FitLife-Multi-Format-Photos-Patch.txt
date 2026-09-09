@@ -1,0 +1,421 @@
+cd /workspaces/FitLife_Full
+
+python3 - <<'PY'
+from pathlib import Path
+from textwrap import dedent
+
+media = Path("src/features/media")
+persistence = media / "imagePersistence.js"
+editor = media / "MediaEditor.jsx"
+css = media / "media.css"
+
+for path in [persistence, editor, css]:
+    if path.exists():
+        path.with_name(path.name + ".before-multi-format").write_text(
+            path.read_text()
+        )
+
+persistence.write_text(dedent(r\''' 
+const SUPPORTED_EXTENSIONS = [
+  'jpg',
+  'jpeg',
+  'png',
+  'webp',
+  'gif',
+  'avif',
+  'heic',
+  'heif'
+]
+
+function extensionOf(file) {
+  return String(file?.name || '')
+    .split('.')
+    .pop()
+    .toLowerCase()
+}
+
+export function isSupportedImageFile(file) {
+  if (!file) return false
+
+  const extension = extensionOf(file)
+
+  return (
+    String(file.type || '').startsWith('image/') ||
+    SUPPORTED_EXTENSIONS.includes(extension)
+  )
+}
+
+function loadImageElement(file) {
+  return new Promise((resolve, reject) => {
+    const objectUrl = URL.createObjectURL(file)
+    const image = new Image()
+
+    image.onload = () => {
+      URL.revokeObjectURL(objectUrl)
+      resolve(image)
+    }
+
+    image.onerror = () => {
+      URL.revokeObjectURL(objectUrl)
+      reject(
+        new Error(
+          `This browser could not decode ${file.name}. ` +
+          'Try exporting the image as JPEG or PNG.'
+        )
+      )
+    }
+
+    image.src = objectUrl
+  })
+}
+
+async function decodeImage(file) {
+  if ('createImageBitmap' in window) {
+    try {
+      const bitmap = await createImageBitmap(file)
+
+      return {
+        source: bitmap,
+        width: bitmap.width,
+        height: bitmap.height,
+        close: () => bitmap.close?.()
+      }
+    } catch (error) {
+      console.warn(
+        '[Media] createImageBitmap could not decode the image:',
+        file.name,
+        error
+      )
+    }
+  }
+
+  const image = await loadImageElement(file)
+
+  return {
+    source: image,
+    width: image.naturalWidth || image.width,
+    height: image.naturalHeight || image.height,
+    close: () => {}
+  }
+}
+
+function canvasToDataUrl(canvas, quality) {
+  const webp = canvas.toDataURL('image/webp', quality)
+
+  if (webp.startsWith('data:image/webp')) {
+    return {
+      dataUrl: webp,
+      storedType: 'image/webp',
+      extension: 'webp'
+    }
+  }
+
+  const jpeg = canvas.toDataURL('image/jpeg', quality)
+
+  return {
+    dataUrl: jpeg,
+    storedType: 'image/jpeg',
+    extension: 'jpg'
+  }
+}
+
+export async function compressImage(file, options = {}) {
+  if (!isSupportedImageFile(file)) {
+    throw new Error(`${file?.name || 'The selected file'} is not an image.`)
+  }
+
+  const maxEdge = Number(options.maxEdge || 1600)
+  const quality = Number(options.quality || 0.78)
+  const decoded = await decodeImage(file)
+
+  try {
+    if (!decoded.width || !decoded.height) {
+      throw new Error(`Could not determine the size of ${file.name}.`)
+    }
+
+    const scale = Math.min(
+      1,
+      maxEdge / Math.max(decoded.width, decoded.height)
+    )
+
+    const width = Math.max(1, Math.round(decoded.width * scale))
+    const height = Math.max(1, Math.round(decoded.height * scale))
+
+    const canvas = document.createElement('canvas')
+    canvas.width = width
+    canvas.height = height
+
+    const context = canvas.getContext('2d', {alpha: false})
+
+    if (!context) {
+      throw new Error('Image compression is unavailable in this browser.')
+    }
+
+    context.fillStyle = '#ffffff'
+    context.fillRect(0, 0, width, height)
+    context.drawImage(decoded.source, 0, 0, width, height)
+
+    const encoded = canvasToDataUrl(canvas, quality)
+
+    return {
+      data_url: encoded.dataUrl,
+      preview: encoded.dataUrl,
+      original_name: file.name,
+      original_type: file.type || `image/${extensionOf(file)}`,
+      original_size: Number(file.size || 0),
+      stored_type: encoded.storedType,
+      stored_extension: encoded.extension,
+      width,
+      height
+    }
+  } finally {
+    decoded.close()
+  }
+}
+
+export async function compressImageToDataUrl(
+  file,
+  maxEdge = 1400,
+  quality = 0.78
+) {
+  const result = await compressImage(file, {maxEdge, quality})
+  return result.data_url
+}
+
+export async function dataUrlToBlob(dataUrl) {
+  return await (await fetch(dataUrl)).blob()
+}
+
+export function isDisplayablePhotoSource(value) {
+  return (
+    typeof value === 'string' &&
+    (
+      value.startsWith('data:image/') ||
+      value.startsWith('https://') ||
+      value.startsWith('http://') ||
+      value.startsWith('blob:')
+    )
+  )
+}
+\'''))
+
+editor.write_text(dedent(r\'''
+import {
+  AlertCircle,
+  ChevronLeft,
+  ChevronRight,
+  ImagePlus,
+  Star,
+  Trash2
+} from 'lucide-react'
+import {useEffect, useState} from 'react'
+import PhotoPositioner from '../../components/photo/PhotoPositioner'
+import {compressImage, isSupportedImageFile} from './imagePersistence'
+
+const MAX_PHOTOS = 20
+const ACCEPTED_IMAGES = [
+  'image/jpeg', 'image/png', 'image/webp', 'image/gif',
+  'image/avif', 'image/heic', 'image/heif',
+  '.jpg', '.jpeg', '.png', '.webp', '.gif', '.avif', '.heic', '.heif'
+].join(',')
+
+const source = photo =>
+  photo?.signed_url || photo?.url || photo?.data_url || photo?.preview
+
+export default function MediaEditor({
+  existing = [], positionX = 50, positionY = 50, onChange
+}) {
+  const [photos, setPhotos] = useState(() =>
+    existing.filter(photo => source(photo)).slice(0, MAX_PHOTOS).map((photo, index) => ({
+      ...photo,
+      id: photo.id || crypto.randomUUID(),
+      position_x: photo.position_x ?? positionX,
+      position_y: photo.position_y ?? positionY,
+      crop_scale: photo.crop_scale ?? 1,
+      sort_order: photo.sort_order ?? index
+    }))
+  )
+  const [featured, setFeatured] = useState(() => {
+    const index = existing.findIndex(photo => photo?.is_featured)
+    return index >= 0 ? index : 0
+  })
+  const [active, setActive] = useState(0)
+  const [busy, setBusy] = useState(false)
+  const [progress, setProgress] = useState('')
+  const [errors, setErrors] = useState([])
+
+  useEffect(() => {
+    const safeFeatured = Math.min(featured, Math.max(0, photos.length - 1))
+    onChange?.({
+      photos,
+      featured: safeFeatured,
+      positionX: photos[safeFeatured]?.position_x ?? 50,
+      positionY: photos[safeFeatured]?.position_y ?? 50
+    })
+  }, [photos, featured, onChange])
+
+  async function add(fileList) {
+    if (busy) return
+    const selected = Array.from(fileList || [])
+    const remaining = Math.max(0, MAX_PHOTOS - photos.length)
+    const accepted = selected.slice(0, remaining)
+    const next = []
+    const failures = []
+
+    if (selected.length > remaining) {
+      failures.push(`Only ${remaining} more photos can be added. Maximum: ${MAX_PHOTOS}.`)
+    }
+
+    setBusy(true)
+    setErrors([])
+
+    try {
+      for (let index = 0; index < accepted.length; index += 1) {
+        const file = accepted[index]
+        setProgress(`Preparing ${index + 1} of ${accepted.length}: ${file.name}`)
+
+        if (!isSupportedImageFile(file)) {
+          failures.push(`${file.name}: unsupported image format.`)
+          continue
+        }
+
+        try {
+          const compressed = await compressImage(file, {maxEdge: 1600, quality: 0.78})
+          next.push({
+            id: crypto.randomUUID(),
+            ...compressed,
+            type: compressed.stored_type,
+            position_x: 50,
+            position_y: 50,
+            crop_scale: 1,
+            sort_order: photos.length + next.length,
+            upload_status: 'prepared'
+          })
+        } catch (error) {
+          console.error('[Media] Could not prepare image:', file, error)
+          failures.push(`${file.name}: ${error?.message || 'could not be prepared'}`)
+        }
+      }
+
+      if (next.length) setPhotos(current => [...current, ...next])
+      setErrors(failures)
+    } finally {
+      setBusy(false)
+      setProgress('')
+    }
+  }
+
+  function updatePosition(value) {
+    setPhotos(list => list.map((photo, index) =>
+      index === active
+        ? {...photo, position_x: value.x, position_y: value.y, crop_scale: value.scale}
+        : photo
+    ))
+  }
+
+  function remove(index) {
+    const next = photos.filter((_, i) => i !== index).map((photo, i) => ({
+      ...photo,
+      sort_order: i
+    }))
+    setPhotos(next)
+    setActive(Math.min(active, Math.max(0, next.length - 1)))
+    setFeatured(current => {
+      if (index === current) return 0
+      if (index < current) return Math.max(0, current - 1)
+      return Math.min(current, Math.max(0, next.length - 1))
+    })
+  }
+
+  const activePhoto = photos[active]
+  const maximumReached = photos.length >= MAX_PHOTOS
+
+  return (
+    <section className="media-editor-direct">
+      <label className={`media-upload ${maximumReached || busy ? 'is-disabled' : ''}`}>
+        <ImagePlus />
+        <span>{busy ? progress || 'Preparing photographs…' : maximumReached ? 'Maximum 20 photographs reached' : 'Add photographs'}</span>
+        <small>JPG, PNG, WebP, GIF, AVIF, HEIC or HEIF. Images are compressed before saving.</small>
+        <input
+          type="file"
+          accept={ACCEPTED_IMAGES}
+          multiple
+          disabled={busy || maximumReached}
+          onChange={event => {
+            add(event.target.files)
+            event.target.value = ''
+          }}
+        />
+      </label>
+
+      <div className="media-upload-status">
+        <span>{photos.length} of {MAX_PHOTOS} photographs</span>
+        {busy && <span className="media-preparing-indicator">Preparing images…</span>}
+      </div>
+
+      {errors.length > 0 && (
+        <div className="media-upload-errors" role="alert">
+          <AlertCircle />
+          <div>
+            <strong>{errors.length === 1 ? 'One photograph could not be added' : `${errors.length} photographs could not be added`}</strong>
+            <ul>{errors.map((error, index) => <li key={`${error}-${index}`}>{error}</li>)}</ul>
+          </div>
+        </div>
+      )}
+
+      {activePhoto && (
+        <>
+          <div className="media-editor-nav">
+            <button type="button" disabled={active === 0} onClick={() => setActive(active - 1)}><ChevronLeft /></button>
+            <span>Photo {active + 1} of {photos.length}{active === featured ? ' · Cover photo' : ''}</span>
+            <button type="button" disabled={active === photos.length - 1} onClick={() => setActive(active + 1)}><ChevronRight /></button>
+          </div>
+          <PhotoPositioner
+            src={source(activePhoto)}
+            value={{x: activePhoto.position_x, y: activePhoto.position_y, scale: activePhoto.crop_scale}}
+            onChange={updatePosition}
+          />
+        </>
+      )}
+
+      <div className="media-thumbnails">
+        {photos.map((photo, index) => (
+          <figure className={index === featured ? 'featured' : ''} key={photo.id} onClick={() => setActive(index)}>
+            <img src={source(photo)} alt={`Activity photograph ${index + 1}`} />
+            {index === featured && <span className="media-cover-label">Cover</span>}
+            <button type="button" className="media-feature" onClick={event => {event.stopPropagation(); setFeatured(index); setActive(index)}} title="Set as cover photo"><Star /></button>
+            <button type="button" className="media-remove" onClick={event => {event.stopPropagation(); remove(index)}} title="Remove photo"><Trash2 /></button>
+          </figure>
+        ))}
+      </div>
+    </section>
+  )
+}
+\'''))
+
+css_text = css.read_text()
+addition = dedent(r\'''
+
+/* Multi-format activity photographs */
+.media-upload.is-disabled { cursor: not-allowed; opacity: .62; }
+.media-upload-status { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 8px 0 12px; font-size: 12px; font-weight: 700; opacity: .72; }
+.media-preparing-indicator { color: #70e236; }
+.media-upload-errors { display: flex; align-items: flex-start; gap: 11px; margin: 12px 0; padding: 13px 14px; border: 1px solid rgba(251,113,133,.45); border-radius: 14px; background: rgba(127,29,29,.2); color: #fecdd3; }
+.media-upload-errors > svg { flex: 0 0 auto; width: 19px; }
+.media-upload-errors ul { margin: 7px 0 0; padding-left: 18px; }
+.media-upload-errors li { margin: 4px 0; font-size: 12px; line-height: 1.45; }
+.media-thumbnails figure { position: relative; }
+.media-cover-label { position: absolute; z-index: 3; top: 6px; left: 6px; padding: 4px 7px; border: 1px solid rgba(255,226,105,.48); border-radius: 999px; background: rgba(68,49,4,.84); color: #ffe78b; font-size: 9px; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; }
+@media (max-width: 680px) { .media-upload-status { align-items: flex-start; flex-direction: column; gap: 4px; } }
+\''')
+
+if "Multi-format activity photographs" not in css_text:
+    css.write_text(css_text + addition)
+
+print("[OK] Multi-format image support installed")
+print("[OK] Up to 20 photos per activity")
+print("[OK] WebP compression and cover selection enabled")
+print("[OK] Backups created")
+PY
+
+npm run build

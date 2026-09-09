@@ -1,0 +1,218 @@
+cd /workspaces/FitLife_Full
+
+python3 - <<'PY'
+from pathlib import Path
+
+base = Path('src/features/sports')
+form_path = base / 'SportsEntryForm.jsx'
+analysis_path = base / 'SportsActivityAnalysis.jsx'
+css_path = base / 'SportsPage.css'
+
+for path in (form_path, analysis_path, css_path):
+    if not path.exists():
+        raise SystemExit(f'Missing: {path}')
+    path.with_name(path.name + '.before-duration-scatter').write_text(path.read_text())
+
+form = form_path.read_text()
+
+old = """const number = value => {
+  const parsed = Number(value)
+  return Number.isFinite(parsed) ? parsed : 0
+}"""
+new = """const number = value => {
+  const parsed = Number(value)
+  return Number.isFinite(parsed) ? parsed : 0
+}
+
+const durationDigits = value => String(value ?? '').replace(/\\D/g, '').slice(-6).padStart(6, '0')
+const formatDurationDigits = value => {
+  const digits = durationDigits(value)
+  return `${digits.slice(0, 2)}:${digits.slice(2, 4)}:${digits.slice(4, 6)}`
+}
+const secondsToDuration = value => {
+  const total = Math.max(0, Math.round(Number(value) || 0))
+  const hours = Math.floor(total / 3600)
+  const minutes = Math.floor((total % 3600) / 60)
+  const seconds = total % 60
+  return [hours, minutes, seconds].map(part => String(part).padStart(2, '0')).join(':')
+}
+const durationToSeconds = value => {
+  const [hours, minutes, seconds] = formatDurationDigits(value).split(':').map(Number)
+  return hours * 3600 + minutes * 60 + seconds
+}"""
+if old not in form:
+    raise SystemExit('Number helper not found')
+form = form.replace(old, new, 1)
+
+old = """  const [duration, setDuration] = useState(
+    initial.duration_minutes || 45
+  )"""
+new = """  const [durationInput, setDurationInput] = useState(() =>
+    secondsToDuration(initial.duration_seconds ?? Number(initial.duration_minutes || 45) * 60)
+  )
+  const durationSeconds = useMemo(() => durationToSeconds(durationInput), [durationInput])
+  const duration = durationSeconds / 60"""
+if old not in form:
+    raise SystemExit('Duration state not found')
+form = form.replace(old, new, 1)
+
+old = """        <label>
+          Duration, minutes
+          <input
+            type="number"
+            min="1"
+            value={duration}
+            onChange={event => changed(setDuration, event.target.value)}
+            required
+          />
+        </label>"""
+new = """        <label>
+          Duration, HH:MM:SS
+          <input
+            className="sports-duration-input"
+            type="text"
+            inputMode="numeric"
+            autoComplete="off"
+            maxLength="8"
+            value={durationInput}
+            placeholder="00:00:00"
+            onFocus={event => event.currentTarget.select()}
+            onChange={event => changed(setDurationInput, formatDurationDigits(event.target.value))}
+            onKeyDown={event => {
+              if (event.key !== 'Backspace') return
+              event.preventDefault()
+              const digits = durationDigits(durationInput).replace(/^0+/, '').slice(0, -1)
+              changed(setDurationInput, formatDurationDigits(digits))
+            }}
+            required
+          />
+          <small className="sports-duration-help">Type numbers only. Example: 13000 becomes 01:30:00.</small>
+        </label>"""
+if old not in form:
+    raise SystemExit('Duration input not found')
+form = form.replace(old, new, 1)
+
+old = '        duration_minutes: number(duration),'
+new = """        duration_seconds: durationSeconds,
+        duration_minutes: durationSeconds / 60,
+        duration_display: secondsToDuration(durationSeconds),"""
+if old not in form:
+    raise SystemExit('Saved duration field not found')
+form = form.replace(old, new, 1)
+form = form.replace('training_load: number(duration) * number(rpe),', 'training_load: (durationSeconds / 60) * number(rpe),', 1)
+form_path.write_text(form)
+
+analysis = analysis_path.read_text()
+start = analysis.find('function TrendPlot({entries, current, metricKey})')
+end = analysis.find('export default function SportsActivityAnalysis', start)
+if start < 0 or end < 0:
+    raise SystemExit('TrendPlot not found')
+
+trend = r'''function linearRegression(values) {
+  const count = values.length
+  if (count < 2) return {slope: 0, intercept: values[0] || 0}
+  const sumX = values.reduce((total, _, index) => total + index, 0)
+  const sumY = values.reduce((total, value) => total + value, 0)
+  const sumXY = values.reduce((total, value, index) => total + index * value, 0)
+  const sumXX = values.reduce((total, _, index) => total + index * index, 0)
+  const denominator = count * sumXX - sumX * sumX
+  const slope = denominator ? (count * sumXY - sumX * sumY) / denominator : 0
+  return {slope, intercept: (sumY - slope * sumX) / count}
+}
+
+function trendAxisLabel(metric) {
+  return ({pace_min_km:'Pace (min/km)',distance_km:'Distance (km)',duration_minutes:'Duration (HH:MM:SS)',average_speed_kmh:'Average speed (km/h)',average_hr:'Average heart rate (bpm)',calories:'Energy burned (kcal)',rpe:'RPE (1-10)'})[metric.key] || `${metric.label} (${metric.unit})`
+}
+
+function readableTrendDuration(minutes) {
+  const total = Math.max(0, Math.round(Number(minutes || 0) * 60))
+  const h = Math.floor(total / 3600), m = Math.floor((total % 3600) / 60), s = total % 60
+  return h ? [h,m,s].map(x => String(x).padStart(2,'0')).join(':') : [m,s].map(x => String(x).padStart(2,'0')).join(':')
+}
+
+function regressionDescription(metric, slope, count) {
+  if (count < 3) return 'At least 3 activities are needed for a reliable trend'
+  if (Math.abs(slope) < .0001) return 'Stable trend'
+  if (metric.key === 'pace_min_km') {
+    const seconds = Math.round(Math.abs(slope) * 60)
+    return slope < 0 ? `Trending faster - ${seconds} sec/km per activity` : `Trending slower - ${seconds} sec/km per activity`
+  }
+  if (metric.key === 'duration_minutes') {
+    const amount = readableTrendDuration(Math.abs(slope))
+    return slope > 0 ? `Sessions trending longer - ${amount} per activity` : `Sessions trending shorter - ${amount} per activity`
+  }
+  return `Trending ${slope > 0 ? 'higher' : 'lower'} - ${Math.abs(slope).toFixed(2)} ${metric.unit} per activity`
+}
+
+function TrendPlot({entries, current, metricKey}) {
+  const metric = METRICS.find(item => item.key === metricKey) || METRICS[0]
+  const points = [...entries, current].filter(entry => numeric(entry?.[metric.key]) !== null).slice(-10)
+  if (points.length < 2) return <div className="sports-analysis-empty">Record more activities to unlock the scatter plot and linear regression trend.</div>
+
+  const values = points.map(entry => numeric(entry[metric.key]))
+  const {slope, intercept} = linearRegression(values)
+  const regressions = values.map((_, index) => intercept + slope * index)
+  const all = [...values, ...regressions]
+  const rawMin = Math.min(...all), rawMax = Math.max(...all)
+  const rawRange = rawMax - rawMin || Math.max(1, rawMax * .1)
+  const minimum = Math.max(0, rawMin - rawRange * .14), maximum = rawMax + rawRange * .14
+  const range = maximum - minimum || 1
+  const width=640,height=270,left=92,right=28,top=30,bottom=58
+  const plotWidth=width-left-right, plotHeight=height-top-bottom
+  const xFor = index => left + index * (plotWidth / Math.max(1, values.length - 1))
+  const yFor = value => top + ((maximum - value) / range) * plotHeight
+  const ticks = Array.from({length:5}, (_,index) => maximum - index * (range / 4))
+  const formatTick = value => {
+    if (metric.key === 'pace_min_km') {
+      const minutes = Math.floor(value), seconds = Math.round((value - minutes) * 60)
+      return `${minutes}:${String(seconds).padStart(2,'0')}`
+    }
+    if (metric.key === 'duration_minutes') return readableTrendDuration(value)
+    return Number(value).toFixed(value >= 100 ? 0 : 1)
+  }
+  const firstDate = points[0]?.entry_date || points[0]?.date || 'Older'
+  const currentDate = current?.entry_date || current?.date || 'Current'
+
+  return <div className="sports-dotplot sports-scatterplot">
+    <div className="sports-dotplot-header"><div><small>{metric.label.toUpperCase()} TREND</small><strong>{regressionDescription(metric,slope,points.length)}</strong></div><span>{points.length} activities</span></div>
+    <div className="sports-scatterplot-scroll"><svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`${trendAxisLabel(metric)} scatter plot with linear regression`}>
+      <text x="20" y={top+plotHeight/2} className="sports-axis-title" textAnchor="middle" transform={`rotate(-90 20 ${top+plotHeight/2})`}>{trendAxisLabel(metric)}</text>
+      {ticks.map((value,index)=><g key={`tick-${index}`}><line x1={left} y1={yFor(value)} x2={width-right} y2={yFor(value)} className="sports-chart-gridline"/><text x={left-12} y={yFor(value)+4} textAnchor="end" className="sports-axis-tick">{formatTick(value)}</text></g>)}
+      <line x1={left} y1={height-bottom} x2={width-right} y2={height-bottom} className="sports-chart-axis"/>
+      <line x1={left} y1={top} x2={left} y2={height-bottom} className="sports-chart-axis"/>
+      {points.length>=3&&<line x1={xFor(0)} y1={yFor(intercept)} x2={xFor(values.length-1)} y2={yFor(intercept+slope*(values.length-1))} className="sports-regression-line"/>}
+      {values.map((value,index)=>{const selected=index===values.length-1;const date=points[index]?.entry_date||points[index]?.date||`Activity ${index+1}`;return <g key={`${date}-${index}`}>{selected&&<circle cx={xFor(index)} cy={yFor(value)} r="14" className="sports-chart-halo"/>}<circle cx={xFor(index)} cy={yFor(value)} r={selected?8:6} className={selected?'sports-chart-point current':'sports-chart-point'}><title>{`${date}: ${formatTick(value)} ${metric.unit}`}</title></circle></g>})}
+      <text x={left} y={height-24} className="sports-axis-tick">{firstDate}</text><text x={width-right} y={height-24} textAnchor="end" className="sports-axis-tick">{currentDate}</text><text x={left+plotWidth/2} y={height-7} textAnchor="middle" className="sports-axis-title">Activity date</text>
+    </svg></div>
+    <div className="sports-regression-legend"><span><i className="dot"/>Recorded activity</span><span><i className="current-dot"/>Current activity</span>{points.length>=3&&<span><i className="line"/>Linear regression</span>}</div>
+  </div>
+}
+
+'''
+analysis_path.write_text(analysis[:start] + trend + analysis[end:])
+
+css = css_path.read_text()
+marker = '/* Sports scatter regression and duration */'
+if marker in css:
+    css = css[:css.index(marker)].rstrip() + '\n'
+css += r'''
+
+/* Sports scatter regression and duration */
+.sports-duration-input{font-variant-numeric:tabular-nums;text-align:center;font-size:17px;font-weight:800;letter-spacing:.1em}
+.sports-duration-help{display:block;margin-top:6px;font-size:11px;line-height:1.45;opacity:.65}
+.sports-scatterplot{min-width:0;overflow:hidden!important}.sports-scatterplot-scroll{width:100%;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}.sports-scatterplot-scroll svg{display:block;width:100%;min-width:590px;height:auto}
+.sports-chart-gridline{stroke:rgba(148,163,184,.12);stroke-width:1}.sports-axis-title{fill:rgba(226,232,240,.82);font-size:11px;font-weight:800}.sports-axis-tick{fill:rgba(203,213,225,.66);font-size:10px;font-variant-numeric:tabular-nums}.sports-regression-line{stroke:#a7f36f;stroke-width:3;stroke-linecap:round;stroke-dasharray:9 6;filter:drop-shadow(0 0 5px rgba(112,226,54,.32))}
+.sports-scatterplot polyline,.sports-scatterplot .sports-chart-line{display:none!important}.sports-scatterplot .sports-chart-point{fill:#70e236;stroke:#10251c;stroke-width:3}.sports-scatterplot .sports-chart-point.current{fill:#ffd76a;stroke:#fff2bd}.sports-scatterplot .sports-chart-halo{fill:none;stroke:rgba(255,215,106,.38);stroke-width:5}
+.sports-regression-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px;font-size:10px;opacity:.72}.sports-regression-legend span{display:inline-flex;align-items:center;gap:6px}.sports-regression-legend i{display:inline-block}.sports-regression-legend .dot,.sports-regression-legend .current-dot{width:10px;height:10px;border-radius:50%;background:#70e236}.sports-regression-legend .current-dot{background:#ffd76a;box-shadow:0 0 0 3px rgba(255,215,106,.18)}.sports-regression-legend .line{width:24px;border-top:2px dashed #a7f36f}
+@media(max-width:680px){.sports-scatterplot-scroll svg{width:640px;min-width:640px}}
+'''
+css_path.write_text(css)
+
+print('[OK] HH:MM:SS duration input installed')
+print('[OK] Precise duration fields saved')
+print('[OK] Dot-only scatter plot installed')
+print('[OK] Linear regression and labelled axes installed')
+print('[OK] Backups created')
+PY
+
+npm run build
