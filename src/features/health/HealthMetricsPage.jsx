@@ -1,3 +1,5 @@
+import './HealthMetricsFinalCompletion.css'
+import HealthMetricDeleteDialog from './HealthMetricDeleteDialog'
 import HealthMetricCardCompletion, { syncHealthReadingSummaries } from './HealthMetricCardCompletion'
 import './HealthMetricPeriodsV5.css'
 import './HealthMetricDateStatusV4.css'
@@ -142,7 +144,7 @@ function StreakStrip({ metric, data }) {
   )
 }
 
-function MetricCard({ metric, onOpen, onEdit }) {
+function MetricCard({ metric, onOpen, onEdit, onDelete }) {
   const data = useMemo(() => generateSeries(metric, 7), [metric])
   const status = targetStatus(metric, metric.current)
   const previous = data[data.length - 2]?.value ?? metric.current
@@ -174,8 +176,11 @@ function MetricCard({ metric, onOpen, onEdit }) {
 
 export default function HealthMetricsPage() {
   const [metrics, setMetrics] = useState(() => {
+
     try { return JSON.parse(localStorage.getItem('fitlife-health-defs-v2')) || METRICS } catch { return METRICS }
   })
+  const [deletingMetric, setDeletingMetric] = useState(null)
+  const [deletingBusy, setDeletingBusy] = useState(false)
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
   const [editor, setEditor] = useState(null)
@@ -195,6 +200,38 @@ export default function HealthMetricsPage() {
     setEditor(null)
   }
 
+  async function permanentlyDeleteMetric(metric) {
+    if (!metric || deletingBusy) return
+    setDeletingBusy(true)
+    try {
+      const metricId = String(metric.id)
+      const readingKeys = ['fitlife-health-readings-v2', 'fitlife-health-readings']
+      let remainingReadings = []
+      readingKeys.forEach((key, index) => {
+        let rows = []
+        try { rows = JSON.parse(localStorage.getItem(key) || '[]') } catch {}
+        const remaining = rows.filter(row => String(row.metric_id) !== metricId)
+        if (index === 0) remainingReadings = remaining
+        localStorage.setItem(key, JSON.stringify(remaining))
+      })
+      const nextMetrics = metrics.filter(item => String(item.id) !== metricId)
+      setMetrics(nextMetrics)
+      localStorage.setItem('fitlife-health-defs-v2', JSON.stringify(nextMetrics))
+      for (const key of ['fitlife-log-history', 'fitlife-my-life-events', 'fitlife-bivariate-history']) {
+        let rows = []
+        try { rows = JSON.parse(localStorage.getItem(key) || '[]') } catch {}
+        localStorage.setItem(key, JSON.stringify(rows.filter(row => String(row.metric_id || row.source_id) !== metricId)))
+      }
+      syncHealthReadingSummaries(remainingReadings)
+      window.dispatchEvent(new CustomEvent('fitlife:health-metric-deleted', { detail: { metricId } }))
+      if (selected && String(selected.id) === metricId) setSelected(null)
+      if (editor && String(editor.id) === metricId) setEditor(null)
+      setDeletingMetric(null)
+    } finally {
+      setDeletingBusy(false)
+    }
+  }
+
   return (
     <section className="health-dashboard">
       <div className="health-dashboard-heading">
@@ -206,15 +243,16 @@ export default function HealthMetricsPage() {
         <article><HeartPulse /><b>{readingsInRange}/{metrics.length}</b><span>Metrics in target</span></article>
         <article><Flame /><b>{longestStreak} days</b><span>Longest current streak</span></article>
         <article><Trophy /><b>3</b><span>Personal bests this month</span></article>
-        <article><Sparkles /><b>83%</b><span>Data coverage</span><HealthMetricCardCompletion metric={metric}/></article>
+        <article><Sparkles /><b>83%</b><span>Data coverage</span></article>
       </div>
 
       <label className="health-search"><Search size={17} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search metrics" /></label>
 
-      <div className="metric-grid">{visible.map((metric) => <MetricCard key={metric.id} metric={metric} onOpen={() => setSelected(metric)} onEdit={() => setEditor(metric)} />)}</div>
+      <div className="metric-grid">{visible.map((metric) => <MetricCard key={metric.id} metric={metric} onOpen={() => setSelected(metric)} onEdit={() => setEditor(metric)} onDelete={() => setDeletingMetric(metric)} />)}</div>
 
-      {selected && <MetricDetail metric={selected} onClose={() => setSelected(null)} />}
+      {selected && <MetricDetail metric={selected} onClose={() => setSelected(null)} onDelete={() => setDeletingMetric(selected)} />}
       {editor && <MetricEditor metric={editor} onClose={() => setEditor(null)} onSave={saveMetric} />}
+      {deletingMetric && <HealthMetricDeleteDialog metric={deletingMetric} readings={readingsForMetric(deletingMetric.id)} busy={deletingBusy} onCancel={() => setDeletingMetric(null)} onDelete={() => permanentlyDeleteMetric(deletingMetric)} />}
     </section>
   )
 }
@@ -335,7 +373,7 @@ function ReadingEditor({ metric, reading, onClose, onSave }) {
   return <div className="health-reading-layer"><section className="health-reading-dialog" style={{ '--metric-color': style.color }}><header><div><small>{reading ? 'EDIT READING' : 'ADD READING'}</small><h2>{metric.name}</h2></div><button onClick={onClose}><X/></button></header><form onSubmit={submit}><label>Value ({metric.unit || 'value'})<input type="number" step="any" value={form.value} onChange={event => setForm({ ...form, value: event.target.value })} autoFocus required/></label><div className="reading-date-time-grid"><label>Record date<input type="date" max={today} value={form.record_date} onChange={event => setForm({ ...form, record_date: event.target.value })} required/><small className="future-date-note">Today or any past date</small></label><label>Record time<input type="time" value={form.record_time} onChange={event => setForm({ ...form, record_time: event.target.value })} required/></label></div><label>Notes<textarea value={form.notes} onChange={event => setForm({ ...form, notes: event.target.value })}/></label>{error&&<p className="reading-error">{error}</p>}<footer><button type="button" onClick={onClose}>Cancel</button><button className="primary">Save reading</button></footer></form></section></div>
 }
 
-function MetricDetail({ metric, onClose }) {
+function MetricDetail({ metric, onClose, onDelete }) {
   const [type, setType] = useState(metric.chart || 'line')
   const [period, setPeriod] = useState('30D')
   const [editingReading, setEditingReading] = useState(null)
@@ -371,7 +409,7 @@ function MetricDetail({ metric, onClose }) {
     if (!window.confirm('Delete this health reading?')) return
     writeHealthLogs(allReadings.filter(item => item.id !== row.id)); setVersion(value => value + 1)
   }
-  return <div className="health-layer"><button className="health-backdrop" onClick={onClose} aria-label="Close"/><section className="metric-detail" style={{ '--metric-color': style.color }}><button className="close" onClick={onClose}><X/></button><header className="metric-detail-header"><div><span className="health-big-icon">{style.icon}</span><small>{metric.name.toUpperCase()}</small><h2>{readings[0]?.value ?? metric.current} {metric.unit}</h2></div><div className="metric-detail-actions"><button className="add-reading" onClick={() => setAddingReading(true)}><Plus size={16}/><span>Add Reading</span></button></div></header><div className="chart-controls"><div>{['line','dot','bar'].map(item => <button className={type===item?'selected':''} onClick={() => setType(item)} key={item}>{item}</button>)}</div><div>{['7D','30D','90D','1Y'].map(item => <button className={period===item?'selected':''} onClick={() => setPeriod(item)} key={item}>{item}</button>)}</div></div><MetricChart metric={{...metric,color:style.color}} data={graphData} type={type}/><div className="health-target-baseline-summary"><article><small>Current</small><b>{Number.isFinite(currentValue) ? `${currentValue} ${metric.unit}` : 'No reading'}</b><span>{readings[0] ? new Date(readings[0].recorded_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : 'Add a reading to begin'}</span></article><article><small>Baseline</small><b>{baseline != null ? `${baseline.toFixed(metric.decimals)} ${metric.unit}` : 'Not set'}</b><span>{metric.baselineMode === 'manual' ? 'Manual baseline' : `${String(metric.baselineMode || '30d').toUpperCase()} rolling average`}</span></article><article><small>Target / normal range</small><b>{targetLabel}</b><span>Configured metric goal</span></article><article className="status-card"><small>Status</small><b>{currentStatus.label}</b><span>{trendValue == null ? 'No trend yet' : `${trendValue >= 0 ? '↑' : '↓'} ${Math.abs(trendValue).toFixed(metric.decimals)} ${metric.unit} vs baseline`}</span></article></div><RollingThirtyDayStrip metric={{...metric,color:style.color}} readings={readings}/><section className="health-reading-history"><header><h3>Reading history</h3><button className="add-reading" onClick={() => setAddingReading(true)}><Plus size={15}/><span>Add Reading</span></button></header>{readings.length?readings.map(row => { const status=readingStatus(metric,row.value); return <article className="health-reading-row" key={row.id}><div><b>{row.value} {metric.unit}</b><small>{new Date(row.recorded_at).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:false})}{row.notes?` · ${row.notes}`:''}</small></div><span className={`reading-status ${status.key}`}>{status.label}</span><div className="reading-actions"><button onClick={() => setEditingReading(row)} aria-label="Edit reading">✎</button><button onClick={() => deleteReading(row)} aria-label="Delete reading">×</button></div></article> }):<div className="health-reading-empty">No readings recorded yet.<br/><button onClick={() => setAddingReading(true)}>Add the first reading</button></div>}</section></section>{(addingReading||editingReading)&&<ReadingEditor metric={metric} reading={editingReading} onClose={() => {setAddingReading(false);setEditingReading(null)}} onSave={saveReading}/>}</div>
+  return <div className="health-layer"><button className="health-backdrop" onClick={onClose} aria-label="Close"/><section className="metric-detail" style={{ '--metric-color': style.color }}><button className="close" onClick={onClose}><X/></button><header className="metric-detail-header"><div><span className="health-big-icon">{style.icon}</span><small>{metric.name.toUpperCase()}</small><h2>{readings[0]?.value ?? metric.current} {metric.unit}</h2></div><div className="metric-detail-actions"><button className="add-reading" onClick={() => setAddingReading(true)}><Plus size={16}/><span>Add Reading</span></button><button className="delete-metric-detail" onClick={onDelete}>Delete metric</button></div></header><div className="chart-controls"><div>{['line','dot','bar'].map(item => <button className={type===item?'selected':''} onClick={() => setType(item)} key={item}>{item}</button>)}</div><div>{['7D','30D','90D','1Y'].map(item => <button className={period===item?'selected':''} onClick={() => setPeriod(item)} key={item}>{item}</button>)}</div></div><MetricChart metric={{...metric,color:style.color}} data={graphData} type={type}/><div className="health-target-baseline-summary"><article><small>Current</small><b>{Number.isFinite(currentValue) ? `${currentValue} ${metric.unit}` : 'No reading'}</b><span>{readings[0] ? new Date(readings[0].recorded_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : 'Add a reading to begin'}</span></article><article><small>Baseline</small><b>{baseline != null ? `${baseline.toFixed(metric.decimals)} ${metric.unit}` : 'Not set'}</b><span>{metric.baselineMode === 'manual' ? 'Manual baseline' : `${String(metric.baselineMode || '30d').toUpperCase()} rolling average`}</span></article><article><small>Target / normal range</small><b>{targetLabel}</b><span>Configured metric goal</span></article><article className="status-card"><small>Status</small><b>{currentStatus.label}</b><span>{trendValue == null ? 'No trend yet' : `${trendValue >= 0 ? '↑' : '↓'} ${Math.abs(trendValue).toFixed(metric.decimals)} ${metric.unit} vs baseline`}</span></article></div><RollingThirtyDayStrip metric={{...metric,color:style.color}} readings={readings}/><section className="health-reading-history"><header><h3>Reading history</h3><button className="add-reading" onClick={() => setAddingReading(true)}><Plus size={15}/><span>Add Reading</span></button></header>{readings.length?readings.map(row => { const status=readingStatus(metric,row.value); return <article className="health-reading-row" key={row.id}><div><b>{row.value} {metric.unit}</b><small>{new Date(row.recorded_at).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:false})}{row.notes?` · ${row.notes}`:''}</small></div><span className={`reading-status ${status.key}`}>{status.label}</span><div className="reading-actions"><button onClick={() => setEditingReading(row)} aria-label="Edit reading">✎</button><button onClick={() => deleteReading(row)} aria-label="Delete reading">×</button></div></article> }):<div className="health-reading-empty">No readings recorded yet.<br/><button onClick={() => setAddingReading(true)}>Add the first reading</button></div>}</section></section>{(addingReading||editingReading)&&<ReadingEditor metric={metric} reading={editingReading} onClose={() => {setAddingReading(false);setEditingReading(null)}} onSave={saveReading}/>}</div>
 }
 
 function MetricEditor({ metric, onClose, onSave }) {
