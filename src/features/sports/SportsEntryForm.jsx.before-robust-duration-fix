@@ -16,22 +16,10 @@ const number = value => {
   return Number.isFinite(parsed) ? parsed : 0
 }
 
-const durationDigits = value =>
-  String(value ?? '')
-    .replace(/\D/g, '')
-    .slice(0, 6)
-
+const durationDigits = value => String(value ?? '').replace(/\D/g, '').slice(-6).padStart(6, '0')
 const formatDurationDigits = value => {
   const digits = durationDigits(value)
-
-  if (!digits) return ''
-  if (digits.length <= 2) return digits
-
-  if (digits.length <= 4) {
-    return `${digits.slice(0, 2)}:${digits.slice(2)}`
-  }
-
-  return `${digits.slice(0, 2)}:${digits.slice(2, 4)}:${digits.slice(4)}`
+  return `${digits.slice(0, 2)}:${digits.slice(2, 4)}:${digits.slice(4, 6)}`
 }
 const secondsToDuration = value => {
   const total = Math.max(0, Math.round(Number(value) || 0))
@@ -41,14 +29,7 @@ const secondsToDuration = value => {
   return [hours, minutes, seconds].map(part => String(part).padStart(2, '0')).join(':')
 }
 const durationToSeconds = value => {
-  const digits = durationDigits(value)
-
-  if (!digits) return 0
-
-  const hours = Number(digits.slice(0, 2) || 0)
-  const minutes = Number(digits.slice(2, 4) || 0)
-  const seconds = Number(digits.slice(4, 6) || 0)
-
+  const [hours, minutes, seconds] = formatDurationDigits(value).split(':').map(Number)
   return hours * 3600 + minutes * 60 + seconds
 }
 
@@ -326,30 +307,10 @@ export default function SportsEntryForm({
     : 0
 
   const end = useMemo(() => {
-    const [hours, minutes] = start
-      .split(':')
-      .map(Number)
-
-    const startMinutes =
-      hours * 60 + minutes
-
-    const roundedDurationMinutes =
-      Math.round(durationSeconds / 60)
-
-    const totalMinutes =
-      startMinutes + roundedDurationMinutes
-
-    const endHours =
-      Math.floor(totalMinutes / 60) % 24
-
-    const endMinutes =
-      totalMinutes % 60
-
-    return [
-      String(endHours).padStart(2, '0'),
-      String(endMinutes).padStart(2, '0')
-    ].join(':')
-  }, [start, durationSeconds])
+    const [hours, minutes] = start.split(':').map(Number)
+    const total = hours * 60 + minutes + number(duration)
+    return `${String(Math.floor(total / 60) % 24).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`
+  }, [start, duration])
 
   useEffect(() => {
     onDirtyChange?.(dirty)
@@ -504,7 +465,8 @@ export default function SportsEntryForm({
             onChange={event => {
               const digits = event.target.value
                 .replace(/\D/g, '')
-                .slice(0, 6)
+                .slice(-6)
+                .replace(/^0+(?=\d)/, '')
 
               changed(setDurationRaw, digits)
             }}

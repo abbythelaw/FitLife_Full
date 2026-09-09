@@ -1,0 +1,208 @@
+cd /workspaces/FitLife_Full
+
+python3 - <<'PY'
+from pathlib import Path
+
+path = Path("src/features/sports/SportsEntryForm.jsx")
+text = path.read_text()
+
+backup = path.with_name(
+    "SportsEntryForm.jsx.before-final-left-duration-fix"
+)
+backup.write_text(text)
+
+start = text.find("const durationDigits = value =>")
+end = text.find("const number = value =>", start)
+
+if start == -1 or end == -1:
+    raise SystemExit(
+        "Duration helper block not found. No changes made."
+    )
+
+new_helpers = """const durationDigits = value =>
+  String(value ?? '')
+    .replace(/\\D/g, '')
+    .slice(0, 6)
+
+const formatDurationDigits = value => {
+  const digits = durationDigits(value)
+
+  if (digits.length <= 2) {
+    return digits
+  }
+
+  if (digits.length <= 4) {
+    return `${digits.slice(0, 2)}:${digits.slice(2)}`
+  }
+
+  return [
+    digits.slice(0, 2),
+    digits.slice(2, 4),
+    digits.slice(4, 6)
+  ].join(':')
+}
+
+const secondsToDuration = value => {
+  const total = Math.max(
+    0,
+    Math.round(Number(value) || 0)
+  )
+
+  const hours = Math.floor(total / 3600)
+  const minutes = Math.floor((total % 3600) / 60)
+  const seconds = total % 60
+
+  return [
+    hours,
+    minutes,
+    seconds
+  ]
+    .map(part => String(part).padStart(2, '0'))
+    .join(':')
+}
+
+const durationToSeconds = value => {
+  const digits = durationDigits(value)
+
+  if (!digits) return 0
+
+  const hours = Number(
+    digits.slice(0, 2) || 0
+  )
+
+  const minutes = Number(
+    digits.slice(2, 4) || 0
+  )
+
+  const seconds = Number(
+    digits.slice(4, 6) || 0
+  )
+
+  return (
+    hours * 3600 +
+    minutes * 60 +
+    seconds
+  )
+}
+
+"""
+
+text = text[:start] + new_helpers + text[end:]
+
+old_state_start = text.find(
+    "  const [durationInput, setDurationInput]"
+)
+
+if old_state_start == -1:
+    old_state_start = text.find(
+        "  const [durationRaw, setDurationRaw]"
+    )
+
+old_state_end = text.find(
+    "  const [distance, setDistance]",
+    old_state_start
+)
+
+if old_state_start == -1 or old_state_end == -1:
+    raise SystemExit(
+        "Duration state block not found. No changes made."
+    )
+
+new_state = """  const [durationRaw, setDurationRaw] = useState(() => {
+    const existingSeconds =
+      Number(initial.duration_seconds) ||
+      Number(initial.duration_minutes || 0) * 60
+
+    if (!existingSeconds) return ''
+
+    return secondsToDuration(existingSeconds)
+      .replace(/\\D/g, '')
+  })
+
+  const durationInput =
+    formatDurationDigits(durationRaw)
+
+  const durationSeconds = useMemo(
+    () => durationToSeconds(durationRaw),
+    [durationRaw]
+  )
+
+  const duration = durationSeconds / 60
+
+"""
+
+text = (
+    text[:old_state_start] +
+    new_state +
+    text[old_state_end:]
+)
+
+input_start = text.find(
+    '          <input\n' +
+    '            className="sports-duration-input"'
+)
+
+input_end = text.find(
+    "          />",
+    input_start
+)
+
+if input_start == -1 or input_end == -1:
+    raise SystemExit(
+        "Duration input element not found. No changes made."
+    )
+
+input_end += len("          />")
+
+new_input = """          <input
+            className="sports-duration-input"
+            type="text"
+            inputMode="numeric"
+            autoComplete="off"
+            maxLength="8"
+            value={durationInput}
+            placeholder="HH:MM:SS"
+            aria-label="Duration in hours, minutes and seconds"
+            onChange={event => {
+              const digits = event.target.value
+                .replace(/\\D/g, '')
+                .slice(0, 6)
+
+              changed(setDurationRaw, digits)
+            }}
+            onKeyDown={event => {
+              if (event.key === 'Backspace') {
+                event.preventDefault()
+
+                changed(
+                  setDurationRaw,
+                  durationRaw.slice(0, -1)
+                )
+              }
+
+              if (event.key === 'Delete') {
+                event.preventDefault()
+                changed(setDurationRaw, '')
+              }
+            }}
+            required
+          />"""
+
+text = (
+    text[:input_start] +
+    new_input +
+    text[input_end:]
+)
+
+path.write_text(text)
+
+print("[OK] Removed zero-padding while typing")
+print("[OK] Duration now starts completely empty")
+print("[OK] HH:MM:SS appears only as a grey placeholder")
+print("[OK] Typing begins from the hours position")
+print("[OK] Colons appear only after enough digits are entered")
+print("[OK] Existing saved durations remain supported")
+print("[OK] Backup:", backup)
+PY
+
+npm run build

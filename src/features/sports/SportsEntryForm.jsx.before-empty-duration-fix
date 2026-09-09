@@ -16,22 +16,10 @@ const number = value => {
   return Number.isFinite(parsed) ? parsed : 0
 }
 
-const durationDigits = value =>
-  String(value ?? '')
-    .replace(/\D/g, '')
-    .slice(0, 6)
-
+const durationDigits = value => String(value ?? '').replace(/\D/g, '').slice(-6).padStart(6, '0')
 const formatDurationDigits = value => {
   const digits = durationDigits(value)
-
-  if (!digits) return ''
-  if (digits.length <= 2) return digits
-
-  if (digits.length <= 4) {
-    return `${digits.slice(0, 2)}:${digits.slice(2)}`
-  }
-
-  return `${digits.slice(0, 2)}:${digits.slice(2, 4)}:${digits.slice(4)}`
+  return `${digits.slice(0, 2)}:${digits.slice(2, 4)}:${digits.slice(4, 6)}`
 }
 const secondsToDuration = value => {
   const total = Math.max(0, Math.round(Number(value) || 0))
@@ -41,14 +29,7 @@ const secondsToDuration = value => {
   return [hours, minutes, seconds].map(part => String(part).padStart(2, '0')).join(':')
 }
 const durationToSeconds = value => {
-  const digits = durationDigits(value)
-
-  if (!digits) return 0
-
-  const hours = Number(digits.slice(0, 2) || 0)
-  const minutes = Number(digits.slice(2, 4) || 0)
-  const seconds = Number(digits.slice(4, 6) || 0)
-
+  const [hours, minutes, seconds] = formatDurationDigits(value).split(':').map(Number)
   return hours * 3600 + minutes * 60 + seconds
 }
 
@@ -255,29 +236,10 @@ export default function SportsEntryForm({
     initial.entry_date || defaultDate || today()
   )
   const [start, setStart] = useState(initial.start_time || '07:30')
-  const [durationRaw, setDurationRaw] = useState(() => {
-    const existingSeconds =
-      Number(initial.duration_seconds) ||
-      Number(initial.duration_minutes || 0) * 60
-
-    if (!existingSeconds) return ''
-
-    return secondsToDuration(existingSeconds)
-      .replace(/\D/g, '')
-      .replace(/^0+/, '')
-  })
-
-  const durationInput = durationRaw
-    ? formatDurationDigits(durationRaw)
-    : ''
-
-  const durationSeconds = useMemo(
-    () => durationRaw
-      ? durationToSeconds(durationRaw)
-      : 0,
-    [durationRaw]
+  const [durationInput, setDurationInput] = useState(() =>
+    secondsToDuration(initial.duration_seconds ?? Number(initial.duration_minutes || 45) * 60)
   )
-
+  const durationSeconds = useMemo(() => durationToSeconds(durationInput), [durationInput])
   const duration = durationSeconds / 60
   const [distance, setDistance] = useState(initial.distance_km || '')
   const [avgHr, setAvgHr] = useState(initial.average_hr || '')
@@ -326,30 +288,10 @@ export default function SportsEntryForm({
     : 0
 
   const end = useMemo(() => {
-    const [hours, minutes] = start
-      .split(':')
-      .map(Number)
-
-    const startMinutes =
-      hours * 60 + minutes
-
-    const roundedDurationMinutes =
-      Math.round(durationSeconds / 60)
-
-    const totalMinutes =
-      startMinutes + roundedDurationMinutes
-
-    const endHours =
-      Math.floor(totalMinutes / 60) % 24
-
-    const endMinutes =
-      totalMinutes % 60
-
-    return [
-      String(endHours).padStart(2, '0'),
-      String(endMinutes).padStart(2, '0')
-    ].join(':')
-  }, [start, durationSeconds])
+    const [hours, minutes] = start.split(':').map(Number)
+    const total = hours * 60 + minutes + number(duration)
+    return `${String(Math.floor(total / 60) % 24).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`
+  }, [start, duration])
 
   useEffect(() => {
     onDirtyChange?.(dirty)
@@ -499,29 +441,14 @@ export default function SportsEntryForm({
             autoComplete="off"
             maxLength="8"
             value={durationInput}
-            placeholder="HH:MM:SS"
-            aria-label="Duration in hours, minutes and seconds"
-            onChange={event => {
-              const digits = event.target.value
-                .replace(/\D/g, '')
-                .slice(0, 6)
-
-              changed(setDurationRaw, digits)
-            }}
+            placeholder="00:00:00"
+            onFocus={event => event.currentTarget.select()}
+            onChange={event => changed(setDurationInput, formatDurationDigits(event.target.value))}
             onKeyDown={event => {
-              if (event.key === 'Backspace') {
-                event.preventDefault()
-
-                changed(
-                  setDurationRaw,
-                  durationRaw.slice(0, -1)
-                )
-              }
-
-              if (event.key === 'Delete') {
-                event.preventDefault()
-                changed(setDurationRaw, '')
-              }
+              if (event.key !== 'Backspace') return
+              event.preventDefault()
+              const digits = durationDigits(durationInput).replace(/^0+/, '').slice(0, -1)
+              changed(setDurationInput, formatDurationDigits(digits))
             }}
             required
           />

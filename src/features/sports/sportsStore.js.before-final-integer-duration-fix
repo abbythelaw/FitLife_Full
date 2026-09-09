@@ -211,10 +211,7 @@ export async function saveSport(entry, media = {}) {
     entry_date: row.entry_date,
     start_time: row.start_time,
     end_time: row.end_time,
-    duration_minutes: Math.max(
-      1,
-      Math.round(Number(row.duration_minutes || 0))
-    ),
+    duration_minutes: row.duration_minutes,
     distance_km: row.distance_km,
     pace_min_km: row.pace_min_km,
     calories: row.calories,

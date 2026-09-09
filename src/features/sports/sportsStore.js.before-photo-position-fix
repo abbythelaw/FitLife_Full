@@ -45,80 +45,8 @@ const write = rows => {
 }
 function history(row,remove=false){let rows=[];try{rows=JSON.parse(localStorage.getItem(HISTORY)||'[]')}catch{}const id=`sports:${row.id}`;rows=rows.filter(x=>x.id!==id);if(!remove)rows.unshift({id,source_id:row.id,type:'Sports',title:row.title,date:row.entry_date,time:row.start_time,displayDate:row.entry_date,summary:`${row.duration_minutes||0} min · ${row.distance_km||0} km · ${row.calories||0} kcal`,status:row.sync_status||'pending'});localStorage.setItem(HISTORY,JSON.stringify(rows));window.dispatchEvent(new CustomEvent('fitlife:history-changed',{detail:rows}))}
 async function user(){if(!supabase)return null;const{data}=await supabase.auth.getUser();return data.user||null}
-async function signedMedia(media) {
-  if (!supabase) return []
-
-  const output = []
-
-  const sorted = [...(media || [])].sort(
-    (a, b) =>
-      Number(a.sort_order || 0) -
-      Number(b.sort_order || 0)
-  )
-
-  for (const item of sorted) {
-    const {data, error} = await supabase.storage
-      .from('activity-media')
-      .createSignedUrl(
-        item.storage_path,
-        60 * 60 * 12
-      )
-
-    if (!error && data?.signedUrl) {
-      output.push({
-        id: item.id,
-        path: item.storage_path,
-        storage_path: item.storage_path,
-        signed_url: data.signedUrl,
-        url: data.signedUrl,
-        is_featured: Boolean(item.is_featured),
-        sort_order: Number(item.sort_order || 0),
-        position_x: Number(item.position_x ?? 50),
-        position_y: Number(item.position_y ?? 50),
-        crop_scale: Number(item.crop_scale ?? 1)
-      })
-    }
-  }
-
-  return output
-}
-export async function listSports(){const u=await user();if(u){const{data,error}=await supabase.from('sports_entries').select('*, sports_media(*)').is('deleted_at',null).order('entry_date',{ascending:false});if (!error && data) {
-    const rows = []
-
-    for (const row of data) {
-      const photos = await signedMedia(row.sports_media)
-
-      const featuredIndex = Math.max(
-        0,
-        photos.findIndex(photo => photo.is_featured)
-      )
-
-      const featuredPhoto =
-        photos[featuredIndex] ||
-        photos[0] ||
-        null
-
-      rows.push({
-        ...row,
-        photos,
-        featured_index: featuredIndex,
-        position_x:
-          featuredPhoto?.position_x ??
-          row.position_x ??
-          50,
-        position_y:
-          featuredPhoto?.position_y ??
-          row.position_y ??
-          50,
-        crop_scale:
-          featuredPhoto?.crop_scale ??
-          1
-      })
-    }
-
-    write(rows)
-    return rows
-  }}return read()}
+async function signedMedia(media){if(!supabase)return[];const output=[];for(const item of media||[]){const{data,error}=await supabase.storage.from('activity-media').createSignedUrl(item.storage_path,60*60*12);if(!error&&data?.signedUrl)output.push({id:item.id,path:item.storage_path,signed_url:data.signedUrl,is_featured:item.is_featured})}return output}
+export async function listSports(){const u=await user();if(u){const{data,error}=await supabase.from('sports_entries').select('*, sports_media(*)').is('deleted_at',null).order('entry_date',{ascending:false});if(!error&&data){const rows=[];for(const row of data)rows.push({...row,photos:await signedMedia(row.sports_media)});write(rows);return rows}}return read()}
 export async function saveSport(entry, media = {}) {
   const u = await user()
 
@@ -211,10 +139,7 @@ export async function saveSport(entry, media = {}) {
     entry_date: row.entry_date,
     start_time: row.start_time,
     end_time: row.end_time,
-    duration_minutes: Math.max(
-      1,
-      Math.round(Number(row.duration_minutes || 0))
-    ),
+    duration_minutes: row.duration_minutes,
     distance_km: row.distance_km,
     pace_min_km: row.pace_min_km,
     calories: row.calories,
@@ -234,11 +159,7 @@ export async function saveSport(entry, media = {}) {
     .upsert(payload, {onConflict: 'id'})
 
   if (entryError) {
-    console.error(
-      '[Sports] Entry sync failed:',
-      JSON.stringify(entryError, null, 2),
-      entryError
-    )
+    console.error('[Sports] Entry sync failed:', entryError)
 
     row.sync_status = 'failed'
     row.sync_error = entryError.message
@@ -353,8 +274,7 @@ export async function saveSport(entry, media = {}) {
           .insert({
             ...metadataBase,
             position_x: savedPhoto.position_x,
-            position_y: savedPhoto.position_y,
-            crop_scale: savedPhoto.crop_scale
+            position_y: savedPhoto.position_y
           })
           .select()
           .single()

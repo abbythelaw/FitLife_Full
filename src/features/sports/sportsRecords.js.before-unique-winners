@@ -406,90 +406,64 @@ function validDate(entry) {
 }
 
 function isWinner(entry, candidates, config) {
-  const eligible = candidates
-    .map(candidate => ({
-      entry: candidate,
-      value: numericValue(candidate, config),
-      date: validDate(candidate)
-    }))
-    .filter(item =>
-      item.value !== null &&
-      item.date !== null
-    )
+  const entryValue = numericValue(entry, config)
+  if (entryValue === null || candidates.length < 2) return false
 
-  if (eligible.length < 2) return false
+  const values = candidates
+    .map(candidate => numericValue(candidate, config))
+    .filter(value => value !== null)
 
-  eligible.sort((left, right) => {
-    const valueDifference =
-      config.direction === 'min'
-        ? left.value - right.value
-        : right.value - left.value
+  if (values.length < 2) return false
 
-    if (valueDifference !== 0) {
-      return valueDifference
-    }
+  const best = config.direction === 'min'
+    ? Math.min(...values)
+    : Math.max(...values)
 
-    // A tied record remains with the earliest activity.
-    const dateDifference =
-      left.date.getTime() -
-      right.date.getTime()
-
-    if (dateDifference !== 0) {
-      return dateDifference
-    }
-
-    return String(left.entry.id || '')
-      .localeCompare(String(right.entry.id || ''))
-  })
-
-  const winner = eligible[0]?.entry
-
-  return String(winner?.id) === String(entry?.id)
+  return entryValue === best
 }
 
-export function recordsForEntry(
-  entry,
-  allEntries = []
-) {
+
+export function recordsForEntry(entry, allEntries = []) {
   if (!entry?.category) return []
 
   const entryDate = validDate(entry)
-
   if (!entryDate) return []
 
-  /*
-   * Use the complete exact-sport dataset.
-   * This prevents an old record holder from continuing to display
-   * Best Ever after a later activity has surpassed it.
-   */
   const exactSport = allEntries
     .filter(candidate =>
       candidate?.category === entry.category &&
-      validDate(candidate)
+      validDate(candidate) &&
+      validDate(candidate) <= entryDate
     )
-    .sort((left, right) =>
-      validDate(left) - validDate(right)
-    )
+    .sort((a, b) => validDate(a) - validDate(b))
 
-  if (exactSport.length < 2) {
-    return []
-  }
+  const earlierEntries = exactSport.filter(candidate =>
+    candidate.id !== entry.id &&
+    validDate(candidate) < entryDate
+  )
+
+  // First entry is a benchmark rather than a personal best.
+  if (earlierEntries.length === 0) return []
 
   const year = entryDate.getFullYear()
+  const yearStart = new Date(year, 0, 1)
+  const yearEnd = new Date(year, 11, 31, 23, 59, 59, 999)
 
-  const calendarYearEntries = exactSport.filter(
-    candidate =>
-      validDate(candidate)?.getFullYear() === year
+  const calendarYearEntries = exactSport.filter(candidate => {
+    const date = validDate(candidate)
+    return date >= yearStart && date <= yearEnd
+  })
+
+  const earlierYearEntries = calendarYearEntries.filter(candidate =>
+    candidate.id !== entry.id &&
+    validDate(candidate) < entryDate
   )
 
   const achievements = []
 
   for (const config of configForSport(entry.category)) {
-    const everWinner = isWinner(
-      entry,
-      exactSport,
-      config
-    )
+    const everCandidates = [...earlierEntries, entry]
+    const everWinner = isWinner(entry, everCandidates, config)
 
     if (everWinner) {
       achievements.push({
@@ -504,13 +478,10 @@ export function recordsForEntry(
       })
     }
 
+    const yearCandidates = [...earlierYearEntries, entry]
     const yearWinner =
-      calendarYearEntries.length >= 2 &&
-      isWinner(
-        entry,
-        calendarYearEntries,
-        config
-      )
+      earlierYearEntries.length > 0 &&
+      isWinner(entry, yearCandidates, config)
 
     if (yearWinner) {
       achievements.push({
@@ -519,8 +490,7 @@ export function recordsForEntry(
         metric: config.metric,
         level: 'year',
         icon: '🥇',
-        label:
-          `${config.label} this year · ${year}`,
+        label: `${config.label} this year · ${year}`,
         value: numericValue(entry, config),
         year,
         periodLabel: `Best in ${year}`
@@ -528,12 +498,12 @@ export function recordsForEntry(
     }
   }
 
-  return achievements.sort((left, right) => {
-    if (left.level === right.level) return 0
-
-    return left.level === 'ever' ? -1 : 1
+  return achievements.sort((a, b) => {
+    if (a.level === b.level) return 0
+    return a.level === 'ever' ? -1 : 1
   })
 }
+
 
 export function recordsForMetric(achievements, metric) {
   return achievements.filter(record => record.metric === metric)
