@@ -31,15 +31,28 @@ export function validateFastInterval(candidate, sessions = listFasts()) {
     if (end > now) {
       return {valid:false,message:'A previous fast cannot end in the future.'}
     }
-    if (end <= start) {
-      return {valid:false,message:'The end must be later than the start.'}
+    if (end < start) {
+      return {valid:false,message:'The end must be equal to or later than the start.'}
     }
   }
 
-  const others = sessions.filter(row =>
-    String(row.id) !== String(candidate.id) &&
-    !row.deleted_at
-  )
+  const candidateId = String(candidate.id || candidate.client_session_id || candidate.started_at)
+  const candidateIds = new Set([
+    candidate.id,
+    candidate.client_session_id,
+    candidate.session_id
+  ].filter(Boolean).map(String))
+
+  const others = sessions.filter(row => {
+    const rowIds = [
+      row.id,
+      row.client_session_id,
+      row.session_id
+    ].filter(Boolean).map(String)
+
+    const isSameRecord = rowIds.some(id => candidateIds.has(id))
+    return !isSameRecord && !row.deleted_at
+  })
 
   for (const row of others) {
     const otherStart = new Date(row.started_at).getTime()
@@ -52,7 +65,7 @@ export function validateFastInterval(candidate, sessions = listFasts()) {
       return {
         valid:false,
         conflict:row,
-        message:`This fasting period overlaps ${label}. Touching boundaries are allowed, but overlapping times are not.`
+        message:`Start time overlaps ${row.protocol || 'a completed fast'}. The conflicting fast ends ${Number.isFinite(otherEnd) ? new Date(otherEnd).toLocaleString() : 'after the selected start'}. Set the start at or after that time. Touching boundaries are allowed.`
       }
     }
   }

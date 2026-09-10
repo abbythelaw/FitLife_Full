@@ -1,3 +1,5 @@
+import FastingThirtyDayGraph from './FastingThirtyDayGraph'
+import {formatNumber} from './formatters'
 
 import {
   Activity,
@@ -13,7 +15,7 @@ import {
   Utensils,
   X
 } from 'lucide-react'
-import {useEffect, useMemo, useState} from 'react'
+import {useEffect, useMemo, useRef, useState} from 'react'
 import FastingMetricAttachments from './FastingMetricAttachments'
 import {
   deleteNutritionDay,
@@ -105,7 +107,7 @@ function formatValue(value, decimals = 0) {
 
   if (!Number.isFinite(number)) return '—'
 
-  return number.toFixed(decimals)
+  return formatNumber(number,decimals)
 }
 
 function NutritionBar({row,compact = false}) {
@@ -497,6 +499,9 @@ export default function FastingMetabolicInputs() {
   const [nutrition,setNutrition] = useState(listNutritionDays)
   const [editor,setEditor] = useState(false)
   const [refreshToken,setRefreshToken] = useState(0)
+  const finalTapRef=useRef({key:'',time:0})
+  const calendarTapRef = useRef({key:'',time:0,timer:null})
+  const [inspect,setInspect] = useState(null)
 
   useEffect(() => {
     const refreshNutrition = () => {
@@ -557,6 +562,66 @@ export default function FastingMetabolicInputs() {
     }
   }
 
+  function finalCalendarTap(date){
+    const selectedKey=localDateKey(date)
+    const now=Date.now()
+    const doubled=finalTapRef.current.key===selectedKey&&now-finalTapRef.current.time<650
+    finalTapRef.current={key:selectedKey,time:now}
+    chooseDate(date)
+    if(doubled){
+      const button=document.querySelector(`[data-metabolic-date="${selectedKey}"]`)
+      button?.dispatchEvent(new CustomEvent('fitlife:open-metabolic-details',{bubbles:true,detail:{date:selectedKey,tab}}))
+      button?.dblclick?.()
+    }
+  }
+
+
+  function openCalendarDetails(date) {
+    const selectedKey = localDateKey(date)
+    if (selectedKey > localDateKey()) return
+
+    setSelectedDate(selectedKey)
+
+    const nutritionRow = nutrition.find(row => row.date === selectedKey) || null
+    const rows = tab === 'nutrition' ? [] : readingsForMetric(tab)
+    const reading = tab === 'nutrition' ? null : latestForDate(rows, selectedKey)
+
+    setInspect({
+      date: selectedKey,
+      type: tab,
+      nutrition: nutritionRow,
+      reading: reading || null
+    })
+  }
+
+  function handleCalendarActivation(date) {
+    const selectedKey = localDateKey(date)
+    const timestamp = Date.now()
+    const previous = calendarTapRef.current
+    const isDouble = previous.key === selectedKey && timestamp - previous.time <= 650
+
+    if (previous.timer) clearTimeout(previous.timer)
+
+    if (isDouble) {
+      calendarTapRef.current = {key:'',time:0,timer:null}
+      openCalendarDetails(date)
+      return
+    }
+
+    chooseDate(date)
+
+    const timer = setTimeout(() => {
+      calendarTapRef.current = {key:'',time:0,timer:null}
+    }, 680)
+
+    calendarTapRef.current = {
+      key: selectedKey,
+      time: timestamp,
+      timer
+    }
+  }
+
+
   return (
     <section className="fast-metabolic-inputs">
       <header className="metabolic-section-heading">
@@ -599,6 +664,7 @@ export default function FastingMetabolicInputs() {
         })}
       </div>
 
+      <p className="metabolic-calendar-hint">Double-click or double-tap a date to open details.</p>
       <div className="metabolic-calendar-layout">
         <section className="metabolic-calendar-card">
           <header>
@@ -656,6 +722,7 @@ export default function FastingMetabolicInputs() {
               return (
                 <button
                   key={key}
+                  data-metabolic-date={key}
                   className={[
                     selectedDate === key ? 'selected' : '',
                     outside ? 'outside' : '',
@@ -663,7 +730,7 @@ export default function FastingMetabolicInputs() {
                     hasData ? 'has-data' : '',
                     tab
                   ].filter(Boolean).join(' ')}
-                  onClick={() => chooseDate(date)}
+                  onClick={() => handleCalendarActivation(date)}
                   disabled={future}
                 >
                   <b>{date.getDate()}</b>
@@ -671,7 +738,7 @@ export default function FastingMetabolicInputs() {
                   {tab === 'nutrition' && nutritionRow && (
                     <>
                       <NutritionBar row={nutritionRow} compact />
-                      <small>{Number(nutritionRow.calories || 0)} kcal</small>
+                      <small>{formatNumber(nutritionRow.calories)} kcal</small>
                     </>
                   )}
 
@@ -697,42 +764,128 @@ export default function FastingMetabolicInputs() {
           </div>
         </section>
 
-        <aside className="metabolic-selected-day">
-          <header>
-            <small>SELECTED DATE</small>
-            <h3>
-              {new Intl.DateTimeFormat('en-GB',{
-                weekday: 'long',
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-              }).format(new Date(`${selectedDate}T12:00:00`))}
-            </h3>
-          </header>
+        <FastingThirtyDayGraph tab={tab}/>
 
-          {tab === 'nutrition' ? (
-            <>
-              <NutritionSummary
-                row={selectedNutrition}
-                onEdit={() => setEditor(true)}
-              />
-              <FastingMetricAttachments
-                nutrition={selectedNutrition}
-                date={selectedDate}
-                onUpdated={() => {
-                  setNutrition(listNutritionDays())
-                }}
-              />
-            </>
-          ) : (
-            <ReadingSummary
-              metric={tab}
-              reading={selectedReading}
-              date={selectedDate}
-            />
-          )}
-        </aside>
       </div>
+
+      {inspect && (
+        <div className="fast-layer metabolic-detail-layer">
+          <button
+            className="fast-backdrop"
+            aria-label="Close details"
+            onClick={() => setInspect(null)}
+          />
+
+          <section className="metabolic-record-detail">
+            <button
+              type="button"
+              className="metabolic-detail-close"
+              aria-label="Close"
+              onClick={() => setInspect(null)}
+            >
+              <X />
+            </button>
+
+            <small>
+              {inspect.type === 'nutrition'
+                ? 'NUTRITION DETAILS'
+                : `${READING_META[inspect.type]?.title.toUpperCase()} DETAILS`}
+            </small>
+
+            <h2>
+              {new Intl.DateTimeFormat('en-GB',{
+                weekday:'long',day:'numeric',month:'long',year:'numeric'
+              }).format(new Date(`${inspect.date}T12:00:00`))}
+            </h2>
+
+            {inspect.type === 'nutrition' ? (
+              inspect.nutrition ? (
+                <NutritionSummary
+                  row={inspect.nutrition}
+                  onEdit={() => {
+                    setInspect(null)
+                    setEditor(true)
+                  }}
+                />
+              ) : (
+                <div className="metabolic-detail-empty">
+                  <Utensils />
+                  <b>No nutrition summary recorded</b>
+                  <p>Add the daily nutrition totals for this date.</p>
+                </div>
+              )
+            ) : inspect.reading ? (
+              <ReadingSummary
+                metric={inspect.type}
+                reading={inspect.reading}
+                date={inspect.date}
+              />
+            ) : (
+              <div className="metabolic-detail-empty">
+                <CalendarDays />
+                <b>No {READING_META[inspect.type]?.title.toLowerCase()} reading recorded</b>
+                <p>Add the reading through the linked Health Metrics card.</p>
+              </div>
+            )}
+
+            <div className="metabolic-edit-question">
+              <b>
+                {inspect.type === 'nutrition'
+                  ? inspect.nutrition
+                    ? 'Would you like to edit this nutrition summary?'
+                    : 'Would you like to add nutrition for this date?'
+                  : inspect.reading
+                    ? 'Would you like to edit this Health Metrics reading?'
+                    : 'Would you like to add this Health Metrics reading?'}
+              </b>
+            </div>
+
+            <footer className="metabolic-detail-actions">
+              <button type="button" onClick={() => setInspect(null)}>
+                Close
+              </button>
+
+              {inspect.type === 'nutrition' ? (
+                <button
+                  type="button"
+                  className="primary"
+                  onClick={() => {
+                    setSelectedDate(inspect.date)
+                    setInspect(null)
+                    setEditor(true)
+                  }}
+                >
+                  {inspect.nutrition ? <Edit3 /> : <Plus />}
+                  {inspect.nutrition ? 'Edit nutrition' : 'Add nutrition'}
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="primary"
+                  onClick={() => {
+                    sessionStorage.setItem(
+                      'fitlife-health-prefill',
+                      JSON.stringify({
+                        metric: inspect.type,
+                        date: inspect.date,
+                        readingId:
+                          inspect.reading?.id ||
+                          inspect.reading?.attachment_id ||
+                          null
+                      })
+                    )
+                    setInspect(null)
+                    location.hash = 'health'
+                  }}
+                >
+                  {inspect.reading ? <Edit3 /> : <Plus />}
+                  {inspect.reading ? 'Edit in Health Metrics' : 'Add in Health Metrics'}
+                </button>
+              )}
+            </footer>
+          </section>
+        </div>
+      )}
 
       {editor && (
         <NutritionEditor

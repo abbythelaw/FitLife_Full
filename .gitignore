@@ -5,3 +5,11 @@ dist/
 .env.*.local
 .DS_Store
 *.log
+
+# Temporary FitLife patch artifacts
+/FitLife-*.txt
+/FitLife-*.zip
+/FitLife-Fasting-Final-Bundle/
+/FitLife-Patch-18-Final-Refactor/
+/peek_rail_package/
+/.patch18-backup/

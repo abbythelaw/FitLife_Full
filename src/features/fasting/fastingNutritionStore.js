@@ -516,3 +516,111 @@ export function attachmentCoverage(row) {
     percent: attached / 4 * 100
   }
 }
+
+
+export const FASTING_LOCAL_READINGS_KEY='fitlife-fasting-local-readings'
+export const METRIC_MAPPING_KEY='fitlife-fasting-metric-mapping'
+
+export function listFastingLocalReadings(){
+  return parse(localStorage.getItem(FASTING_LOCAL_READINGS_KEY),[])
+}
+
+export function listMetricMappings(){
+  return parse(localStorage.getItem(METRIC_MAPPING_KEY),{})
+}
+
+export function saveMetricMapping(metric,mapping){
+  const next={...listMetricMappings(),[metric]:mapping}
+  localStorage.setItem(METRIC_MAPPING_KEY,JSON.stringify(next))
+  window.dispatchEvent(new CustomEvent('fitlife:metric-mapping-changed',{detail:next}))
+  return next
+}
+
+export function compatibleHealthMetricCards(metric){
+  const keys=['fitlife-health-cards','fitlife-health-metrics','health-metric-cards']
+  const aliases={
+    glucose:['glucose','blood glucose','fasting glucose'],
+    rhr:['rhr','resting heart rate'],
+    weight:['weight','body weight'],
+    hba1c:['hba1c','a1c','haemoglobin a1c','hemoglobin a1c']
+  }
+  const accepted=aliases[metric]||[metric]
+  const found=[]
+  for(const key of keys){
+    const rows=parse(localStorage.getItem(key),[])
+    if(!Array.isArray(rows))continue
+    for(const row of rows){
+      const label=String(row.name||row.label||row.metric||row.type||'').toLowerCase()
+      if(accepted.some(alias=>label.includes(alias))) found.push({...row,card_id:String(row.id||row.card_id||label)})
+    }
+  }
+  return [...new Map(found.map(row=>[row.card_id,row])).values()]
+}
+
+export function saveFastingOnlyReading(input){
+  const row={...input,id:input.id||crypto.randomUUID(),source:'fasting',updated_at:new Date().toISOString()}
+  const next=[row,...listFastingLocalReadings().filter(x=>x.id!==row.id)]
+  localStorage.setItem(FASTING_LOCAL_READINGS_KEY,JSON.stringify(next))
+  window.dispatchEvent(new CustomEvent('fitlife:fasting-local-readings-changed',{detail:next}))
+  return row
+}
+
+export function saveMappedMetricReading(metric,input){
+  const cards=compatibleHealthMetricCards(metric)
+  const mappings=listMetricMappings()
+  const preferred=mappings[metric]
+  const selected=cards.find(card=>String(card.card_id)===String(preferred?.metric_card_id))||cards[0]
+  if(!selected) return saveFastingOnlyReading({...input,metric_type:metric})
+
+  const existing=parse(localStorage.getItem('fitlife-health-readings'),[])
+  const row={
+    id:input.id||crypto.randomUUID(),
+    metric_card_id:selected.card_id,
+    metric_id:selected.metric_id||selected.id||metric,
+    metric:metric,
+    value:Number(input.value),
+    unit:input.unit,
+    date:input.date,
+    time:input.time||'12:00',
+    context:input.context||'',
+    source:'health_metrics',
+    updated_at:new Date().toISOString()
+  }
+  const next=[row,...existing.filter(x=>String(x.id)!==String(row.id))]
+  localStorage.setItem('fitlife-health-readings',JSON.stringify(next))
+  saveMetricMapping(metric,{destination:'health_metrics',metric_card_id:selected.card_id})
+  window.dispatchEvent(new CustomEvent('fitlife:health-readings-changed',{detail:next}))
+  return row
+}
+
+
+export function allReadingsForMetric(metric) {
+  const linked = readingsForMetric(metric)
+  const local = listFastingLocalReadings()
+    .filter(row => String(row.metric_type || row.metric || '').toLowerCase() === metric)
+    .map(row => ({
+      ...row,
+      normalized_date: row.date,
+      normalized_time: row.time || '',
+      normalized_metric: metric,
+      normalized_value: Number(row.value),
+      normalized_unit: row.unit || '',
+      attachment_id: row.id,
+      source: 'fasting'
+    }))
+  return [...linked, ...local].sort((a,b) =>
+    `${b.normalized_date}T${b.normalized_time || '00:00'}`.localeCompare(
+      `${a.normalized_date}T${a.normalized_time || '00:00'}`
+    )
+  )
+}
+
+export function preferredMetricDestination(metric) {
+  const cards = compatibleHealthMetricCards(metric)
+  const saved = listMetricMappings()[metric]
+  if (saved?.destination === 'fasting') return {destination:'fasting',cards}
+  const selected = cards.find(card => String(card.card_id) === String(saved?.metric_card_id)) || cards[0]
+  return selected
+    ? {destination:'health_metrics',card:selected,cards}
+    : {destination:'fasting',cards:[]}
+}
