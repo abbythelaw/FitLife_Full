@@ -1,0 +1,750 @@
+
+import {
+  Activity,
+  CalendarDays,
+  ChevronLeft,
+  ChevronRight,
+  Droplets,
+  Edit3,
+  HeartPulse,
+  Plus,
+  Scale,
+  Trash2,
+  Utensils,
+  X
+} from 'lucide-react'
+import {useEffect, useMemo, useState} from 'react'
+import FastingMetricAttachments from './FastingMetricAttachments'
+import {
+  deleteNutritionDay,
+  listNutritionDays,
+  localDateKey,
+  macroContribution,
+  readingsForMetric,
+  saveNutritionDay
+} from './fastingNutritionStore'
+
+const TABS = [
+  {
+    id: 'nutrition',
+    label: 'Nutrition',
+    icon: Utensils
+  },
+  {
+    id: 'glucose',
+    label: 'Glucose',
+    icon: Droplets
+  },
+  {
+    id: 'rhr',
+    label: 'RHR',
+    icon: HeartPulse
+  },
+  {
+    id: 'weight',
+    label: 'Weight',
+    icon: Scale
+  },
+  {
+    id: 'hba1c',
+    label: 'HbA1c',
+    icon: Activity
+  }
+]
+
+const READING_META = {
+  glucose: {
+    title: 'Blood glucose',
+    unit: 'mg/dL',
+    colour: '#f97373'
+  },
+  rhr: {
+    title: 'Resting heart rate',
+    unit: 'bpm',
+    colour: '#fb7185'
+  },
+  weight: {
+    title: 'Weight',
+    unit: 'kg',
+    colour: '#38bdf8'
+  },
+  hba1c: {
+    title: 'Laboratory HbA1c',
+    unit: '%',
+    colour: '#a78bfa'
+  }
+}
+
+function monthGrid(month) {
+  const first = new Date(
+    month.getFullYear(),
+    month.getMonth(),
+    1
+  )
+
+  const start = new Date(first)
+  start.setDate(
+    1 - ((first.getDay() + 6) % 7)
+  )
+
+  return Array.from({length: 42}, (_, index) => {
+    const date = new Date(start)
+    date.setDate(start.getDate() + index)
+    return date
+  })
+}
+
+function latestForDate(rows, date) {
+  return rows.find(row =>
+    row.normalized_date === date
+  )
+}
+
+function formatValue(value, decimals = 0) {
+  const number = Number(value)
+
+  if (!Number.isFinite(number)) return '—'
+
+  return number.toFixed(decimals)
+}
+
+function NutritionBar({row,compact = false}) {
+  const contribution = macroContribution(row)
+
+  return (
+    <div className={`nutrition-macro-visual ${compact ? 'compact' : ''}`}>
+      <div
+        className="nutrition-macro-bar"
+        role="img"
+        aria-label={
+          `Carbohydrate ${contribution.carbs.toFixed(0)}%, ` +
+          `fat ${contribution.fat.toFixed(0)}%, ` +
+          `protein ${contribution.protein.toFixed(0)}% of macro calories`
+        }
+      >
+        <i
+          className="macro-carbs"
+          style={{width: `${contribution.carbs}%`}}
+        />
+        <i
+          className="macro-fat"
+          style={{width: `${contribution.fat}%`}}
+        />
+        <i
+          className="macro-protein"
+          style={{width: `${contribution.protein}%`}}
+        />
+      </div>
+
+      {!compact && (
+        <div className="nutrition-macro-legend">
+          <span className="carbs">
+            <i />
+            Carbohydrate
+            <b>{contribution.carbs.toFixed(0)}%</b>
+          </span>
+          <span className="fat">
+            <i />
+            Fat
+            <b>{contribution.fat.toFixed(0)}%</b>
+          </span>
+          <span className="protein">
+            <i />
+            Protein
+            <b>{contribution.protein.toFixed(0)}%</b>
+          </span>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function NutritionSummary({row,onEdit}) {
+  if (!row) {
+    return (
+      <button
+        className="metabolic-empty-summary"
+        onClick={onEdit}
+      >
+        <Utensils />
+        <b>No nutrition summary for this date</b>
+        <span>
+          Add the daily totals copied from MyFitnessPal.
+        </span>
+      </button>
+    )
+  }
+
+  return (
+    <section className="nutrition-day-summary">
+      <header>
+        <div>
+          <small>NUTRITION SUMMARY</small>
+          <h3>{Number(row.calories || 0).toLocaleString()} kcal</h3>
+        </div>
+        <button onClick={onEdit}>
+          <Edit3 />
+          Edit
+        </button>
+      </header>
+
+      <div className="nutrition-macro-values">
+        <span className="carbs">
+          <b>{formatValue(row.carbs_g)}g</b>
+          Carbohydrate
+        </span>
+        <span className="fat">
+          <b>{formatValue(row.fat_g)}g</b>
+          Fat
+        </span>
+        <span className="protein">
+          <b>{formatValue(row.protein_g)}g</b>
+          Protein
+        </span>
+      </div>
+
+      <NutritionBar row={row} />
+
+      <div className="nutrition-secondary-values">
+        <span>
+          <b>{formatValue(row.fiber_g)}g</b>
+          Fiber
+        </span>
+        <span>
+          <b>{formatValue(row.sugar_g)}g</b>
+          Sugar
+        </span>
+        <span>
+          <b>{row.completeness}</b>
+          Coverage
+        </span>
+      </div>
+
+      <footer>
+        Source: {row.source || 'Manual'}
+      </footer>
+    </section>
+  )
+}
+
+function ReadingSummary({metric,reading,date}) {
+  const meta = READING_META[metric]
+
+  if (!reading) {
+    return (
+      <section className="reading-day-summary empty">
+        <span style={{'--reading-colour': meta.colour}}>
+          <CalendarDays />
+        </span>
+        <div>
+          <small>{meta.title.toUpperCase()}</small>
+          <h3>No reading on {date}</h3>
+          <p>
+            Add this reading in Health Metrics. Fasting reads the
+            Health Metrics record without creating a duplicate event.
+          </p>
+        </div>
+        <button
+          onClick={() => {
+            location.hash = 'health'
+          }}
+        >
+          Open Health Metrics
+        </button>
+      </section>
+    )
+  }
+
+  return (
+    <section className="reading-day-summary">
+      <span style={{'--reading-colour': meta.colour}}>
+        <Activity />
+      </span>
+      <div>
+        <small>{meta.title.toUpperCase()}</small>
+        <h3>
+          {formatValue(
+            reading.normalized_value,
+            metric === 'weight' || metric === 'hba1c' ? 1 : 0
+          )}{' '}
+          {reading.unit || meta.unit}
+        </h3>
+        <p>
+          {reading.context || reading.notes || 'Recorded in Health Metrics'}
+        </p>
+      </div>
+      <button
+        onClick={() => {
+          location.hash = 'health'
+        }}
+      >
+        View source
+      </button>
+    </section>
+  )
+}
+
+function NutritionEditor({date,existing,onClose,onSaved}) {
+  const [form,setForm] = useState(() => ({
+    id: existing?.id,
+    date,
+    calories: existing?.calories || '',
+    protein_g: existing?.protein_g || '',
+    carbs_g: existing?.carbs_g || '',
+    fat_g: existing?.fat_g || '',
+    fiber_g: existing?.fiber_g || '',
+    sugar_g: existing?.sugar_g || '',
+    source: existing?.source || 'MyFitnessPal',
+    completeness: existing?.completeness || 'Complete day',
+    notes: existing?.notes || ''
+  }))
+  const [error,setError] = useState('')
+  const [confirmDelete,setConfirmDelete] = useState(false)
+
+  function update(key,value) {
+    setForm(current => ({
+      ...current,
+      [key]: value
+    }))
+  }
+
+  function save() {
+    try {
+      const row = saveNutritionDay(form)
+      onSaved(row)
+    } catch (saveError) {
+      setError(
+        saveError?.message ||
+        'The nutrition summary could not be saved.'
+      )
+    }
+  }
+
+  function remove() {
+    deleteNutritionDay(date)
+    onSaved(null)
+  }
+
+  return (
+    <div className="fast-layer metabolic-layer">
+      <button className="fast-backdrop" onClick={onClose} />
+      <aside className="fast-drawer nutrition-editor">
+        <button className="close" onClick={onClose}>
+          <X />
+        </button>
+
+        <small>DAILY NUTRITION SUMMARY</small>
+        <h2>{date}</h2>
+        <p>
+          Enter the final daily totals from MyFitnessPal.
+          This summary stays out of My Life and Log History.
+        </p>
+
+        {error && (
+          <div className="fast-validation-error" role="alert">
+            <b>Cannot save nutrition</b>
+            <span>{error}</span>
+          </div>
+        )}
+
+        <div className="nutrition-editor-grid">
+          <label>
+            Calories
+            <input
+              type="number"
+              min="0"
+              value={form.calories}
+              onChange={event => update('calories',event.target.value)}
+            />
+          </label>
+
+          <label>
+            Protein, g
+            <input
+              type="number"
+              min="0"
+              step="0.1"
+              value={form.protein_g}
+              onChange={event => update('protein_g',event.target.value)}
+            />
+          </label>
+
+          <label>
+            Carbohydrates, g
+            <input
+              type="number"
+              min="0"
+              step="0.1"
+              value={form.carbs_g}
+              onChange={event => update('carbs_g',event.target.value)}
+            />
+          </label>
+
+          <label>
+            Fat, g
+            <input
+              type="number"
+              min="0"
+              step="0.1"
+              value={form.fat_g}
+              onChange={event => update('fat_g',event.target.value)}
+            />
+          </label>
+
+          <label>
+            Fiber, g
+            <input
+              type="number"
+              min="0"
+              step="0.1"
+              value={form.fiber_g}
+              onChange={event => update('fiber_g',event.target.value)}
+            />
+          </label>
+
+          <label>
+            Sugar, g
+            <input
+              type="number"
+              min="0"
+              step="0.1"
+              value={form.sugar_g}
+              onChange={event => update('sugar_g',event.target.value)}
+            />
+          </label>
+        </div>
+
+        <label>
+          Data source
+          <select
+            value={form.source}
+            onChange={event => update('source',event.target.value)}
+          >
+            <option>MyFitnessPal</option>
+            <option>Nutrition label</option>
+            <option>Manual calculation</option>
+            <option>Other</option>
+          </select>
+        </label>
+
+        <label>
+          Day coverage
+          <select
+            value={form.completeness}
+            onChange={event => update('completeness',event.target.value)}
+          >
+            <option>Complete day</option>
+            <option>Partial day</option>
+          </select>
+        </label>
+
+        <label>
+          Notes
+          <textarea
+            value={form.notes}
+            onChange={event => update('notes',event.target.value)}
+          />
+        </label>
+
+        <NutritionBar row={form} />
+
+        {confirmDelete && (
+          <div className="nutrition-delete-confirm">
+            <b>Delete this daily nutrition summary?</b>
+            <p>
+              The analysis input will be removed. This cannot be undone.
+            </p>
+            <div>
+              <button onClick={() => setConfirmDelete(false)}>
+                Keep summary
+              </button>
+              <button className="danger" onClick={remove}>
+                Delete permanently
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className="fast-editor-actions">
+          {existing && !confirmDelete ? (
+            <button
+              className="danger"
+              onClick={() => setConfirmDelete(true)}
+            >
+              <Trash2 />
+              Delete
+            </button>
+          ) : (
+            <button onClick={onClose}>Cancel</button>
+          )}
+
+          <button className="save" onClick={save}>
+            Save summary
+          </button>
+        </div>
+      </aside>
+    </div>
+  )
+}
+
+export default function FastingMetabolicInputs() {
+  const today = new Date()
+  const [month,setMonth] = useState(
+    new Date(today.getFullYear(),today.getMonth(),1)
+  )
+  const [tab,setTab] = useState('nutrition')
+  const [selectedDate,setSelectedDate] = useState(localDateKey())
+  const [nutrition,setNutrition] = useState(listNutritionDays)
+  const [editor,setEditor] = useState(false)
+  const [refreshToken,setRefreshToken] = useState(0)
+
+  useEffect(() => {
+    const refreshNutrition = () => {
+      setNutrition(listNutritionDays())
+    }
+
+    const refreshHealth = () => {
+      setRefreshToken(value => value + 1)
+    }
+
+    window.addEventListener(
+      'fitlife:nutrition-changed',
+      refreshNutrition
+    )
+    window.addEventListener(
+      'fitlife:health-readings-changed',
+      refreshHealth
+    )
+    window.addEventListener('storage',refreshNutrition)
+    window.addEventListener('storage',refreshHealth)
+
+    return () => {
+      window.removeEventListener(
+        'fitlife:nutrition-changed',
+        refreshNutrition
+      )
+      window.removeEventListener(
+        'fitlife:health-readings-changed',
+        refreshHealth
+      )
+      window.removeEventListener('storage',refreshNutrition)
+      window.removeEventListener('storage',refreshHealth)
+    }
+  },[])
+
+  const readingRows = useMemo(
+    () => tab === 'nutrition' ? [] : readingsForMetric(tab),
+    [tab,refreshToken]
+  )
+
+  const selectedNutrition = nutrition.find(
+    row => row.date === selectedDate
+  )
+
+  const selectedReading = latestForDate(
+    readingRows,
+    selectedDate
+  )
+
+  const cells = monthGrid(month)
+
+  function chooseDate(date) {
+    const key = localDateKey(date)
+    setSelectedDate(key)
+
+    if (tab === 'nutrition') {
+      setEditor(false)
+    }
+  }
+
+  return (
+    <section className="fast-metabolic-inputs">
+      <header className="metabolic-section-heading">
+        <div>
+          <small>METABOLIC INPUTS</small>
+          <h2>Nutrition and readings</h2>
+          <p>
+            Analysis inputs only. These records do not create
+            cards in My Life or Log History.
+          </p>
+        </div>
+
+        {tab === 'nutrition' && (
+          <button
+            onClick={() => setEditor(true)}
+            disabled={selectedDate > localDateKey()}
+          >
+            <Plus />
+            Add nutrition
+          </button>
+        )}
+      </header>
+
+      <div className="metabolic-tabs" role="tablist">
+        {TABS.map(item => {
+          const Icon = item.icon
+
+          return (
+            <button
+              key={item.id}
+              role="tab"
+              aria-selected={tab === item.id}
+              className={tab === item.id ? 'active' : ''}
+              onClick={() => setTab(item.id)}
+            >
+              <Icon />
+              {item.label}
+            </button>
+          )
+        })}
+      </div>
+
+      <div className="metabolic-calendar-layout">
+        <section className="metabolic-calendar-card">
+          <header>
+            <button
+              onClick={() => setMonth(
+                new Date(
+                  month.getFullYear(),
+                  month.getMonth() - 1,
+                  1
+                )
+              )}
+              aria-label="Previous month"
+            >
+              <ChevronLeft />
+            </button>
+
+            <h3>
+              {new Intl.DateTimeFormat('en-GB',{
+                month: 'long',
+                year: 'numeric'
+              }).format(month)}
+            </h3>
+
+            <button
+              onClick={() => setMonth(
+                new Date(
+                  month.getFullYear(),
+                  month.getMonth() + 1,
+                  1
+                )
+              )}
+              aria-label="Next month"
+            >
+              <ChevronRight />
+            </button>
+          </header>
+
+          <div className="metabolic-weekdays">
+            {['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(day => (
+              <span key={day}>{day}</span>
+            ))}
+          </div>
+
+          <div className="metabolic-month-grid">
+            {cells.map(date => {
+              const key = localDateKey(date)
+              const outside = date.getMonth() !== month.getMonth()
+              const future = key > localDateKey()
+              const nutritionRow = nutrition.find(row => row.date === key)
+              const reading = latestForDate(readingRows,key)
+              const hasData = tab === 'nutrition'
+                ? Boolean(nutritionRow)
+                : Boolean(reading)
+
+              return (
+                <button
+                  key={key}
+                  className={[
+                    selectedDate === key ? 'selected' : '',
+                    outside ? 'outside' : '',
+                    future ? 'future' : '',
+                    hasData ? 'has-data' : '',
+                    tab
+                  ].filter(Boolean).join(' ')}
+                  onClick={() => chooseDate(date)}
+                  disabled={future}
+                >
+                  <b>{date.getDate()}</b>
+
+                  {tab === 'nutrition' && nutritionRow && (
+                    <>
+                      <NutritionBar row={nutritionRow} compact />
+                      <small>{Number(nutritionRow.calories || 0)} kcal</small>
+                    </>
+                  )}
+
+                  {tab !== 'nutrition' && reading && (
+                    <>
+                      <i
+                        className="reading-dot"
+                        style={{
+                          '--reading-colour': READING_META[tab].colour
+                        }}
+                      />
+                      <small>
+                        {formatValue(
+                          reading.normalized_value,
+                          tab === 'weight' || tab === 'hba1c' ? 1 : 0
+                        )}
+                      </small>
+                    </>
+                  )}
+                </button>
+              )
+            })}
+          </div>
+        </section>
+
+        <aside className="metabolic-selected-day">
+          <header>
+            <small>SELECTED DATE</small>
+            <h3>
+              {new Intl.DateTimeFormat('en-GB',{
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+              }).format(new Date(`${selectedDate}T12:00:00`))}
+            </h3>
+          </header>
+
+          {tab === 'nutrition' ? (
+            <>
+              <NutritionSummary
+                row={selectedNutrition}
+                onEdit={() => setEditor(true)}
+              />
+              <FastingMetricAttachments
+                nutrition={selectedNutrition}
+                date={selectedDate}
+                onUpdated={() => {
+                  setNutrition(listNutritionDays())
+                }}
+              />
+            </>
+          ) : (
+            <ReadingSummary
+              metric={tab}
+              reading={selectedReading}
+              date={selectedDate}
+            />
+          )}
+        </aside>
+      </div>
+
+      {editor && (
+        <NutritionEditor
+          date={selectedDate}
+          existing={selectedNutrition}
+          onClose={() => setEditor(false)}
+          onSaved={() => {
+            setNutrition(listNutritionDays())
+            setEditor(false)
+          }}
+        />
+      )}
+    </section>
+  )
+}

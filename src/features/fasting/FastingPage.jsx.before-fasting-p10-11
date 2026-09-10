@@ -3,7 +3,6 @@ import {useEffect,useMemo,useState} from 'react'
 import {CalendarDays,ChevronDown,Clock3,Edit3,Flame,Pause,Play,Plus,Sparkles,Timer,X} from 'lucide-react'
 import './FastingPage.css'
 import FastingMetabolicInputs from './FastingMetabolicInputs'
-import FastingGlycemicFoundation from './FastingGlycemicFoundation'
 import {listFasts,saveFast,validateFastInterval} from './fastingStore'
 import FastingCalendar from './FastingCalendar'
 import FastingAnalytics from './FastingAnalytics'
@@ -259,7 +258,7 @@ export default function FastingPage(){const [sessions,setSessions]=useState(read
 </div></header>{active?<><article className="fast-hero" style={{'--phase':current.color}}><div className="fast-protocol-row"><label>Target<select value={active.protocol} onChange={e=>{const found=PROTOCOLS.find(x=>x[0]===e.target.value);if(found)save({...active,protocol:found[0],target_hours:found[1],expected_end_at:new Date(new Date(active.started_at).getTime()+found[1]*36e5).toISOString()});else setEditor({mode:'goal',session:active})}}>{PROTOCOLS.map(([name])=><option key={name}>{name}</option>)}<option>Custom...</option></select><ChevronDown/></label></div><Ring fast={active} now={now} onPhase={setPhase}/><div className="fast-hero-copy"><span className="fast-stage"><Flame/>{current.title}</span><h3>{active.protocol} fast</h3><p>Started {new Date(active.started_at).toLocaleString()}</p><p>Estimated end {new Date(active.expected_end_at).toLocaleString()}</p><div><button onClick={()=>setEditor({mode:'edit',session:active})}><Edit3/>Edit time</button><button className="end-fast" onClick={endFast}><Pause/>End fast</button></div></div></article><section className="fast-current-phase" style={{'--phase':current.color}}><FastingVisual type={current.image}/><div><small>CURRENT PHASE</small><h2>{current.icon} {current.title}</h2><p>{current.short}</p><button onClick={()=>setPhase(current)}>Read the detailed explanation</button></div></section></>:<InactiveFastingRing
   onStart={start}
   onPhase={setPhase}
-/>}<FastingCalendar sessions={sessions} now={now}/><FastingMetabolicInputs/><FastingGlycemicFoundation sessions={sessions}/><FastingAnalytics sessions={sessions}/>{phase&&<div className="fast-layer"><button className="fast-backdrop" onClick={()=>setPhase(null)}/><PhasePanel phase={phase} elapsed={elapsed} onClose={()=>setPhase(null)}/></div>}{editor&&<FastEditor state={editor} onClose={()=>setEditor(null)} onSave={save}/>}</section>}
+/>}<FastingCalendar sessions={sessions} now={now}/><FastingMetabolicInputs/><FastingAnalytics sessions={sessions}/>{phase&&<div className="fast-layer"><button className="fast-backdrop" onClick={()=>setPhase(null)}/><PhasePanel phase={phase} elapsed={elapsed} onClose={()=>setPhase(null)}/></div>}{editor&&<FastEditor state={editor} onClose={()=>setEditor(null)} onSave={save}/>}</section>}
 function FastEditor({state,onClose,onSave}) {
   const session=state.session||{}
   const isPrevious=state.mode==='previous'
