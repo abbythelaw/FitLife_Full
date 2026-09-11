@@ -4439,3 +4439,175 @@
     max-height: 250px !important;
   }
 }
+
+
+/* FASTING PATCH 48 ACTUAL SELECTORS NO CENTRE FILL */
+
+/*
+  Actual JSX selector: .layered-ring-centre
+  Remove every centre fill, border, shadow and focus ring.
+  The timer now sits directly inside the open centre of the SVG ring.
+*/
+.layered-ring-centre,
+.layered-ring-centre:hover,
+.layered-ring-centre:focus,
+.layered-ring-centre:focus-visible,
+.layered-ring-centre:active {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  border: 0 !important;
+  outline: 0 !important;
+  outline-offset: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+.layered-ring-centre::before,
+.layered-ring-centre::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Keep text readable without adding another filled disc. */
+.layered-ring-centre strong {
+  color: #f7fbf8 !important;
+  text-shadow: 0 2px 10px rgba(0,0,0,.46) !important;
+}
+
+.layered-ring-centre small {
+  color: #a9bbb2 !important;
+  text-shadow: 0 1px 7px rgba(0,0,0,.42) !important;
+}
+
+.layered-ring-centre em {
+  color: #fb923c !important;
+  text-shadow: 0 1px 8px rgba(0,0,0,.46) !important;
+}
+
+/*
+  Actual phase details markup:
+  .fast-phase-panel
+    > button.phase-close
+    > .fast-phase-art
+    > .phase-copy
+
+  Previous patches targeted .phase-panel, which does not exist.
+*/
+.fast-phase-panel {
+  box-sizing: border-box !important;
+  display: grid !important;
+  grid-template-columns: minmax(300px, 38%) minmax(0, 1fr) !important;
+  gap: 0 !important;
+  width: min(960px, calc(100vw - 40px)) !important;
+  height: min(720px, calc(100dvh - 40px)) !important;
+  max-height: calc(100dvh - 40px) !important;
+  overflow: hidden !important;
+}
+
+/* Full approved artwork, fitted into the actual left panel. */
+.fast-phase-panel > .fast-phase-art {
+  box-sizing: border-box !important;
+  align-self: stretch !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 100% !important;
+  max-height: none !important;
+  padding: 20px !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-right: 1px solid var(--line) !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: contain !important;
+  box-shadow: none !important;
+}
+
+/* Remove every old generated visual layer from the real popout artwork. */
+.fast-phase-panel > .fast-phase-art::before,
+.fast-phase-panel > .fast-phase-art::after,
+.fast-phase-panel > .fast-phase-art .art-body,
+.fast-phase-panel > .fast-phase-art .art-orbit,
+.fast-phase-panel > .fast-phase-art .art-particle {
+  content: none !important;
+  display: none !important;
+}
+
+/* Explanation occupies its column and scrolls independently if required. */
+.fast-phase-panel > .phase-copy {
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  padding: 30px !important;
+  padding-right: 24px !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+}
+
+/* Current Phase card keeps a full-bleed compact thumbnail. */
+.fast-current-phase.compact-phase-card > .fast-phase-art {
+  padding: 0 !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+}
+
+/* Tablet portrait and phone: artwork above explanation. */
+@media (max-width: 850px) {
+  .fast-phase-panel {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: minmax(230px, 38vh) auto !important;
+    width: min(94vw, 720px) !important;
+    height: auto !important;
+    max-height: calc(100dvh - 24px) !important;
+    overflow-y: auto !important;
+  }
+
+  .fast-phase-panel > .fast-phase-art {
+    width: 100% !important;
+    height: min(38vh, 340px) !important;
+    min-height: 230px !important;
+    max-height: 340px !important;
+    padding: 16px !important;
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--line) !important;
+    background-size: contain !important;
+  }
+
+  .fast-phase-panel > .phase-copy {
+    height: auto !important;
+    max-height: none !important;
+    padding: 22px !important;
+    overflow: visible !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .fast-phase-panel {
+    width: 100% !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+  }
+
+  .fast-phase-panel > .fast-phase-art {
+    height: 240px !important;
+    min-height: 240px !important;
+    max-height: 240px !important;
+    padding: 12px !important;
+  }
+
+  .fast-phase-panel > .phase-copy {
+    padding: 20px !important;
+  }
+}
