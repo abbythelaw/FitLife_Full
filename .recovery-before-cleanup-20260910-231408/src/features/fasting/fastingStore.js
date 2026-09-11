@@ -1,3 +1,4 @@
+
 const KEY='fitlife-fasting-sessions',LEGACY='fitlife-fasting-sessions-v4',HISTORY='fitlife-log-history'
 const parse=(raw,fallback=[])=>{try{return JSON.parse(raw)??fallback}catch{return fallback}}
 export function listFasts(){const map=new Map;for(const row of [...parse(localStorage.getItem(KEY),[]),...parse(localStorage.getItem(LEGACY),[])]){const id=String(row.id||row.client_session_id||row.started_at);if(!map.has(id)||String(row.updated_at||'')>String(map.get(id)?.updated_at||''))map.set(id,{...row,id})}return [...map.values()].sort((a,b)=>String(b.started_at).localeCompare(String(a.started_at)))}

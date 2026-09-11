@@ -521,10 +521,6 @@ export default function FastingMetabolicInputs() {
       'fitlife:health-readings-changed',
       refreshHealth
     )
-    window.addEventListener(
-      'fitlife:metric-mapping-changed',
-      refreshHealth
-    )
     window.addEventListener('storage',refreshNutrition)
     window.addEventListener('storage',refreshHealth)
 
@@ -535,10 +531,6 @@ export default function FastingMetabolicInputs() {
       )
       window.removeEventListener(
         'fitlife:health-readings-changed',
-        refreshHealth
-      )
-      window.removeEventListener(
-        'fitlife:metric-mapping-changed',
         refreshHealth
       )
       window.removeEventListener('storage',refreshNutrition)
@@ -604,29 +596,30 @@ export default function FastingMetabolicInputs() {
   }
 
   function handleCalendarActivation(date) {
-    const dateValue = localDateKey(date)
+    const selectedKey = localDateKey(date)
     const timestamp = Date.now()
     const previous = calendarTapRef.current
-    const isDouble = previous.date === dateValue && timestamp - previous.time <= 650
+    const isDouble = previous.key === selectedKey && timestamp - previous.time <= 650
 
-    chooseDate(date)
-    calendarTapRef.current = {date:dateValue,time:timestamp}
+    if (previous.timer) clearTimeout(previous.timer)
 
-    if (!isDouble) return
-
-    calendarTapRef.current = {date:'',time:0}
-
-    if (tab === 'nutrition') {
-      inspectDate(date)
+    if (isDouble) {
+      calendarTapRef.current = {key:'',time:0,timer:null}
+      openCalendarDetails(date)
       return
     }
 
-    const reading = latestForDate(readingsForMetric(tab),dateValue)
-    setMetricRecorder({
-      metric:tab,
-      date:dateValue,
-      existing:reading || null
-    })
+    chooseDate(date)
+
+    const timer = setTimeout(() => {
+      calendarTapRef.current = {key:'',time:0,timer:null}
+    }, 680)
+
+    calendarTapRef.current = {
+      key: selectedKey,
+      time: timestamp,
+      timer
+    }
   }
 
 
@@ -642,11 +635,10 @@ export default function FastingMetabolicInputs() {
           </p>
         </div>
 
-        {tab === 'nutrition' && (
-          <button onClick={() => setEditor(true)} disabled={selectedDate > localDateKey()}>
-            <Plus/>
-            Add nutrition
-          </button>
+        {tab === 'nutrition' ? (
+          <button onClick={() => setEditor(true)} disabled={selectedDate > localDateKey()}><Plus/>Add nutrition</button>
+        ) : (
+          <button onClick={() => setMetricRecorder({metric:tab,date:selectedDate,existing:selectedReading})} disabled={selectedDate > localDateKey()}><Plus/>Add reading</button>
         )}
       </header>
 
@@ -726,7 +718,6 @@ export default function FastingMetabolicInputs() {
 
               return (
                 <button
-                  type="button"
                   key={key}
                   data-metabolic-date={key}
                   className={[
@@ -737,7 +728,7 @@ export default function FastingMetabolicInputs() {
                     tab
                   ].filter(Boolean).join(' ')}
                   onClick={() => handleCalendarActivation(date)}
-                  disabled={future} aria-disabled={future}
+                  disabled={future}
                 >
                   <b>{date.getDate()}</b>
 

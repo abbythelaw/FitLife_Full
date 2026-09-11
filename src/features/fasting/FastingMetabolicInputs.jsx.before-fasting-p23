@@ -1,4 +1,3 @@
-import FastingMetricRecorder from './FastingMetricRecorder'
 import FastingThirtyDayGraph from './FastingThirtyDayGraph'
 
 import {
@@ -498,7 +497,6 @@ export default function FastingMetabolicInputs() {
   const [selectedDate,setSelectedDate] = useState(localDateKey())
   const [nutrition,setNutrition] = useState(listNutritionDays)
   const [editor,setEditor] = useState(false)
-  const [metricRecorder,setMetricRecorder] = useState(null)
   const [refreshToken,setRefreshToken] = useState(0)
   const finalTapRef=useRef({key:'',time:0})
   const calendarTapRef = useRef({key:'',time:0,timer:null})
@@ -521,10 +519,6 @@ export default function FastingMetabolicInputs() {
       'fitlife:health-readings-changed',
       refreshHealth
     )
-    window.addEventListener(
-      'fitlife:metric-mapping-changed',
-      refreshHealth
-    )
     window.addEventListener('storage',refreshNutrition)
     window.addEventListener('storage',refreshHealth)
 
@@ -535,10 +529,6 @@ export default function FastingMetabolicInputs() {
       )
       window.removeEventListener(
         'fitlife:health-readings-changed',
-        refreshHealth
-      )
-      window.removeEventListener(
-        'fitlife:metric-mapping-changed',
         refreshHealth
       )
       window.removeEventListener('storage',refreshNutrition)
@@ -604,29 +594,30 @@ export default function FastingMetabolicInputs() {
   }
 
   function handleCalendarActivation(date) {
-    const dateValue = localDateKey(date)
+    const selectedKey = localDateKey(date)
     const timestamp = Date.now()
     const previous = calendarTapRef.current
-    const isDouble = previous.date === dateValue && timestamp - previous.time <= 650
+    const isDouble = previous.key === selectedKey && timestamp - previous.time <= 650
 
-    chooseDate(date)
-    calendarTapRef.current = {date:dateValue,time:timestamp}
+    if (previous.timer) clearTimeout(previous.timer)
 
-    if (!isDouble) return
-
-    calendarTapRef.current = {date:'',time:0}
-
-    if (tab === 'nutrition') {
-      inspectDate(date)
+    if (isDouble) {
+      calendarTapRef.current = {key:'',time:0,timer:null}
+      openCalendarDetails(date)
       return
     }
 
-    const reading = latestForDate(readingsForMetric(tab),dateValue)
-    setMetricRecorder({
-      metric:tab,
-      date:dateValue,
-      existing:reading || null
-    })
+    chooseDate(date)
+
+    const timer = setTimeout(() => {
+      calendarTapRef.current = {key:'',time:0,timer:null}
+    }, 680)
+
+    calendarTapRef.current = {
+      key: selectedKey,
+      time: timestamp,
+      timer
+    }
   }
 
 
@@ -643,8 +634,11 @@ export default function FastingMetabolicInputs() {
         </div>
 
         {tab === 'nutrition' && (
-          <button onClick={() => setEditor(true)} disabled={selectedDate > localDateKey()}>
-            <Plus/>
+          <button
+            onClick={() => setEditor(true)}
+            disabled={selectedDate > localDateKey()}
+          >
+            <Plus />
             Add nutrition
           </button>
         )}
@@ -726,7 +720,6 @@ export default function FastingMetabolicInputs() {
 
               return (
                 <button
-                  type="button"
                   key={key}
                   data-metabolic-date={key}
                   className={[
@@ -737,7 +730,7 @@ export default function FastingMetabolicInputs() {
                     tab
                   ].filter(Boolean).join(' ')}
                   onClick={() => handleCalendarActivation(date)}
-                  disabled={future} aria-disabled={future}
+                  disabled={future}
                 >
                   <b>{date.getDate()}</b>
 
@@ -892,8 +885,6 @@ export default function FastingMetabolicInputs() {
           </section>
         </div>
       )}
-
-      {metricRecorder && <FastingMetricRecorder metric={metricRecorder.metric} date={metricRecorder.date} existing={metricRecorder.existing} onClose={()=>setMetricRecorder(null)} onSaved={()=>{setMetricRecorder(null);setRefreshToken(value=>value+1)}}/>}
 
       {editor && (
         <NutritionEditor

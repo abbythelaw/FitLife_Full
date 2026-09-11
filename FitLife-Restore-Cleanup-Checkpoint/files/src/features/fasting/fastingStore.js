@@ -30,8 +30,8 @@ export function validateFastInterval(candidate, sessions = listFasts()) {
     if (end > now) {
       return {valid:false,message:'A previous fast cannot end in the future.'}
     }
-    if (end < start) {
-      return {valid:false,message:'The end must be equal to or later than the start.'}
+    if (end <= start) {
+      return {valid:false,message:'The end must be later than the start.'}
     }
   }
 

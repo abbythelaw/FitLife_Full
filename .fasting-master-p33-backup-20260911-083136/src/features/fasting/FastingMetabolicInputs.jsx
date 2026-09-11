@@ -726,7 +726,6 @@ export default function FastingMetabolicInputs() {
 
               return (
                 <button
-                  type="button"
                   key={key}
                   data-metabolic-date={key}
                   className={[
@@ -737,7 +736,7 @@ export default function FastingMetabolicInputs() {
                     tab
                   ].filter(Boolean).join(' ')}
                   onClick={() => handleCalendarActivation(date)}
-                  disabled={future} aria-disabled={future}
+                  disabled={future}
                 >
                   <b>{date.getDate()}</b>
 
