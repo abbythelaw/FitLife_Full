@@ -84,19 +84,40 @@ function shortPhase(hours){
 
 
 function ringMilestonesForTarget(target){
-  const targetHours=Math.max(1,Number(target)||16)
-  const recognised=[4,8,12,16,18,24,36,48,72]
-  const visible=recognised.filter(hour=>hour<=targetHours)
-
-  // Short/custom targets below 4h still retain a clean ring without a fake milestone.
-  return visible
+  if(target<=16)return [4,8,12,16,18,24]
+  if(target<=24)return [4,8,12,16,18,24]
+  if(target<=36)return [4,8,12,16,24,36]
+  if(target<=48)return [4,8,12,24,36,48]
+  return [4,8,12,24,48,72]
 }
 
-function visualMilestoneAngle(hour,targetHours){
-  const ratio=Math.max(0,Math.min(1,hour/Math.max(1,targetHours)))
-  return -90+ratio*360
+function visualMilestoneAngle(index,count){
+  return -90+(index/count)*360
 }
 
+function visualProgressForElapsed(elapsedHours,targetHours,milestoneHours){
+  const progress=Math.max(0,Math.min(targetHours,elapsedHours))
+  const count=milestoneHours.length
+  const firstHour=milestoneHours[0]
+
+  if(progress<=firstHour){
+    return (progress/Math.max(1,firstHour))*(1/count)
+  }
+
+  for(let index=1;index<count;index++){
+    const previousHour=milestoneHours[index-1]
+    const currentHour=milestoneHours[index]
+    if(progress<=currentHour){
+      const segment=(progress-previousHour)/Math.max(1,currentHour-previousHour)
+      return Math.min(1,(index+segment)/count)
+    }
+  }
+
+  const finalHour=milestoneHours[count-1]
+  if(targetHours<=finalHour)return 1
+  const finalSegment=(progress-finalHour)/Math.max(1,targetHours-finalHour)
+  return Math.min(1,((count-1)+finalSegment)/count)
+}
 
 function markerCoordinates(progress,radius=151){
   const angle=-90+progress*360
@@ -125,9 +146,9 @@ function Ring({fast,now,onPhase,onEditStart,onEnd}){
   const targetEnd=new Date(startedAt+targetHours*36e5)
   const remainingMs=Math.max(0,targetEnd.getTime()-now)
   const milestoneHours=ringMilestonesForTarget(targetHours)
-  const progress=Math.max(0,Math.min(1,elapsedHours/targetHours))
+  const progress=visualProgressForElapsed(elapsedHours,targetHours,milestoneHours)
   const marker=markerCoordinates(progress)
-  const currentPhase=elapsedHours<4?null:phaseAt(elapsedHours)
+  const currentPhase=phaseAt(elapsedHours)
   const centreValue=mode==='elapsed'?fmt(elapsedMs):fmt(remainingMs)
   const centreLabel=mode==='elapsed'?'Elapsed':'Remaining'
 
@@ -155,12 +176,12 @@ function Ring({fast,now,onPhase,onEditStart,onEnd}){
         aria-label={`${elapsedHours.toFixed(1)} fasting hours elapsed`}
       />
 
-      {milestoneHours.map(hour=>{
+      {milestoneHours.map((hour,index)=>{
         const phase=PHASES.find(item=>item.hour===hour)
         if(!phase)return null
-        const angle=visualMilestoneAngle(hour,targetHours)
+        const angle=visualMilestoneAngle(index,milestoneHours.length)
         const reached=elapsedHours>=hour
-        const current=reached && currentPhase?.hour===hour
+        const current=currentPhase.hour===hour
         return <button
           type="button"
           key={hour}
@@ -182,7 +203,7 @@ function Ring({fast,now,onPhase,onEditStart,onEnd}){
       >
         <strong>{centreValue}</strong>
         <small>{centreLabel}</small>
-        <em>{currentPhase?.icon||'◌'} {shortPhaseLabel(elapsedHours)}</em>
+        <em>{currentPhase.icon} {shortPhaseLabel(elapsedHours)}</em>
       </button>
     </div>
 

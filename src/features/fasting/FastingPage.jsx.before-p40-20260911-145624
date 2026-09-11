@@ -28,52 +28,22 @@ function phaseAt(hours){return [...PHASES].reverse().find(p=>hours>=p.hour)||PHA
 function FastingVisual({type}){return <div className={`fast-phase-art art-${type}`} aria-hidden="true"><span className="art-body"/><span className="art-orbit one"/><span className="art-orbit two"/><span className="art-particle p1"/><span className="art-particle p2"/><span className="art-particle p3"/></div>}
 
 
-
-const RING_NODE_SET_16=[4,8,12,16,18,24]
-const RING_NODE_SET_36=[4,8,12,16,18,24,36]
-const RING_NODE_SET_48=[4,8,12,16,18,24,36,48]
-const RING_NODE_SET_72=[4,8,12,16,18,24,36,48,72]
-
-function ringNodeHours(target){
-  if(target<=16)return RING_NODE_SET_16
-  if(target<=36)return RING_NODE_SET_36
-  if(target<=48)return RING_NODE_SET_48
-  return RING_NODE_SET_72
-}
-
-// A single geometry source: identical hour input always yields the
-// identical ring angle, whether used for a milestone node or for the
-// live progress arc/marker.
-function ringGeometryFor(target){
-  const hours=ringNodeHours(target)
-  const angleStep=360/hours.length
-  const nodes=hours.map((hour,index)=>({
-    hour,
-    angle:-90+index*angleStep
-  }))
-
-  function angleForElapsed(elapsedHours){
-    const clamped=Math.max(0,Math.min(target,elapsedHours))
-    if(clamped<=nodes[0].hour){
-      const ratio=nodes[0].hour?clamped/nodes[0].hour:0
-      return -90+ratio*angleStep
+function ringAngleForHour(hour,target){
+  const hours=[4,8,12,16,18,24,...(target>=36?[36]:[]),...(target>=48?[48]:[]),...(target>=72?[72]:[])]
+  const six={4:-90,8:-30,12:30,16:90,18:150,24:210}
+  const positions=hours.length<=6
+    ? hours.map(value=>({hour:value,angle:six[value]}))
+    : hours.map((value,index)=>({hour:value,angle:-90+(index/hours.length)*360}))
+  if(hour<=positions[0].hour)return positions[0].angle
+  for(let index=1;index<positions.length;index++){
+    const left=positions[index-1],right=positions[index]
+    if(hour<=right.hour){
+      const ratio=(hour-left.hour)/(right.hour-left.hour)
+      return left.angle+(right.angle-left.angle)*ratio
     }
-    for(let index=1;index<nodes.length;index++){
-      const left=nodes[index-1],right=nodes[index]
-      if(clamped<=right.hour){
-        const ratio=(clamped-left.hour)/(right.hour-left.hour||1)
-        return left.angle+(right.angle-left.angle)*ratio
-      }
-    }
-    const last=nodes.at(-1)
-    const remainder=target-last.hour
-    const ratio=remainder?(clamped-last.hour)/remainder:1
-    return last.angle+angleStep*Math.min(1,Math.max(0,ratio))
   }
-
-  return {nodes,angleForElapsed}
+  return positions.at(-1).angle
 }
-
 function shortPhase(hours){
   if(hours>=24)return 'DEEP FASTING'
   if(hours>=18)return 'KETONES RISING'
@@ -81,125 +51,45 @@ function shortPhase(hours){
   if(hours>=8)return 'POST-ABSORPTIVE'
   return 'FASTING STARTED'
 }
-
-
-function ringMilestonesForTarget(target){
-  const targetHours=Math.max(1,Number(target)||16)
-  const recognised=[4,8,12,16,18,24,36,48,72]
-  const visible=recognised.filter(hour=>hour<=targetHours)
-
-  // Short/custom targets below 4h still retain a clean ring without a fake milestone.
-  return visible
-}
-
-function visualMilestoneAngle(hour,targetHours){
-  const ratio=Math.max(0,Math.min(1,hour/Math.max(1,targetHours)))
-  return -90+ratio*360
-}
-
-
-function markerCoordinates(progress,radius=151){
-  const angle=-90+progress*360
-  const radians=angle*Math.PI/180
-  return {
-    angle,
-    x:170+Math.cos(radians)*radius,
-    y:170+Math.sin(radians)*radius
-  }
-}
-
-function shortPhaseLabel(hours){
-  if(hours>=24)return 'DEEP FASTING'
-  if(hours>=18)return 'KETONES RISING'
-  if(hours>=12)return 'FAT BURNING'
-  if(hours>=8)return 'POST-ABSORPTIVE'
-  return 'FASTING STARTED'
-}
-
-function Ring({fast,now,onPhase,onEditStart,onEnd}){
+function Ring({fast,now,onPhase,onEditStart,onEnd}) {
   const [mode,setMode]=useState('elapsed')
-  const startedAt=new Date(fast.started_at).getTime()
-  const elapsedMs=Math.max(0,now-startedAt)
-  const elapsedHours=elapsedMs/36e5
-  const targetHours=Math.max(1,Number(fast.target_hours||16))
-  const targetEnd=new Date(startedAt+targetHours*36e5)
+  const start=new Date(fast.started_at).getTime()
+  const elapsedMs=Math.max(0,now-start)
+  const elapsed=elapsedMs/36e5
+  const target=Number(fast.target_hours||16)
+  const phases=PHASES.filter(phase=>phase.hour<=Math.max(16,target))
+  const targetEnd=new Date(start+target*36e5)
   const remainingMs=Math.max(0,targetEnd.getTime()-now)
-  const milestoneHours=ringMilestonesForTarget(targetHours)
-  const progress=Math.max(0,Math.min(1,elapsedHours/targetHours))
-  const marker=markerCoordinates(progress)
-  const currentPhase=elapsedHours<4?null:phaseAt(elapsedHours)
-  const centreValue=mode==='elapsed'?fmt(elapsedMs):fmt(remainingMs)
-  const centreLabel=mode==='elapsed'?'Elapsed':'Remaining'
-
-  return <div className="fast-journey-wrap layered-fast-instrument">
-    <div className="layered-ring" data-complete={progress>=1?'true':'false'}>
-      <svg className="layered-ring-svg" viewBox="0 0 340 340" aria-hidden="true">
-        <defs>
-          <linearGradient id="fastingProgressGradient" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#45d66f"/>
-            <stop offset="100%" stopColor="#22d3b6"/>
-          </linearGradient>
-        </defs>
-        <circle className="layered-base-track" cx="170" cy="170" r="151"/>
-        <circle
-          className="layered-progress-track"
-          cx="170" cy="170" r="151"
-          pathLength="1"
-          strokeDasharray={`${progress} ${1-progress}`}
-        />
-      </svg>
-
-      <span
-        className="layered-progress-dot"
-        style={{left:`${marker.x/340*100}%`,top:`${marker.y/340*100}%`}}
-        aria-label={`${elapsedHours.toFixed(1)} fasting hours elapsed`}
-      />
-
-      {milestoneHours.map(hour=>{
-        const phase=PHASES.find(item=>item.hour===hour)
-        if(!phase)return null
-        const angle=visualMilestoneAngle(hour,targetHours)
-        const reached=elapsedHours>=hour
-        const current=reached && currentPhase?.hour===hour
-        return <button
-          type="button"
-          key={hour}
-          className={`layered-milestone ${reached?'reached':'locked'} ${current?'current':''}`}
-          style={{'--node-angle':`${angle}deg`,'--phase':phase.color}}
-          onClick={()=>onPhase(phase)}
-          aria-label={`${hour} hour milestone: ${phase.title}`}
-        >
-          <span>{phase.icon}</span>
-          <b>{hour}h</b>
+  const centreValue=mode==='elapsed'?fmt(elapsedMs):mode==='remaining'?fmt(remainingMs):targetEnd.toLocaleString([],{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})
+  const centreLabel=mode==='elapsed'?'Elapsed':mode==='remaining'?'Remaining':'Target end'
+  const markerAngle=ringAngleForHour(Math.min(elapsed,target),target)
+  return <div className="fast-journey-wrap revised-fast-instrument">
+    <div className="fast-journey-ring revised-journey-ring" data-complete={elapsed>=target?'true':'false'} style={{'--arc':`${Math.max(0,Math.min(360,markerAngle+90))}deg`}}>
+      <i className="fast-progress-marker" style={{'--marker-angle':`${markerAngle}deg`}} aria-label={`${elapsed.toFixed(1)} fasting hours elapsed`}/>
+      {phases.map(phase=>{
+        const angle=ringAngleForHour(phase.hour,target)
+        const reached=elapsed>=phase.hour
+        const next=PHASES.find(item=>item.hour>elapsed)
+        const current=reached && (!next || phase.hour===PHASES.filter(item=>item.hour<=elapsed).at(-1)?.hour)
+        return <button type="button" key={phase.hour}
+          className={`fast-phase-point embedded ${reached?'reached':'locked'} ${current?'current':''}`}
+          style={{'--angle':`${angle}deg`,'--phase':phase.color}}
+          onClick={()=>onPhase(phase)} aria-label={`${phase.hour} hour phase: ${phase.title}`}>
+          <span>{phase.icon}</span><b>{phase.hour}h</b>
         </button>
       })}
-
-      <button
-        type="button"
-        className="layered-ring-centre"
-        onClick={()=>setMode(mode==='elapsed'?'remaining':'elapsed')}
-        aria-label={`Show ${mode==='elapsed'?'remaining':'elapsed'} fasting time`}
-      >
-        <strong>{centreValue}</strong>
-        <small>{centreLabel}</small>
-        <em>{currentPhase?.icon||'◌'} {shortPhaseLabel(elapsedHours)}</em>
+      <button type="button" className="fast-ring-center revised-ring-center" aria-label="Switch fasting timer display" title="Switch between elapsed, remaining and target end" onClick={()=>setMode(mode==='elapsed'?'remaining':mode==='remaining'?'end':'elapsed')}>
+        <strong>{centreValue}</strong><small>{centreLabel}</small>
+        <em>{phaseAt(elapsed).icon} {shortPhase(elapsed)}</em>
       </button>
     </div>
-
-    <div className="layered-time-strip">
-      <button type="button" onClick={onEditStart} className="layered-started">
-        <small>STARTED</small>
-        <b>{new Date(startedAt).toLocaleString([],{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</b>
-        <Edit3/>
+    <div className="fast-ring-times revised-ring-times">
+      <button type="button" className="fast-started-card" onClick={onEditStart}>
+        <small>STARTED</small><b>{new Date(start).toLocaleString([],{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</b><Edit3/>
       </button>
-      <span className="layered-goal">
-        <small>GOAL</small>
-        <b>{targetEnd.toLocaleString([],{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</b>
-      </span>
-      <button type="button" className="layered-end-fast" onClick={onEnd} aria-label="End fast" title="End fast">
-        <Pause/>
-      </button>
+      <span><small>GOAL</small><b>{targetEnd.toLocaleString([],{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</b></span>
     </div>
+    <button type="button" className="revised-end-fast" onClick={onEnd} aria-label="End fast" title="End fast"><Pause/></button>
   </div>
 }
 
@@ -209,8 +99,7 @@ function InactiveFastingRing({onStart,onPhase}) {
 
   const selected=PROTOCOLS.find(item=>item[0]===protocol)
   const target=selected?Number(selected[1]):Number(customHours||16)
-  const geometry=ringGeometryFor(target)
-  const phases=geometry.nodes.map(node=>PHASES.find(phase=>phase.hour===node.hour)).filter(Boolean)
+  const phases=PHASES.filter(phase=>phase.hour<=target)
 
   function changeProtocol(value) {
     if(value==='Custom') {
@@ -267,7 +156,7 @@ function InactiveFastingRing({onStart,onPhase}) {
           style={{'--progress':'0deg'}}
         >
           {phases.map((phase,index)=>{
-            const angle=geometry.nodes[index]?.angle??(-90+(index/phases.length)*360)
+            const angle=-90+(index/phases.length)*360
 
             return <button
               key={phase.hour}

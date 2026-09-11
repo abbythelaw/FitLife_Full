@@ -82,124 +82,68 @@ function shortPhase(hours){
   return 'FASTING STARTED'
 }
 
-
-function ringMilestonesForTarget(target){
-  const targetHours=Math.max(1,Number(target)||16)
-  const recognised=[4,8,12,16,18,24,36,48,72]
-  const visible=recognised.filter(hour=>hour<=targetHours)
-
-  // Short/custom targets below 4h still retain a clean ring without a fake milestone.
-  return visible
-}
-
-function visualMilestoneAngle(hour,targetHours){
-  const ratio=Math.max(0,Math.min(1,hour/Math.max(1,targetHours)))
-  return -90+ratio*360
-}
-
-
-function markerCoordinates(progress,radius=151){
-  const angle=-90+progress*360
-  const radians=angle*Math.PI/180
-  return {
-    angle,
-    x:170+Math.cos(radians)*radius,
-    y:170+Math.sin(radians)*radius
-  }
-}
-
-function shortPhaseLabel(hours){
-  if(hours>=24)return 'DEEP FASTING'
-  if(hours>=18)return 'KETONES RISING'
-  if(hours>=12)return 'FAT BURNING'
-  if(hours>=8)return 'POST-ABSORPTIVE'
-  return 'FASTING STARTED'
-}
-
-function Ring({fast,now,onPhase,onEditStart,onEnd}){
+function Ring({fast,now,onPhase,onEditStart,onEnd}) {
   const [mode,setMode]=useState('elapsed')
-  const startedAt=new Date(fast.started_at).getTime()
-  const elapsedMs=Math.max(0,now-startedAt)
-  const elapsedHours=elapsedMs/36e5
-  const targetHours=Math.max(1,Number(fast.target_hours||16))
-  const targetEnd=new Date(startedAt+targetHours*36e5)
+  const start=new Date(fast.started_at).getTime()
+  const elapsedMs=Math.max(0,now-start)
+  const elapsed=elapsedMs/36e5
+  const target=Number(fast.target_hours||16)
+  const geometry=useMemo(()=>ringGeometryFor(target),[target])
+
+const progressRatio=Math.max(0,Math.min(1,elapsed/Math.max(1,target)))
+const progressDegrees=progressRatio*360
+const progressMarkerAngle=-90+progressDegrees
+  const targetEnd=new Date(start+target*36e5)
   const remainingMs=Math.max(0,targetEnd.getTime()-now)
-  const milestoneHours=ringMilestonesForTarget(targetHours)
-  const progress=Math.max(0,Math.min(1,elapsedHours/targetHours))
-  const marker=markerCoordinates(progress)
-  const currentPhase=elapsedHours<4?null:phaseAt(elapsedHours)
   const centreValue=mode==='elapsed'?fmt(elapsedMs):fmt(remainingMs)
   const centreLabel=mode==='elapsed'?'Elapsed':'Remaining'
+  const currentPhase=phaseAt(elapsed)
 
-  return <div className="fast-journey-wrap layered-fast-instrument">
-    <div className="layered-ring" data-complete={progress>=1?'true':'false'}>
-      <svg className="layered-ring-svg" viewBox="0 0 340 340" aria-hidden="true">
-        <defs>
-          <linearGradient id="fastingProgressGradient" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#45d66f"/>
-            <stop offset="100%" stopColor="#22d3b6"/>
-          </linearGradient>
-        </defs>
-        <circle className="layered-base-track" cx="170" cy="170" r="151"/>
-        <circle
-          className="layered-progress-track"
-          cx="170" cy="170" r="151"
-          pathLength="1"
-          strokeDasharray={`${progress} ${1-progress}`}
-        />
-      </svg>
-
-      <span
-        className="layered-progress-dot"
-        style={{left:`${marker.x/340*100}%`,top:`${marker.y/340*100}%`}}
-        aria-label={`${elapsedHours.toFixed(1)} fasting hours elapsed`}
+  return <div className="fast-journey-wrap revised-fast-instrument">
+    <div
+      className="fast-journey-ring revised-journey-ring"
+      data-complete={elapsed>=target?'true':'false'}
+      style={{'--arc':`${progressDegrees}deg`}}
+    >
+      <i
+        className="fast-progress-marker"
+        style={{'--marker-angle':`${progressMarkerAngle}deg`}}
+        aria-label={`${elapsed.toFixed(1)} fasting hours elapsed`}
       />
-
-      {milestoneHours.map(hour=>{
-        const phase=PHASES.find(item=>item.hour===hour)
+      {geometry.nodes.map(node=>{
+        const phase=PHASES.find(item=>item.hour===node.hour)
         if(!phase)return null
-        const angle=visualMilestoneAngle(hour,targetHours)
-        const reached=elapsedHours>=hour
-        const current=reached && currentPhase?.hour===hour
+        const reached=elapsed>=phase.hour
+        const current=phase.hour===currentPhase.hour
         return <button
           type="button"
-          key={hour}
-          className={`layered-milestone ${reached?'reached':'locked'} ${current?'current':''}`}
-          style={{'--node-angle':`${angle}deg`,'--phase':phase.color}}
+          key={phase.hour}
+          className={`fast-phase-point embedded ${reached?'reached':'locked'} ${current?'current':''}`}
+          style={{'--angle':`${node.angle}deg`,'--phase':phase.color}}
           onClick={()=>onPhase(phase)}
-          aria-label={`${hour} hour milestone: ${phase.title}`}
+          aria-label={`${phase.hour} hour phase: ${phase.title}`}
         >
-          <span>{phase.icon}</span>
-          <b>{hour}h</b>
+          <span>{phase.icon}</span><b>{phase.hour}h</b>
         </button>
       })}
-
       <button
         type="button"
-        className="layered-ring-centre"
-        onClick={()=>setMode(mode==='elapsed'?'remaining':'elapsed')}
+        className="fast-ring-center revised-ring-center"
         aria-label={`Show ${mode==='elapsed'?'remaining':'elapsed'} fasting time`}
+        title="Switch between elapsed and remaining"
+        onClick={()=>setMode(mode==='elapsed'?'remaining':'elapsed')}
       >
-        <strong>{centreValue}</strong>
-        <small>{centreLabel}</small>
-        <em>{currentPhase?.icon||'◌'} {shortPhaseLabel(elapsedHours)}</em>
+        <strong>{centreValue}</strong><small>{centreLabel}</small>
+        <em>{currentPhase.icon} {shortPhase(elapsed)}</em>
       </button>
     </div>
-
-    <div className="layered-time-strip">
-      <button type="button" onClick={onEditStart} className="layered-started">
-        <small>STARTED</small>
-        <b>{new Date(startedAt).toLocaleString([],{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</b>
-        <Edit3/>
+    <div className="fast-ring-times revised-ring-times">
+      <button type="button" className="fast-started-card" onClick={onEditStart}>
+        <small>STARTED</small><b>{new Date(start).toLocaleString([],{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</b><Edit3/>
       </button>
-      <span className="layered-goal">
-        <small>GOAL</small>
-        <b>{targetEnd.toLocaleString([],{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</b>
-      </span>
-      <button type="button" className="layered-end-fast" onClick={onEnd} aria-label="End fast" title="End fast">
-        <Pause/>
-      </button>
+      <span><small>GOAL</small><b>{targetEnd.toLocaleString([],{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</b></span>
     </div>
+    <button type="button" className="revised-end-fast" onClick={onEnd} aria-label="End fast" title="End fast"><Pause/></button>
   </div>
 }
 

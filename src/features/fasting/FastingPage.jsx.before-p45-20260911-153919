@@ -127,7 +127,7 @@ function Ring({fast,now,onPhase,onEditStart,onEnd}){
   const milestoneHours=ringMilestonesForTarget(targetHours)
   const progress=Math.max(0,Math.min(1,elapsedHours/targetHours))
   const marker=markerCoordinates(progress)
-  const currentPhase=elapsedHours<4?null:phaseAt(elapsedHours)
+  const currentPhase=phaseAt(elapsedHours)
   const centreValue=mode==='elapsed'?fmt(elapsedMs):fmt(remainingMs)
   const centreLabel=mode==='elapsed'?'Elapsed':'Remaining'
 
@@ -160,7 +160,7 @@ function Ring({fast,now,onPhase,onEditStart,onEnd}){
         if(!phase)return null
         const angle=visualMilestoneAngle(hour,targetHours)
         const reached=elapsedHours>=hour
-        const current=reached && currentPhase?.hour===hour
+        const current=currentPhase.hour===hour
         return <button
           type="button"
           key={hour}
@@ -182,7 +182,7 @@ function Ring({fast,now,onPhase,onEditStart,onEnd}){
       >
         <strong>{centreValue}</strong>
         <small>{centreLabel}</small>
-        <em>{currentPhase?.icon||'◌'} {shortPhaseLabel(elapsedHours)}</em>
+        <em>{currentPhase.icon} {shortPhaseLabel(elapsedHours)}</em>
       </button>
     </div>
 
