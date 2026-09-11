@@ -203,136 +203,87 @@ function Ring({fast,now,onPhase,onEditStart,onEnd}){
   </div>
 }
 
-function InactiveFastingRing({onStart,onPhase}) {
+
+function InactiveFastingRing({onStart,onPhase}){
   const [protocol,setProtocol]=useState('16:8')
   const [customHours,setCustomHours]=useState(16)
-
   const selected=PROTOCOLS.find(item=>item[0]===protocol)
-  const target=selected?Number(selected[1]):Number(customHours||16)
-  const geometry=ringGeometryFor(target)
-  const phases=geometry.nodes.map(node=>PHASES.find(phase=>phase.hour===node.hour)).filter(Boolean)
+  const targetHours=Math.max(1,Number(selected?.[1]||customHours||16))
+  const milestoneHours=ringMilestonesForTarget(targetHours)
 
-  function changeProtocol(value) {
-    if(value==='Custom') {
-      setProtocol('Custom')
-      return
-    }
-
+  function changeProtocol(value){
     setProtocol(value)
-
     const found=PROTOCOLS.find(item=>item[0]===value)
-    if(found) setCustomHours(Number(found[1]))
+    if(found)setCustomHours(Number(found[1]))
   }
 
-  function startSelectedFast() {
-    const safeHours=Math.max(1,Number(target||16))
-    const name=protocol==='Custom'
-      ? `Custom ${safeHours}h`
-      : protocol
-
-    onStart(name,safeHours)
+  function startSelectedFast(){
+    const name=protocol==='Custom'?`Custom ${targetHours}h`:protocol
+    onStart(name,targetHours)
   }
 
-  return <article className="fast-hero inactive-fast-hero">
-    <div className="inactive-fast-target">
+  return <article className="fast-hero inactive-fast-hero inactive-layered-card">
+    <div className="inactive-fast-target compact-inactive-target">
       <label>
         <span>Target</span>
-        <select
-          value={protocol}
-          onChange={event=>changeProtocol(event.target.value)}
-        >
-          {PROTOCOLS.map(([name])=><option key={name}>{name}</option>)}
-          <option>Custom</option>
+        <select value={protocol} onChange={event=>changeProtocol(event.target.value)}>
+          {PROTOCOLS.map(([name])=><option key={name} value={name}>{name}</option>)}
+          <option value="Custom">Custom</option>
         </select>
         <ChevronDown/>
       </label>
-
       {protocol==='Custom'&&<label className="inactive-custom-hours">
         <span>Hours</span>
-        <input
-          type="number"
-          min="1"
-          step=".25"
-          value={customHours}
-          onChange={event=>setCustomHours(event.target.value)}
-        />
+        <input type="number" min="1" step=".25" value={customHours} onChange={event=>setCustomHours(event.target.value)}/>
       </label>}
     </div>
 
-    <div className="inactive-fast-ring-column">
-      <div className="fast-journey-wrap inactive-journey-wrap">
-        <div
-          className="fast-journey-ring inactive-journey-ring"
-          data-complete="false"
-          style={{'--progress':'0deg'}}
-        >
-          {phases.map((phase,index)=>{
-            const angle=geometry.nodes[index]?.angle??(-90+(index/phases.length)*360)
+    <div className="inactive-layered-instrument">
+      <div className="inactive-layered-ring">
+        <svg className="inactive-layered-svg" viewBox="0 0 340 340" aria-hidden="true">
+          <circle className="inactive-layered-track" cx="170" cy="170" r="151"/>
+        </svg>
 
-            return <button
-              key={phase.hour}
-              className="fast-phase-point locked untouched"
-              style={{
-                '--angle':`${angle}deg`,
-                '--phase':'#9ca3af'
-              }}
-              onClick={()=>onPhase({...phase,previewOnly:true})}
-              aria-label={`${phase.hour} hour phase, not reached`}
-            >
-              <span>{phase.icon}</span>
-              <b>{phase.hour}h</b>
-              <small>{phase.title}</small>
-            </button>
-          })}
+        {milestoneHours.map(hour=>{
+          const phase=PHASES.find(item=>item.hour===hour)
+          if(!phase)return null
+          const angle=visualMilestoneAngle(hour,targetHours)
+          return <button
+            type="button"
+            key={hour}
+            className="inactive-layered-milestone"
+            style={{'--node-angle':`${angle}deg`}}
+            onClick={()=>onPhase({...phase,previewOnly:true})}
+            aria-label={`${hour} hour milestone, not reached`}
+          >
+            <span>{phase.icon}</span>
+            <b>{hour}h</b>
+          </button>
+        })}
 
-          <div className="fast-ring-center inactive-ring-center">
-            <strong>Ready</strong>
-            <small>to fast</small>
-            
-            <i>Select Start Fast to begin</i>
-          </div>
+        <div className="inactive-layered-centre">
+          <strong>Ready</strong>
+          <small>to fast</small>
         </div>
       </div>
 
-      <button
-        className="inactive-start-fast"
-        onClick={startSelectedFast}
-      >
-        <Play/>
-        Start Fast
+      <button type="button" className="inactive-layered-start" onClick={startSelectedFast}>
+        <Play aria-hidden="true"/>
+        <span>Start Fast</span>
       </button>
     </div>
-
-    <div className="inactive-fast-copy">
-      <span className="fast-stage inactive-stage">
-        <Timer/>
-        Fasting journey
-      </span>
-
-      <h3>Your fasting circle is ready</h3>
-
-      <p>
-        Every phase starts untouched and grey. As elapsed fasting time
-        reaches a phase, its marker illuminates and its detailed
-        explanation becomes available.
-      </p>
-
-      <div className="inactive-fast-rules">
-        <span>
-          <i className="rule-grey"/>
-          Grey means not reached
-        </span>
-        <span>
-          <i className="rule-colour"/>
-          Colour means reached
-        </span>
-        <span>
-          <i className="rule-glow"/>
-          Glow marks the current phase
-        </span>
-      </div>
-    </div>
   </article>
+}
+
+function InactivePhaseCard(){
+  return <section className="fast-current-phase compact-phase-card inactive-phase-card">
+    <div className="inactive-phase-icon" aria-hidden="true"><Sparkles/></div>
+    <div>
+      <small>CURRENT PHASE</small>
+      <h2>Fasting journey ready</h2>
+      <p>Start a fast to begin tracking elapsed time and unlocking each fasting milestone.</p>
+    </div>
+  </section>
 }
 
 function PhasePanel({phase,elapsed,onClose}){const reached=elapsed>=phase.hour;const remaining=Math.max(0,phase.hour-elapsed);return <div className="fast-phase-panel" style={{'--phase':phase.color}}><button className="phase-close" onClick={onClose}><X/></button><FastingVisual type={phase.image}/><div className="phase-copy"><small>{phase.hour}-HOUR PHASE</small><h2>{phase.icon} {phase.title}</h2><p className="phase-lead">{phase.short}</p>{!reached?<div className="phase-locked"><b>{remaining.toFixed(1)} hours remaining</b><p>Continue this fast to illuminate the phase and open the full explanation.</p></div>:<><h3>What may be happening</h3>{phase.body.map((p,i)=><p key={i}>{p}</p>)}<h3>Scientific context</h3>{phase.science.map((p,i)=><p key={i}>{p}</p>)}<div className="phase-caution"><b>Important</b><p>These are approximate educational ranges, not measurements or medical advice. Stop a fast if you feel unwell and follow guidance appropriate to your health and medication.</p></div></>}</div></div>}
@@ -394,10 +345,10 @@ export default function FastingPage(){const [sessions,setSessions]=useState(read
     </select>
     <ChevronDown/>
   </label>
-</div><Ring fast={active} now={now} onPhase={setPhase} onEditStart={()=>setStartEditor(active)} onEnd={endFast}/></article><section className="fast-current-phase compact-phase-card" style={{'--phase':current.color}}><FastingVisual type={current.image}/><div><small>CURRENT PHASE</small><h2>{current.icon} {current.title}</h2><p>{current.short}</p><button onClick={()=>setPhase(current)}>Read the detailed explanation</button></div></section></>:<InactiveFastingRing
-  onStart={start}
-  onPhase={setPhase}
-/>}<FastingCalendar sessions={sessions} now={now} onEditFast={fast=>setEditor({mode:'edit',session:fast})} onChooseDate={date=>setEditor({mode:'previous',prefillDate:date})}/><FastingMetabolicInputs/><FastingGlycemicFoundation sessions={sessions}/><FastingAnalytics sessions={sessions}/>{startEditor&&<QuickStartEditor
+</div><Ring fast={active} now={now} onPhase={setPhase} onEditStart={()=>setStartEditor(active)} onEnd={endFast}/></article><section className="fast-current-phase compact-phase-card" style={{'--phase':current.color}}><FastingVisual type={current.image}/><div><small>CURRENT PHASE</small><h2>{current.icon} {current.title}</h2><p>{current.short}</p><button onClick={()=>setPhase(current)}>Read the detailed explanation</button></div></section></>:<>
+  <InactiveFastingRing onStart={start} onPhase={setPhase}/>
+  <InactivePhaseCard/>
+</>}<FastingCalendar sessions={sessions} now={now} onEditFast={fast=>setEditor({mode:'edit',session:fast})} onChooseDate={date=>setEditor({mode:'previous',prefillDate:date})}/><FastingMetabolicInputs/><FastingGlycemicFoundation sessions={sessions}/><FastingAnalytics sessions={sessions}/>{startEditor&&<QuickStartEditor
   fast={startEditor}
   sessions={sessions}
   onClose={()=>setStartEditor(null)}

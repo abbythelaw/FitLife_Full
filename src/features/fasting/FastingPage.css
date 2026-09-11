@@ -4611,3 +4611,854 @@
     padding: 20px !important;
   }
 }
+
+
+/* FASTING PATCH 49 INACTIVE RESPONSIVE LAYOUT */
+.inactive-layered-card{
+  box-sizing:border-box!important;
+  position:relative!important;
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  height:570px!important;
+  min-height:570px!important;
+  max-height:570px!important;
+  padding:18px!important;
+  overflow:hidden!important;
+  background:var(--card)!important;
+}
+
+.compact-inactive-target{
+  position:absolute!important;
+  z-index:20!important;
+  top:14px!important;
+  right:14px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+}
+
+.compact-inactive-target label{
+  min-width:108px!important;
+  min-height:36px!important;
+  padding:0 30px 0 10px!important;
+  border:1px solid #36566a!important;
+  border-radius:999px!important;
+  background:#0c171b!important;
+}
+
+.compact-inactive-target label::before{content:none!important}
+.compact-inactive-target label>span{font-size:8px!important}
+.compact-inactive-target select{min-width:58px!important;font-size:12px!important;text-align:center!important;text-align-last:center!important}
+.compact-inactive-target svg{right:9px!important;width:14px!important}
+
+.inactive-layered-instrument{
+  display:grid!important;
+  grid-template-rows:390px 52px!important;
+  justify-items:center!important;
+  align-content:start!important;
+  width:100%!important;
+  height:100%!important;
+  padding-top:38px!important;
+}
+
+.inactive-layered-ring{
+  position:relative!important;
+  width:340px!important;
+  height:340px!important;
+  min-width:340px!important;
+  min-height:340px!important;
+  aspect-ratio:1/1!important;
+  border-radius:50%!important;
+}
+
+.inactive-layered-svg{
+  position:absolute!important;
+  z-index:1!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  overflow:visible!important;
+}
+
+.inactive-layered-track{
+  fill:none!important;
+  stroke:#52616b!important;
+  stroke-width:24!important;
+  stroke-linecap:round!important;
+  filter:drop-shadow(0 0 3px rgba(0,0,0,.34))!important;
+}
+
+.inactive-layered-milestone{
+  box-sizing:border-box!important;
+  position:absolute!important;
+  z-index:5!important;
+  left:50%!important;
+  top:50%!important;
+  display:grid!important;
+  place-content:center!important;
+  gap:1px!important;
+  width:44px!important;
+  height:44px!important;
+  min-width:44px!important;
+  min-height:44px!important;
+  max-width:44px!important;
+  max-height:44px!important;
+  aspect-ratio:1/1!important;
+  margin:-22px!important;
+  padding:0!important;
+  border:2px solid #839098!important;
+  border-radius:50%!important;
+  background:#34434b!important;
+  color:#d4dde0!important;
+  transform:rotate(var(--node-angle)) translate(151px) rotate(calc(-1*var(--node-angle)))!important;
+  box-shadow:0 3px 9px rgba(0,0,0,.34)!important;
+  cursor:pointer!important;
+}
+
+.inactive-layered-milestone span{
+  display:block!important;
+  color:#d8e0e3!important;
+  font-size:15px!important;
+  line-height:1!important;
+  filter:grayscale(.72)!important;
+  opacity:.82!important;
+}
+
+.inactive-layered-milestone b{
+  color:#d0d9dc!important;
+  font-size:8px!important;
+  line-height:1!important;
+}
+
+.inactive-layered-milestone:hover,
+.inactive-layered-milestone:focus-visible{
+  outline:0!important;
+  border-color:#b2c0c5!important;
+  background:#40515a!important;
+}
+
+.inactive-layered-centre{
+  position:absolute!important;
+  z-index:3!important;
+  inset:28%!important;
+  display:grid!important;
+  place-content:center!important;
+  justify-items:center!important;
+  gap:3px!important;
+  border:0!important;
+  border-radius:50%!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  text-align:center!important;
+}
+
+.inactive-layered-centre strong{
+  color:#f0f4f5!important;
+  font-size:36px!important;
+  line-height:1!important;
+}
+
+.inactive-layered-centre small{
+  color:#8fa0a7!important;
+  font-size:12px!important;
+}
+
+.inactive-layered-start{
+  box-sizing:border-box!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:9px!important;
+  width:auto!important;
+  min-width:148px!important;
+  height:48px!important;
+  min-height:48px!important;
+  margin:0!important;
+  padding:0 18px!important;
+  border:0!important;
+  border-radius:14px!important;
+  background:var(--primary)!important;
+  color:#07110a!important;
+  font-weight:900!important;
+  line-height:1!important;
+  box-shadow:0 7px 18px color-mix(in srgb,var(--primary) 18%,transparent)!important;
+}
+
+.inactive-layered-start svg{
+  display:block!important;
+  width:20px!important;
+  height:20px!important;
+  min-width:20px!important;
+  fill:currentColor!important;
+  stroke-width:2!important;
+}
+
+.inactive-layered-start span{
+  display:inline!important;
+  width:auto!important;
+  height:auto!important;
+  overflow:visible!important;
+  clip:auto!important;
+  white-space:nowrap!important;
+}
+
+.inactive-phase-card{
+  --phase:#52616b!important;
+  grid-template-columns:86px minmax(0,1fr)!important;
+  height:190px!important;
+  min-height:190px!important;
+  max-height:190px!important;
+  gap:16px!important;
+  padding:16px!important;
+  border-color:#344852!important;
+}
+
+.inactive-phase-icon{
+  display:grid!important;
+  place-items:center!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  border-radius:16px!important;
+  background:linear-gradient(145deg,#132933,#0b1a21)!important;
+  color:#91a2a9!important;
+}
+
+.inactive-phase-icon svg{width:32px!important;height:32px!important}
+.inactive-phase-card h2{margin:6px 0 8px!important;font-size:21px!important}
+.inactive-phase-card p{margin:0!important;color:var(--muted)!important;font-size:11px!important;line-height:1.5!important}
+
+/* Do not render any legacy inactive onboarding column. */
+.inactive-fast-copy,
+.inactive-fast-rules,
+.inactive-fast-ring-column,
+.inactive-journey-wrap{
+  display:none!important;
+}
+
+@media(min-width:1051px){
+  .inactive-layered-card{grid-column:1!important;grid-row:2!important}
+  .inactive-phase-card{grid-column:1!important;grid-row:3!important}
+}
+
+/* iPad landscape keeps the same left-column ring/current-phase and right calendar. */
+@media(min-width:851px) and (max-width:1050px) and (orientation:landscape){
+  .fasting-page{
+    grid-template-columns:minmax(420px,.95fr) minmax(430px,1.05fr)!important;
+    grid-template-rows:auto 540px 170px auto!important;
+    column-gap:16px!important;
+    row-gap:16px!important;
+  }
+  .fasting-heading{grid-column:1/-1!important;grid-row:1!important}
+  .inactive-layered-card{grid-column:1!important;grid-row:2!important;height:540px!important;min-height:540px!important;max-height:540px!important}
+  .inactive-phase-card{grid-column:1!important;grid-row:3!important;height:170px!important;min-height:170px!important;max-height:170px!important}
+  .fast-calendar-card.exercises-style-calendar{grid-column:2!important;grid-row:2/4!important;height:726px!important;min-height:726px!important;max-height:726px!important}
+  .fast-metabolic-inputs,.glycemic-foundation,.fast-analytics-card{grid-column:1/-1!important}
+  .inactive-layered-instrument{grid-template-rows:360px 50px!important;padding-top:34px!important}
+  .inactive-layered-ring{width:310px!important;height:310px!important;min-width:310px!important;min-height:310px!important}
+  .inactive-layered-milestone{width:42px!important;height:42px!important;min-width:42px!important;min-height:42px!important;max-width:42px!important;max-height:42px!important;margin:-21px!important;transform:rotate(var(--node-angle)) translate(138px) rotate(calc(-1*var(--node-angle)))!important}
+}
+
+/* iPad portrait and phone stack in one column. */
+@media(max-width:850px), (max-width:1050px) and (orientation:portrait){
+  .inactive-layered-card,
+  .inactive-phase-card,
+  .fast-calendar-card.exercises-style-calendar{
+    grid-column:1!important;
+    grid-row:auto!important;
+    width:100%!important;
+    max-width:none!important;
+  }
+  .inactive-layered-card{height:525px!important;min-height:525px!important;max-height:525px!important}
+  .inactive-phase-card{height:auto!important;min-height:150px!important;max-height:none!important}
+}
+
+@media(max-width:650px){
+  .inactive-layered-card{height:450px!important;min-height:450px!important;max-height:450px!important;padding:12px!important}
+  .inactive-layered-instrument{grid-template-rows:300px 48px!important;padding-top:34px!important}
+  .inactive-layered-ring{width:250px!important;height:250px!important;min-width:250px!important;min-height:250px!important}
+  .inactive-layered-track{stroke-width:20px!important}
+  .inactive-layered-milestone{width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;max-width:36px!important;max-height:36px!important;margin:-18px!important;transform:rotate(var(--node-angle)) translate(111px) rotate(calc(-1*var(--node-angle)))!important}
+  .inactive-layered-milestone span{font-size:12px!important}.inactive-layered-milestone b{font-size:7px!important}
+  .inactive-layered-centre strong{font-size:29px!important}.inactive-layered-centre small{font-size:10px!important}
+  .inactive-layered-start{min-width:138px!important;height:46px!important;min-height:46px!important;padding-inline:15px!important}
+  .compact-inactive-target label{min-width:94px!important;min-height:34px!important}
+  .inactive-phase-card{grid-template-columns:70px minmax(0,1fr)!important;min-height:135px!important;padding:12px!important}
+  .inactive-phase-card h2{font-size:18px!important}
+}
+
+/* FASTING PATCH 50 IPAD CONTENT-WIDTH SAFETY */
+
+/* Never let the Fasting page push the application outside the viewport. */
+.fasting-page {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 1500px !important;
+  min-width: 0 !important;
+  overflow-x: clip !important;
+}
+
+.fasting-page > *,
+.fast-hero,
+.inactive-fast-hero,
+.inactive-layered-card,
+.inactive-phase-card,
+.fast-current-phase,
+.fast-calendar-card,
+.fast-metabolic-inputs,
+.glycemic-foundation,
+.fast-analytics-card {
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+/*
+ * Use the desktop two-column dashboard only when there is genuinely
+ * enough width after the FitLife navigation rail and browser chrome.
+ */
+@media (min-width: 1281px) {
+  .fasting-page {
+    display: grid !important;
+    grid-template-columns:
+      minmax(420px, 0.93fr)
+      minmax(500px, 1.07fr) !important;
+    column-gap: 18px !important;
+    row-gap: 18px !important;
+  }
+
+  .fasting-heading {
+    grid-column: 1 / -1 !important;
+    grid-row: 1 !important;
+  }
+
+  .inactive-layered-card,
+  .fast-hero {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+  }
+
+  .inactive-phase-card,
+  .fast-current-phase.compact-phase-card {
+    grid-column: 1 !important;
+    grid-row: 3 !important;
+  }
+
+  .fast-calendar-card.exercises-style-calendar {
+    grid-column: 2 !important;
+    grid-row: 2 / 4 !important;
+  }
+
+  .fast-metabolic-inputs,
+  .glycemic-foundation,
+  .fast-analytics-card {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+/*
+ * iPad, browser split-screen and narrow desktop panes:
+ * stack instead of forcing two minimum-width columns.
+ */
+@media (max-width: 1280px) {
+  .fasting-page {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: none !important;
+    gap: 16px !important;
+    padding-inline: clamp(10px, 2vw, 20px) !important;
+  }
+
+  .fasting-heading,
+  .fast-hero,
+  .inactive-fast-hero,
+  .inactive-layered-card,
+  .fast-current-phase.compact-phase-card,
+  .inactive-phase-card,
+  .fast-calendar-card.exercises-style-calendar,
+  .fast-metabolic-inputs,
+  .glycemic-foundation,
+  .fast-analytics-card {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    margin-inline: 0 !important;
+  }
+
+  .inactive-layered-card {
+    min-height: 520px !important;
+  }
+
+  .inactive-phase-card {
+    min-height: 150px !important;
+  }
+
+  .fast-calendar-card.exercises-style-calendar {
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+}
+
+/* Additional protection for narrow iPad split-screen panes. */
+@media (max-width: 850px) {
+  .fasting-page {
+    padding: 10px !important;
+    gap: 12px !important;
+  }
+
+  .fasting-heading {
+    display: grid !important;
+    gap: 12px !important;
+  }
+
+  .fasting-heading-actions {
+    width: 100% !important;
+  }
+
+  .inactive-layered-card {
+    min-height: 455px !important;
+    padding: 12px !important;
+  }
+
+  .inactive-phase-card {
+    grid-template-columns: 72px minmax(0, 1fr) !important;
+    min-height: 135px !important;
+    padding: 12px !important;
+  }
+
+  .inactive-layered-ring {
+    max-width: calc(100vw - 52px) !important;
+    max-height: calc(100vw - 52px) !important;
+  }
+}
+
+/* Prevent any child from producing page-level horizontal scrolling. */
+html,
+body,
+#root {
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+
+/* PATCH 50 REAL WIDTH FIX */
+
+@media (max-width: 1400px) {
+
+  .fasting-page{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    grid-template-rows:none !important;
+
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+
+    gap:16px !important;
+  }
+
+  .fasting-heading,
+  .fast-hero,
+  .inactive-fast-hero,
+  .inactive-layered-card,
+  .fast-current-phase,
+  .inactive-phase-card,
+  .fast-calendar-card,
+  .fast-metabolic-inputs,
+  .glycemic-foundation,
+  .fast-analytics-card{
+
+    grid-column:1 !important;
+    grid-row:auto !important;
+
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+  }
+}
+
+.fasting-page,
+.fast-hero,
+.inactive-fast-hero,
+.fast-current-phase,
+.inactive-phase-card,
+.fast-calendar-card{
+  min-width:0 !important;
+  max-width:100% !important;
+}
+
+html,
+body,
+#root{
+  overflow-x:hidden !important;
+}
+
+
+/* PATCH 50 REAL WIDTH FIX */
+
+@media (max-width: 1400px) {
+
+  .fasting-page{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    grid-template-rows:none !important;
+
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+
+    gap:16px !important;
+  }
+
+  .fasting-heading,
+  .fast-hero,
+  .inactive-fast-hero,
+  .inactive-layered-card,
+  .fast-current-phase,
+  .inactive-phase-card,
+  .fast-calendar-card,
+  .fast-metabolic-inputs,
+  .glycemic-foundation,
+  .fast-analytics-card{
+
+    grid-column:1 !important;
+    grid-row:auto !important;
+
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+  }
+}
+
+.fasting-page,
+.fast-hero,
+.inactive-fast-hero,
+.fast-current-phase,
+.inactive-phase-card,
+.fast-calendar-card{
+  min-width:0 !important;
+  max-width:100% !important;
+}
+
+html,
+body,
+#root{
+  overflow-x:hidden !important;
+}
+
+
+/* FASTING PHASE IMAGE CLASS MAPPING FIX */
+
+/*
+ * Actual JSX mappings:
+ * 4h  = meal
+ * 8h  = balance
+ * 12h = fuel
+ * 16h = flow
+ * 18h = brain
+ * 24h = cell
+ * 36h = adapt
+ * 48h = deep
+ * 72h = long
+ */
+
+.fast-phase-art.art-meal {
+  background-image: url('/assets/fasting-phases/phase-4h.jpg') !important;
+}
+
+.fast-phase-art.art-balance {
+  background-image: url('/assets/fasting-phases/phase-8h.jpg') !important;
+}
+
+.fast-phase-art.art-fuel {
+  background-image: url('/assets/fasting-phases/phase-12h.jpg') !important;
+}
+
+.fast-phase-art.art-flow {
+  background-image: url('/assets/fasting-phases/phase-16h.jpg') !important;
+}
+
+.fast-phase-art.art-brain {
+  background-image: url('/assets/fasting-phases/phase-18h.jpg') !important;
+}
+
+.fast-phase-art.art-cell {
+  background-image: url('/assets/fasting-phases/phase-24h.jpg') !important;
+}
+
+.fast-phase-art.art-adapt {
+  background-image: url('/assets/fasting-phases/phase-36h.jpg') !important;
+}
+
+.fast-phase-art.art-deep {
+  background-image: url('/assets/fasting-phases/phase-48h.jpg') !important;
+}
+
+.fast-phase-art.art-long {
+  background-image: url('/assets/fasting-phases/phase-72h.jpg') !important;
+}
+
+/* Current Phase thumbnail fills its compact visual area. */
+.fast-current-phase.compact-phase-card > .fast-phase-art {
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+}
+
+/* Detailed phase panel displays the complete artwork. */
+.fast-phase-panel > .fast-phase-art {
+  padding: 0 !important;
+  background-color: #06131b !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: contain !important;
+}
+
+/* Remove obsolete generated shapes from both image locations. */
+.fast-phase-art::before,
+.fast-phase-art::after,
+.fast-phase-art > .art-body,
+.fast-phase-art > .art-orbit,
+.fast-phase-art > .art-particle {
+  content: none !important;
+  display: none !important;
+}
+
+
+/* FASTING PATCH 50 THUMBNAILS AND RESTORED HERO ART */
+
+/* =========================================================
+   SMALL CURRENT PHASE CARD
+   Use the approved JPG images as compact full-bleed thumbnails.
+   Actual JSX image classes: meal, balance, fuel, flow, brain,
+   cell, adapt, deep and long.
+   ========================================================= */
+.fast-current-phase.compact-phase-card > .fast-phase-art.art-meal {
+  background-image: url('/assets/fasting-phases/phase-4h.jpg') !important;
+}
+.fast-current-phase.compact-phase-card > .fast-phase-art.art-balance {
+  background-image: url('/assets/fasting-phases/phase-8h.jpg') !important;
+}
+.fast-current-phase.compact-phase-card > .fast-phase-art.art-fuel {
+  background-image: url('/assets/fasting-phases/phase-12h.jpg') !important;
+}
+.fast-current-phase.compact-phase-card > .fast-phase-art.art-flow {
+  background-image: url('/assets/fasting-phases/phase-16h.jpg') !important;
+}
+.fast-current-phase.compact-phase-card > .fast-phase-art.art-brain {
+  background-image: url('/assets/fasting-phases/phase-18h.jpg') !important;
+}
+.fast-current-phase.compact-phase-card > .fast-phase-art.art-cell {
+  background-image: url('/assets/fasting-phases/phase-24h.jpg') !important;
+}
+.fast-current-phase.compact-phase-card > .fast-phase-art.art-adapt {
+  background-image: url('/assets/fasting-phases/phase-36h.jpg') !important;
+}
+.fast-current-phase.compact-phase-card > .fast-phase-art.art-deep {
+  background-image: url('/assets/fasting-phases/phase-48h.jpg') !important;
+}
+.fast-current-phase.compact-phase-card > .fast-phase-art.art-long {
+  background-image: url('/assets/fasting-phases/phase-72h.jpg') !important;
+}
+
+.fast-current-phase.compact-phase-card > .fast-phase-art {
+  background-color: #06131b !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  box-shadow: inset 0 0 18px rgba(0,0,0,.22) !important;
+}
+
+/* The compact thumbnail uses only the JPG. */
+.fast-current-phase.compact-phase-card > .fast-phase-art::before,
+.fast-current-phase.compact-phase-card > .fast-phase-art::after,
+.fast-current-phase.compact-phase-card > .fast-phase-art > .art-body,
+.fast-current-phase.compact-phase-card > .fast-phase-art > .art-orbit,
+.fast-current-phase.compact-phase-card > .fast-phase-art > .art-particle {
+  content: none !important;
+  display: none !important;
+}
+
+/* =========================================================
+   LARGE PHASE DETAILS POPUP
+   Restore the original generated orbital artwork. JPG images
+   are deliberately removed from this large presentation.
+   Actual popup markup: .fast-phase-panel > .fast-phase-art
+   ========================================================= */
+.fast-phase-panel > .fast-phase-art {
+  --hero-phase: var(--phase, #58d68d);
+  position: relative !important;
+  isolation: isolate !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 520px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-right: 1px solid var(--line) !important;
+  border-radius: 0 !important;
+  background-color: #06131b !important;
+  background-image:
+    radial-gradient(circle at 50% 48%, color-mix(in srgb,var(--phase) 28%,transparent), transparent 29%),
+    radial-gradient(circle at 50% 48%, color-mix(in srgb,var(--phase) 13%,transparent), transparent 52%),
+    linear-gradient(145deg,#071c22,#07151d 58%,#07130f) !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  box-shadow: inset 0 0 55px rgba(0,0,0,.35) !important;
+}
+
+/* Soft atmospheric rings behind the original illustration. */
+.fast-phase-panel > .fast-phase-art::before,
+.fast-phase-panel > .fast-phase-art::after {
+  content: '' !important;
+  display: block !important;
+  position: absolute !important;
+  z-index: 1 !important;
+  left: 50% !important;
+  top: 50% !important;
+  translate: -50% -50% !important;
+  width: 72% !important;
+  height: 72% !important;
+  border: 1px solid color-mix(in srgb,var(--phase) 32%,transparent) !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  box-shadow: 0 0 42px color-mix(in srgb,var(--phase) 10%,transparent) !important;
+  pointer-events: none !important;
+}
+.fast-phase-panel > .fast-phase-art::after {
+  width: 52% !important;
+  height: 52% !important;
+  border-color: color-mix(in srgb,var(--phase) 20%,transparent) !important;
+}
+
+/* Restore the original central body/orb. */
+.fast-phase-panel > .fast-phase-art > .art-body {
+  position: absolute !important;
+  z-index: 4 !important;
+  display: block !important;
+  left: 50% !important;
+  top: 50% !important;
+  width: 92px !important;
+  height: 164px !important;
+  translate: -50% -38% !important;
+  border-radius: 46% 46% 32% 32% !important;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb,var(--phase) 23%,#e8fbff) 0%,
+      color-mix(in srgb,var(--phase) 54%,#7aaac4) 54%,
+      color-mix(in srgb,var(--phase) 38%,#17333d) 100%
+    ) !important;
+  box-shadow:
+    0 0 24px color-mix(in srgb,var(--phase) 42%,transparent),
+    inset 0 0 20px rgba(255,255,255,.16) !important;
+  opacity: .96 !important;
+}
+
+.fast-phase-panel > .fast-phase-art > .art-body::before {
+  content: '' !important;
+  display: block !important;
+  position: absolute !important;
+  left: 50% !important;
+  top: -48px !important;
+  width: 68px !important;
+  height: 68px !important;
+  translate: -50% 0 !important;
+  border-radius: 50% !important;
+  background:
+    radial-gradient(circle at 36% 28%,#f3fdff 0 10%,color-mix(in srgb,var(--phase) 30%,#d5f6ff) 42%,color-mix(in srgb,var(--phase) 48%,#315666) 100%) !important;
+  box-shadow: 0 0 22px color-mix(in srgb,var(--phase) 45%,transparent) !important;
+}
+
+/* Restore both orbital paths. */
+.fast-phase-panel > .fast-phase-art > .art-orbit {
+  position: absolute !important;
+  z-index: 3 !important;
+  display: block !important;
+  left: 50% !important;
+  top: 50% !important;
+  width: 72% !important;
+  height: 32% !important;
+  translate: -50% -50% !important;
+  border: 1px solid color-mix(in srgb,var(--phase) 78%,#dfffea) !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  box-shadow: 0 0 13px color-mix(in srgb,var(--phase) 25%,transparent) !important;
+  opacity: .9 !important;
+}
+.fast-phase-panel > .fast-phase-art > .art-orbit.one {
+  rotate: -18deg !important;
+}
+.fast-phase-panel > .fast-phase-art > .art-orbit.two {
+  width: 78% !important;
+  height: 38% !important;
+  rotate: 34deg !important;
+  opacity: .68 !important;
+}
+
+/* Restore visible phase-coloured particles. */
+.fast-phase-panel > .fast-phase-art > .art-particle {
+  position: absolute !important;
+  z-index: 5 !important;
+  display: block !important;
+  width: 13px !important;
+  height: 13px !important;
+  border-radius: 50% !important;
+  background: var(--phase) !important;
+  box-shadow:
+    0 0 0 4px color-mix(in srgb,var(--phase) 12%,transparent),
+    0 0 18px var(--phase) !important;
+  opacity: .95 !important;
+}
+.fast-phase-panel > .fast-phase-art > .art-particle.p1 {
+  left: 22% !important;
+  top: 31% !important;
+}
+.fast-phase-panel > .fast-phase-art > .art-particle.p2 {
+  right: 19% !important;
+  top: 47% !important;
+}
+.fast-phase-panel > .fast-phase-art > .art-particle.p3 {
+  left: 31% !important;
+  bottom: 18% !important;
+}
+
+/* Different large-art compositions by phase, while keeping one language. */
+.fast-phase-panel > .fast-phase-art.art-meal > .art-body { border-radius: 52% 48% 46% 54% / 42% 42% 58% 58% !important; }
+.fast-phase-panel > .fast-phase-art.art-balance > .art-orbit.one { rotate: 0deg !important; }
+.fast-phase-panel > .fast-phase-art.art-fuel > .art-body { background: radial-gradient(circle at 35% 30%,#ffd275,#ff8b36 46%,#9b311f 100%) !important; border-radius: 50% !important; height: 108px !important; }
+.fast-phase-panel > .fast-phase-art.art-flow > .art-body { border-radius: 68% 32% 58% 42% / 76% 45% 55% 24% !important; rotate: 35deg !important; }
+.fast-phase-panel > .fast-phase-art.art-brain > .art-body { border-radius: 48% 54% 46% 52% !important; height: 112px !important; }
+.fast-phase-panel > .fast-phase-art.art-cell > .art-orbit.one { border-width: 9px !important; border-left-color: transparent !important; }
+.fast-phase-panel > .fast-phase-art.art-adapt > .art-body { width: 34px !important; border-radius: 60% 60% 24% 24% !important; }
+.fast-phase-panel > .fast-phase-art.art-deep > .art-body { clip-path: polygon(50% 0,61% 34%,98% 22%,72% 50%,98% 78%,61% 66%,50% 100%,39% 66%,2% 78%,28% 50%,2% 22%,39% 34%) !important; border-radius: 0 !important; height: 120px !important; }
+.fast-phase-panel > .fast-phase-art.art-long > .art-body { width: 105px !important; height: 105px !important; border-radius: 50% !important; background: radial-gradient(circle,#ffe397 0 10%,#a56cf4 11% 25%,transparent 26% 39%,rgba(165,108,244,.5) 40% 45%,transparent 46% 60%,rgba(241,185,74,.55) 61% 65%,transparent 66%) !important; }
+
+@media (max-width:850px) {
+  .fast-phase-panel > .fast-phase-art {
+    min-height: 270px !important;
+    height: 320px !important;
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--line) !important;
+  }
+  .fast-phase-panel > .fast-phase-art > .art-body {
+    scale: .78 !important;
+  }
+}
+
+@media (max-width:520px) {
+  .fast-phase-panel > .fast-phase-art {
+    min-height: 230px !important;
+    height: 240px !important;
+  }
+  .fast-phase-panel > .fast-phase-art > .art-body {
+    scale: .64 !important;
+  }
+}

@@ -594,3 +594,158 @@ body.fl-peek-open .fl-peek-backdrop { display: block !important; }
 
 /* Final Bundle Visible Peek Rail */
 .app>aside{background:#06111a!important}.app>aside :is(nav,.nav,.sidebar-nav)>:is(button,a) svg{width:34px!important;min-width:34px!important;height:34px!important;padding:7px!important;border:1px solid rgba(255,255,255,.16)!important;border-radius:11px!important;background:#182630!important;color:#f8fafc!important;opacity:1!important}.app>aside :is(nav,.nav,.sidebar-nav)>:is(button,a).active svg,.app>aside :is(nav,.nav,.sidebar-nav)>:is(button,a)[aria-current="page"] svg{background:linear-gradient(135deg,#4ade80,#22c55e)!important;color:#04120a!important;box-shadow:0 0 12px rgba(34,197,94,.4)!important}.app>aside:not(:hover):not(:focus-within):not(.open):not([data-peek-open="true"]) :is(nav,.nav,.sidebar-nav){width:var(--fl-peek-width)!important;min-width:var(--fl-peek-width)!important;padding-inline:5px!important}.app>aside:not(:hover):not(:focus-within):not(.open):not([data-peek-open="true"]) :is(nav,.nav,.sidebar-nav)>:is(button,a){width:46px!important;min-width:46px!important;max-width:46px!important;padding:0!important;margin:0 auto!important;justify-content:center!important}.app{grid-template-columns:none!important;padding-left:var(--fl-peek-width)!important}
+
+/* FITLIFE COLORFUL NAVIGATION ICONS */
+.app > aside nav > button {
+  --nav-color: #94a3b8;
+  --nav-bg: rgba(148,163,184,.13);
+}
+
+/* Snapshot */
+.app > aside nav > button:nth-child(1) {
+  --nav-color: #38bdf8;
+  --nav-bg: rgba(56,189,248,.16);
+}
+
+/* My Life */
+.app > aside nav > button:nth-child(2) {
+  --nav-color: #f59e0b;
+  --nav-bg: rgba(245,158,11,.16);
+}
+
+/* Health Metrics */
+.app > aside nav > button:nth-child(3) {
+  --nav-color: #fb7185;
+  --nav-bg: rgba(251,113,133,.16);
+}
+
+/* Exercises */
+.app > aside nav > button:nth-child(4) {
+  --nav-color: #a78bfa;
+  --nav-bg: rgba(167,139,250,.16);
+}
+
+/* Sports */
+.app > aside nav > button:nth-child(5) {
+  --nav-color: #22d3ee;
+  --nav-bg: rgba(34,211,238,.16);
+}
+
+/* Habits */
+.app > aside nav > button:nth-child(6) {
+  --nav-color: #4ade80;
+  --nav-bg: rgba(74,222,128,.16);
+}
+
+/* Fasting */
+.app > aside nav > button:nth-child(7) {
+  --nav-color: #fb923c;
+  --nav-bg: rgba(251,146,60,.17);
+}
+
+/* Log History */
+.app > aside nav > button:nth-child(8) {
+  --nav-color: #60a5fa;
+  --nav-bg: rgba(96,165,250,.16);
+}
+
+/* Grateful */
+.app > aside nav > button:nth-child(9) {
+  --nav-color: #f472b6;
+  --nav-bg: rgba(244,114,182,.16);
+}
+
+/* Settings */
+.app > aside nav > button:nth-child(10) {
+  --nav-color: #cbd5e1;
+  --nav-bg: rgba(203,213,225,.14);
+}
+
+/* Icon tile in expanded and collapsed rail states. */
+.app > aside :is(nav,.nav,.sidebar-nav) > :is(button,a) svg,
+.app > aside:not(:hover):not(:focus-within):not(.open):not([data-peek-open="true"])
+  :is(nav,.nav,.sidebar-nav) > :is(button,a) svg {
+  border-color: color-mix(in srgb, var(--nav-color) 38%, transparent) !important;
+  background: var(--nav-bg) !important;
+  color: var(--nav-color) !important;
+  opacity: 1 !important;
+  box-shadow:
+    0 2px 8px rgba(0,0,0,.28),
+    0 0 10px color-mix(in srgb, var(--nav-color) 10%, transparent) !important;
+}
+
+/* Match expanded labels to the module colour without reducing readability. */
+.app > aside :is(nav,.nav,.sidebar-nav) > :is(button,a) .fl-nav-label {
+  color: color-mix(in srgb, var(--nav-color) 72%, #f8fafc) !important;
+}
+
+/* Hover keeps each module's own colour. */
+.app > aside :is(nav,.nav,.sidebar-nav) > :is(button,a):hover svg {
+  border-color: color-mix(in srgb, var(--nav-color) 65%, white) !important;
+  background: color-mix(in srgb, var(--nav-color) 25%, #111827) !important;
+  color: color-mix(in srgb, var(--nav-color) 82%, white) !important;
+  box-shadow: 0 0 14px color-mix(in srgb, var(--nav-color) 30%, transparent) !important;
+}
+
+/* Active item remains colourful instead of every module becoming green. */
+.app > aside :is(nav,.nav,.sidebar-nav) > :is(button,a).active,
+.app > aside :is(nav,.nav,.sidebar-nav) > :is(button,a)[aria-current="page"] {
+  border-color: color-mix(in srgb, var(--nav-color) 42%, transparent) !important;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--nav-color) 22%, transparent),
+    color-mix(in srgb, var(--nav-color) 8%, transparent)
+  ) !important;
+  color: var(--nav-color) !important;
+  box-shadow:
+    inset 3px 0 0 var(--nav-color),
+    0 0 18px color-mix(in srgb, var(--nav-color) 14%, transparent) !important;
+}
+
+.app > aside :is(nav,.nav,.sidebar-nav) > :is(button,a).active svg,
+.app > aside :is(nav,.nav,.sidebar-nav) > :is(button,a)[aria-current="page"] svg {
+  border-color: color-mix(in srgb, var(--nav-color) 72%, white) !important;
+  background: var(--nav-color) !important;
+  color: #061019 !important;
+  box-shadow: 0 0 14px color-mix(in srgb, var(--nav-color) 46%, transparent) !important;
+}
+
+/* SOLID COLOR NAV ICONS */
+.app > aside nav > button:nth-child(1){--nav-color:#38bdf8}
+.app > aside nav > button:nth-child(2){--nav-color:#f59e0b}
+.app > aside nav > button:nth-child(3){--nav-color:#fb7185}
+.app > aside nav > button:nth-child(4){--nav-color:#8b5cf6}
+.app > aside nav > button:nth-child(5){--nav-color:#06b6d4}
+.app > aside nav > button:nth-child(6){--nav-color:#22c55e}
+.app > aside nav > button:nth-child(7){--nav-color:#f97316}
+.app > aside nav > button:nth-child(8){--nav-color:#3b82f6}
+.app > aside nav > button:nth-child(9){--nav-color:#ec4899}
+.app > aside nav > button:nth-child(10){--nav-color:#94a3b8}
+
+.app > aside :is(nav,.nav,.sidebar-nav) > :is(button,a) svg{
+  background:var(--nav-color)!important;
+  color:#fff!important;
+  border-color:transparent!important;
+  box-shadow:none!important;
+}
+
+.app > aside :is(nav,.nav,.sidebar-nav) > :is(button,a):hover svg{
+  filter:brightness(1.08)!important;
+}
+
+.app > aside :is(nav,.nav,.sidebar-nav) > :is(button,a).active svg,
+.app > aside :is(nav,.nav,.sidebar-nav) > :is(button,a)[aria-current="page"] svg{
+  background:var(--nav-color)!important;
+  color:#fff!important;
+  transform:scale(1.08)!important;
+  box-shadow:0 0 14px color-mix(in srgb,var(--nav-color) 45%,transparent)!important;
+}
+
+/* Make avatar less dominant */
+.fl-rail-avatar{
+  width:34px!important;
+  height:34px!important;
+  flex-basis:34px!important;
+  border-radius:10px!important;
+  font-size:11px!important;
+}
