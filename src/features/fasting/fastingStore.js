@@ -4,7 +4,16 @@ export function listFasts(){const map=new Map;for(const row of [...parse(localSt
 const duration=row=>Math.max(0,(new Date(row.ended_at||row.expected_end_at||Date.now())-new Date(row.started_at))/36e5)
 function history(row,remove=false){let rows=parse(localStorage.getItem(HISTORY),[]);const id=`fasting:${row.id}`;rows=rows.filter(x=>x.id!==id);if(!remove){const h=duration(row),done=row.status==='completed';rows.unshift({id,source_id:row.id,type:'Fasting',title:done?`${row.protocol||'Custom'} fast completed`:`${row.protocol||'Custom'} fast started`,date:String(row.started_at).slice(0,10),time:String(row.started_at).slice(11,16),displayDate:String(row.started_at).slice(0,10),summary:done?`${h.toFixed(1)}h · ${h>=Number(row.target_hours||0)?'Target met':'Ended early'}`:`Target ${Number(row.target_hours||0).toFixed(1)}h`,status:row.sync_status||'pending'})}localStorage.setItem(HISTORY,JSON.stringify(rows));window.dispatchEvent(new CustomEvent('fitlife:history-changed',{detail:rows}));window.dispatchEvent(new CustomEvent('fitlife:log-history-changed'))}
 export function saveFast(row){const id=row.id||row.client_session_id||crypto.randomUUID();const item={...row,id,client_session_id:row.client_session_id||id,updated_at:new Date().toISOString()};let next=[item,...listFasts().filter(x=>x.id!==id)];if(item.status==='active')next=next.map(x=>x.id!==id&&x.status==='active'?{...x,status:'completed',ended_at:x.ended_at||item.started_at}:x);for(const key of [KEY,LEGACY])localStorage.setItem(key,JSON.stringify(next));history(item);window.dispatchEvent(new CustomEvent('fitlife:fasting-changed',{detail:next}));return item}
-export function deleteFast(row){const next=listFasts().filter(x=>x.id!==row.id);for(const key of [KEY,LEGACY])localStorage.setItem(key,JSON.stringify(next));history(row,true);window.dispatchEvent(new CustomEvent('fitlife:fasting-changed',{detail:next}));return next}
+export async function deleteFast(row){
+  const id=String(row.id||row.client_session_id||row.started_at)
+  const next=listFasts().filter(item=>String(item.id||item.client_session_id||item.started_at)!==id)
+  for(const key of [KEY,LEGACY])localStorage.setItem(key,JSON.stringify(next))
+  history(row,true)
+  window.dispatchEvent(new CustomEvent('fitlife:fasting-changed',{detail:next}))
+  window.dispatchEvent(new CustomEvent('fitlife:fasting-deleted',{detail:{id,row}}))
+  if(window.fitlifeFastingSync?.remove)await window.fitlifeFastingSync.remove(id)
+  return next
+}
 
 
 export function validateFastInterval(candidate, sessions = listFasts()) {

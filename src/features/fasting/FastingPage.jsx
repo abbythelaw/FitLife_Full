@@ -3,7 +3,7 @@ import {CalendarDays,ChevronDown,Clock3,Edit3,Flame,Pause,Play,Plus,Sparkles,Tim
 import './FastingPage.css'
 import FastingMetabolicInputs from './FastingMetabolicInputs'
 import FastingGlycemicFoundation from './FastingGlycemicFoundation'
-import {listFasts,saveFast,validateFastInterval} from './fastingStore'
+import {deleteFast,listFasts,saveFast,validateFastInterval} from './fastingStore'
 import FastingCalendar from './FastingCalendar'
 import FastingAnalytics from './FastingAnalytics'
 
@@ -348,7 +348,7 @@ export default function FastingPage(){const [sessions,setSessions]=useState(read
 </div><Ring fast={active} now={now} onPhase={setPhase} onEditStart={()=>setStartEditor(active)} onEnd={endFast}/></article><section className="fast-current-phase compact-phase-card" style={{'--phase':current.color}}><FastingVisual type={current.image}/><div><small>CURRENT PHASE</small><h2>{current.icon} {current.title}</h2><p>{current.short}</p><button onClick={()=>setPhase(current)}>Read the detailed explanation</button></div></section></>:<>
   <InactiveFastingRing onStart={start} onPhase={setPhase}/>
   <InactivePhaseCard/>
-</>}<FastingCalendar sessions={sessions} now={now} onEditFast={fast=>setEditor({mode:'edit',session:fast})} onChooseDate={date=>setEditor({mode:'previous',prefillDate:date})}/><FastingMetabolicInputs/><FastingGlycemicFoundation sessions={sessions}/><FastingAnalytics sessions={sessions}/>{startEditor&&<QuickStartEditor
+</>}<FastingCalendar sessions={sessions} now={now} onDeleteFast={async fast=>{if(!confirm('Delete this fasting session?'))return;await deleteFast(fast);setSessions(listFasts())}} onEditFast={fast=>setEditor({mode:'edit',session:fast})} onChooseDate={date=>setEditor({mode:'previous',prefillDate:date})}/><FastingMetabolicInputs/><FastingGlycemicFoundation sessions={sessions}/><FastingAnalytics sessions={sessions}/>{startEditor&&<QuickStartEditor
   fast={startEditor}
   sessions={sessions}
   onClose={()=>setStartEditor(null)}

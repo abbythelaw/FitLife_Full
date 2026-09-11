@@ -3,7 +3,7 @@ import { supabase as fitlifeSupabase } from './supabaseClient'
 
 const SYNC_KEYS = [
   'fitlife-habits','fitlife-habit-logs','fitlife-sports-entries','fitlife-sports',
-  'fitlife-fasting-sessions','fitlife-fasting-sessions-v4','fitlife-workout-history',
+  'fitlife-workout-history',
   'fitlife-workout-history-v3','fitlife-routines','fitlife-routines-v2','fitlife-routines-v3',
   'fitlife-health-defs','fitlife-health-defs-v2','fitlife-health-readings',
   'fitlife-log-history','fitlife-grateful-entries','fitlife-snapshot-order',

@@ -2,7 +2,7 @@
 import {supabase} from './supabaseClient'
 const TABLE='fitlife_user_data'
 const KEYS=[
- 'fitlife-fasting-sessions','fitlife-fasting-sessions-v4','fitlife-nutrition-daily',
+ 'fitlife-nutrition-daily',
  'fitlife-fasting-local-readings','fitlife-fasting-metric-mapping',
  'fitlife-health-defs-v2','fitlife-health-readings-v2','fitlife-profile','fitlife-settings'
 ]
