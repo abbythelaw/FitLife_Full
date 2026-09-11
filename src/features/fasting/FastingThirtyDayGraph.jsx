@@ -1,56 +1,16 @@
 
 import {p33DisplayReadings,listNutritionDays,macroContribution} from './fastingNutritionStore'
-
-const META={
- glucose:{label:'Glucose',unit:'mg/dL',colour:'#f97373'},
- rhr:{label:'RHR',unit:'bpm',colour:'#fb7185'},
- weight:{label:'Weight',unit:'kg',colour:'#38bdf8'},
- hba1c:{label:'HbA1c',unit:'%',colour:'#a78bfa'}
-}
+const META={glucose:{label:'Glucose',unit:'mg/dL',colour:'#f97373'},rhr:{label:'RHR',unit:'bpm',colour:'#fb7185'},weight:{label:'Weight',unit:'kg',colour:'#38bdf8'},hba1c:{label:'HbA1c',unit:'%',colour:'#a78bfa'}}
 const dateKey=value=>String(value||'').slice(0,10)
-const recentDates=()=>Array.from({length:30},(_,index)=>{const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-(29-index));return dateKey(d.toISOString())})
-const number=(value,decimals=1)=>Number(value).toLocaleString('en-GB',{minimumFractionDigits:decimals,maximumFractionDigits:decimals})
-
-function baseline(rows,metric){
- const configured=rows.find(row=>row.configured_min!=null||row.configured_max!=null||row.configured_target!=null)
- if(configured){
-  const min=Number(configured.configured_min),max=Number(configured.configured_max),target=Number(configured.configured_target)
-  if(Number.isFinite(min)&&Number.isFinite(max))return {kind:'configured',min,max,label:'Configured range'}
-  if(Number.isFinite(target))return {kind:'configured',min:target,max:target,label:'Configured target'}
- }
- const values=rows.map(row=>Number(row.normalized_value)).filter(Number.isFinite)
- if(values.length>=5){
-  const sorted=[...values].sort((a,b)=>a-b),median=sorted[Math.floor(sorted.length/2)]
-  const deviations=values.map(value=>Math.abs(value-median)).sort((a,b)=>a-b)
-  const mad=deviations[Math.floor(deviations.length/2)]||Math.max(0.1,Math.abs(median)*.02)
-  return {kind:'personal',min:median-mad,max:median+mad,label:'Personal baseline'}
- }
- return null
-}
-
-function DotPlot({metric}){
- const meta=META[metric]
- const rows=p33DisplayReadings(metric)
-  .filter(row=>/^\d{4}-\d{2}-\d{2}$/.test(String(row.normalized_date||''))&&Number.isFinite(Number(row.normalized_value)))
-  .sort((a,b)=>`${a.normalized_date}T${a.normalized_time||'00:00'}`.localeCompare(`${b.normalized_date}T${b.normalized_time||'00:00'}`))
-  .slice(-30)
- const base=baseline(rows,metric)
- const values=[...rows.map(row=>Number(row.normalized_value)),...(base?[base.min,base.max]:[])].filter(Number.isFinite)
- if(!rows.length)return <div className="metric-dot-plot enhanced"><header><b>30D {meta.label}</b></header><div className="metric-graph-empty static"><b>No dated readings</b><span>Link a Health Metric or add a manual reading.</span></div></div>
- const min=Math.min(...values),max=Math.max(...values),range=Math.max(.1,max-min),start=new Date();start.setHours(0,0,0,0);start.setDate(start.getDate()-29)
- const x=row=>Math.max(0,Math.min(100,(new Date(`${row.normalized_date}T${row.normalized_time||'12:00'}`)-start)/(29*86400000)*100))
- const y=value=>(Number(value)-min)/range*76+12
- const latest=[...rows].reverse().slice(0,5)
- return <div className={`metric-dot-plot enhanced metric-${metric}`} style={{'--metric-default':meta.colour}}>
-  <header><div><b>30D {meta.label}</b><small>{base?base.label:'Baseline unavailable'}</small></div><span><i className="solid"/>Linked <i className="hollow"/>Manual</span></header>
-  <div className="dot-plot-stage enhanced-stage">
-   {base&&<span className={`baseline-band ${base.kind}`} style={{bottom:`${y(base.min)}%`,height:`${Math.max(2,y(base.max)-y(base.min))}%`}}><b>{base.label}</b></span>}
-   {rows.map((row,index)=>{const colour=row.display_colour||meta.colour;return <button key={row.attachment_id||row.id||index} className={`reading-plot-dot ${row.display_source}`} style={{left:`${x(row)}%`,bottom:`${y(row.normalized_value)}%`,'--dot-colour':colour}} title={`${row.normalized_date}${row.normalized_time?` ${row.normalized_time}`:''}: ${row.normalized_value} ${row.normalized_unit||meta.unit} · ${row.display_source==='linked'?`Linked: ${row.display_metric_name}`:'Manual'}`}/>})}
-  </div>
-  <div className="plot-axis"><span>{rows[0]?.normalized_date?.slice(5)}</span><span>{rows.at(-1)?.normalized_date?.slice(5)}</span></div>
-  <section className="latest-readings"><h4>Latest readings</h4>{latest.map((row,index)=><button key={row.attachment_id||row.id||index}><span><b>{row.normalized_date}</b><small>{row.normalized_time||'Time not recorded'}</small></span><strong>{number(row.normalized_value,metric==='glucose'||metric==='rhr'?0:1)} {row.normalized_unit||meta.unit}</strong><em className={row.display_source}>{row.display_source==='linked'?`Linked · ${row.display_metric_name}`:'Manual'}</em></button>)}</section>
- </div>
-}
-
-function NutritionBars(){const map=new Map(listNutritionDays().map(row=>[row.date,row])),rows=recentDates().map(date=>map.get(date)).filter(Boolean),max=Math.max(1,...rows.map(row=>Number(row.calories||0)));return <div className="nutrition-30d-bars"><header><b>30D Nutrition</b><span><i className="c"/>Carbs <i className="f"/>Fat <i className="p"/>Protein</span></header><div className="nutrition-target-lines"><i/><i/><i/><i/></div>{rows.slice(-14).map(row=>{const macro=macroContribution(row),width=Number(row.calories||0)/max*100;return <button key={row.date} title={`${row.date}: ${row.calories} kcal`}><small>{row.date.slice(5)}</small><span style={{width:`${width}%`,opacity:row.completeness==='Partial day'?.5:1}}><i className="c" style={{width:`${macro.carbs}%`}}/><i className="f" style={{width:`${macro.fat}%`}}/><i className="p" style={{width:`${macro.protein}%`}}/></span><b>{row.calories} kcal</b></button>})}</div>}
-export default function FastingThirtyDayGraph({tab}){return <section className="fasting-30d-graph">{tab==='nutrition'?<NutritionBars/>:<DotPlot metric={tab}/>}</section>}
+const number=(value,metric)=>Number(value).toLocaleString('en-GB',{minimumFractionDigits:metric==='glucose'||metric==='rhr'?0:1,maximumFractionDigits:metric==='glucose'||metric==='rhr'?0:1})
+const prettyDate=value=>new Date(`${dateKey(value)}T12:00:00`).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})
+function baseline(rows){const configured=rows.find(row=>row.configured_min!=null||row.configured_max!=null||row.configured_target!=null);if(configured){const min=Number(configured.configured_min),max=Number(configured.configured_max),target=Number(configured.configured_target);if(Number.isFinite(min)&&Number.isFinite(max))return{min,max,label:'Configured range'};if(Number.isFinite(target))return{min:target,max:target,label:'Configured target'}}const values=rows.map(row=>Number(row.normalized_value)).filter(Number.isFinite);if(values.length<5)return null;const sorted=[...values].sort((a,b)=>a-b),mid=sorted[Math.floor(sorted.length/2)],dev=values.map(value=>Math.abs(value-mid)).sort((a,b)=>a-b),spread=dev[Math.floor(dev.length/2)]||Math.max(.1,Math.abs(mid)*.02);return{min:mid-spread,max:mid+spread,label:'Personal baseline'}}
+function Legend(){return <span className="adaptive-legend"><i className="linked"/>Linked <i className="manual"/>Manual</span>}
+function Tag({row}){return <em className={row.display_source}>{row.display_source==='linked'?`Linked · ${row.display_metric_name}`:'Manual'}</em>}
+function Latest({rows,metric,limit=5}){const meta=META[metric];return <section className="adaptive-latest"><h4>LATEST READINGS</h4>{[...rows].reverse().slice(0,limit).map((row,index)=><button type="button" key={row.attachment_id||row.id||index}><span><b>{prettyDate(row.normalized_date)}</b><small>{row.normalized_time||'Time not recorded'}</small></span><strong>{number(row.normalized_value,metric)} {row.normalized_unit||meta.unit}</strong><Tag row={row}/></button>)}</section>}
+function Empty({metric}){const meta=META[metric];return <div className="adaptive-plot-card empty" style={{'--metric':meta.colour}}><header><div><b>30D {meta.label}</b><small>{meta.unit}</small></div><Legend/></header><div className="adaptive-empty"><span>⌁</span><b>No dated readings</b><p>Click or double-click a calendar date to link a Health Metric or add a manual reading.</p></div></div>}
+function OneReading({row,metric}){const meta=META[metric],colour=row.display_colour||meta.colour;return <div className="adaptive-plot-card single" style={{'--metric':meta.colour,'--reading':colour}}><header><div><b>30D {meta.label}</b><small>Latest reading</small></div><Legend/></header><div className="adaptive-single"><small>LATEST READING</small><strong>{number(row.normalized_value,metric)} <i>{row.normalized_unit||meta.unit}</i></strong><span className={`adaptive-dot ${row.display_source}`}/><p>{prettyDate(row.normalized_date)} · {row.normalized_time||'Time not recorded'}</p><Tag row={row}/></div><p className="adaptive-hint">Add more readings to see the 30-day trend.</p></div>}
+function Plot({rows,metric,compact}){const meta=META[metric],base=baseline(rows),values=[...rows.map(row=>Number(row.normalized_value)),...(base?[base.min,base.max]:[])],rawMin=Math.min(...values),rawMax=Math.max(...values),pad=Math.max(.5,(rawMax-rawMin)*.2),min=rawMin-pad,max=rawMax+pad,range=Math.max(.1,max-min),start=new Date();start.setHours(0,0,0,0);start.setDate(start.getDate()-29);const x=row=>Math.max(2,Math.min(98,(new Date(`${row.normalized_date}T${row.normalized_time||'12:00'}`)-start)/(29*86400000)*100)),y=value=>(Number(value)-min)/range*76+12;return <div className={`adaptive-plot-card ${compact?'compact':'full'}`} style={{'--metric':meta.colour}}><header><div><b>30D {meta.label}</b><small>{base?base.label:'Baseline unavailable'}</small></div><Legend/></header><div className="adaptive-chart"><div className="adaptive-y"><span>{number(max,metric)}</span><span>{number((max+min)/2,metric)}</span><span>{number(min,metric)}</span></div><div className="adaptive-stage">{base&&<span className="adaptive-band" style={{bottom:`${y(base.min)}%`,height:`${Math.max(2,y(base.max)-y(base.min))}%`}}><b>{base.label}</b></span>}{metric==='weight'&&<svg viewBox="0 0 100 100" preserveAspectRatio="none"><polyline points={rows.map(row=>`${x(row)},${100-y(row.normalized_value)}`).join(' ')}/></svg>}{rows.map((row,index)=><button type="button" key={row.attachment_id||row.id||index} className={`adaptive-dot plotted ${row.display_source}`} style={{left:`${x(row)}%`,bottom:`${y(row.normalized_value)}%`,'--reading':row.display_colour||meta.colour}} title={`${row.normalized_date}: ${row.normalized_value} ${row.normalized_unit||meta.unit}`}/>)}</div></div><div className="adaptive-x"><span>30 days ago</span><span>Today</span></div><Latest rows={rows} metric={metric} limit={compact?3:5}/></div>}
+function MetricGraph({metric}){const rows=p33DisplayReadings(metric).filter(row=>/^\d{4}-\d{2}-\d{2}$/.test(String(row.normalized_date||''))&&Number.isFinite(Number(row.normalized_value))).sort((a,b)=>`${a.normalized_date}T${a.normalized_time||'00:00'}`.localeCompare(`${b.normalized_date}T${b.normalized_time||'00:00'}`)).slice(-30);if(!rows.length)return <Empty metric={metric}/>;if(rows.length===1)return <OneReading row={rows[0]} metric={metric}/>;return <Plot rows={rows} metric={metric} compact={rows.length<=4}/>}
+function NutritionBars(){const dates=Array.from({length:30},(_,index)=>{const d=new Date();d.setDate(d.getDate()-(29-index));return d.toISOString().slice(0,10)}),map=new Map(listNutritionDays().map(row=>[row.date,row])),rows=dates.map(date=>map.get(date)).filter(Boolean),max=Math.max(1,...rows.map(row=>Number(row.calories||0)));return <div className="nutrition-30d-bars"><header><b>30D Nutrition</b><span><i className="c"/>Carbs <i className="f"/>Fat <i className="p"/>Protein</span></header><div className="nutrition-target-lines"><i/><i/><i/><i/></div>{rows.slice(-14).map(row=>{const macro=macroContribution(row),width=Number(row.calories||0)/max*100;return <button key={row.date}><small>{row.date.slice(5)}</small><span style={{width:`${width}%`}}><i className="c" style={{width:`${macro.carbs}%`}}/><i className="f" style={{width:`${macro.fat}%`}}/><i className="p" style={{width:`${macro.protein}%`}}/></span><b>{row.calories} kcal</b></button>})}</div>}
+export default function FastingThirtyDayGraph({tab}){return <section className="fasting-30d-graph adaptive-shell">{tab==='nutrition'?<NutritionBars/>:<MetricGraph metric={tab}/>}</section>}

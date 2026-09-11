@@ -1,3 +1,4 @@
+import {startFitLifeUserDataSync} from './lib/fitlifeUserDataSync.js'
 import './lib/peekRail.js'
 import './styles/peekRail.css'
 import './features/snapshot/habitFastingRefinement.js'
@@ -24,6 +25,7 @@ import AuthGate from './features/auth/AuthGate'
 import GlobalUX from './components/common/GlobalUX'
 import { UnsavedChangesProvider } from './components/common/UnsavedChangesProvider'
 import './lib/fastingSync.js'
+startFitLifeUserDataSync()
 createRoot(document.getElementById('root')).render(<React.StrictMode><UnsavedChangesProvider><AuthGate><GlobalUX/><App/></AuthGate></UnsavedChangesProvider></React.StrictMode>)
 
 import './styles/fitlife-classic.css'

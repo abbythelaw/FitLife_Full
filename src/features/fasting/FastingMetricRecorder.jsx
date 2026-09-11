@@ -169,7 +169,8 @@ function ManualForm({metric,date,existing,linkedCard,onBack,onClose,onSaved,onLi
       date,
       time,
       context,
-      notes
+      notes,
+      metric_card_id:linkedCard?.card_id||null
     }
 
     let row
@@ -211,7 +212,7 @@ function ManualForm({metric,date,existing,linkedCard,onBack,onClose,onSaved,onLi
       <label>Context<input value={context} onChange={e=>setContext(e.target.value)}/></label>
       <label>Notes<textarea value={notes} onChange={e=>setNotes(e.target.value)}/></label>
 
-      {!linkedCard&&<button className="link-later-button" onClick={onLink}>
+      {!linkedCard&&<button type="button" className="link-later-button metric-link-hyperlink" onClick={onLink}>
         <Link2/> Link to Health Metrics
       </button>}
 

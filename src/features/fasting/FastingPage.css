@@ -2907,3 +2907,840 @@
 /* Responsive: stack, never compress circles into collisions. */
 @media(max-width:1050px){.fasting-page{grid-template-columns:1fr!important;grid-template-rows:none!important}.fast-hero,.inactive-fast-hero,.fast-current-phase.compact-phase-card,.fast-calendar-card.exercises-style-calendar{grid-column:1!important;grid-row:auto!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important}.fast-hero,.inactive-fast-hero{min-height:610px!important}}
 @media(max-width:650px){.fast-hero,.inactive-fast-hero{grid-template-rows:340px 66px 50px 48px!important;min-height:550px!important;padding:14px!important}.fast-journey-wrap,.inactive-journey-wrap{height:340px!important;min-height:340px!important;padding-top:44px!important}.fast-journey-ring,.inactive-journey-ring{width:240px!important;height:240px!important;min-width:240px!important;min-height:240px!important}.fast-phase-point,.inactive-journey-ring .fast-phase-point{width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;max-width:36px!important;max-height:36px!important;flex-basis:36px!important;margin:-18px!important;transform:rotate(var(--angle)) translate(120px) rotate(calc(-1*var(--angle)))!important}.fast-ring-times{width:min(100%,320px)!important;height:66px!important}.fast-ring-times>button,.fast-ring-times>span{height:66px!important;min-height:66px!important;padding:9px!important}.fast-ring-times b{font-size:11px!important}.fast-hero-copy,.inactive-fast-copy{width:min(100%,320px)!important;grid-template-columns:minmax(0,1fr) 44px!important}.icon-fast-control,.end-fast,.inactive-start-fast{width:44px!important;min-width:44px!important;height:44px!important;min-height:44px!important}.fast-current-phase.compact-phase-card{grid-template-columns:90px minmax(0,1fr)!important;height:auto!important;min-height:155px!important;padding:11px!important}.fast-current-phase.compact-phase-card .fast-phase-art{height:132px!important;min-height:132px!important}.fast-current-phase.compact-phase-card h2{font-size:17px!important}}
+
+
+/* FASTING FINAL APPROVED DESIGN P36 */
+@media(min-width:1051px){
+ .fasting-page{grid-template-columns:minmax(440px,.93fr) minmax(520px,1.07fr)!important;grid-template-rows:auto 610px 205px auto!important;gap:18px!important;align-items:start!important}
+ .fasting-heading{grid-column:1/-1!important;grid-row:1!important}
+ .fast-hero,.inactive-fast-hero{grid-column:1!important;grid-row:2!important;height:610px!important;min-height:610px!important;max-height:610px!important}
+ .fast-current-phase.compact-phase-card{grid-column:1!important;grid-row:3!important;height:205px!important;min-height:205px!important;max-height:205px!important}
+ .fast-calendar-card.exercises-style-calendar{grid-column:2!important;grid-row:2/4!important;height:833px!important;min-height:833px!important;max-height:833px!important}
+ .fast-metabolic-inputs,.glycemic-foundation,.fast-analytics-card{grid-column:1/-1!important}
+}
+.fast-hero{position:relative!important;display:block!important;padding:18px!important;overflow:hidden!important;background:radial-gradient(circle at 50% 36%,color-mix(in srgb,var(--phase) 9%,transparent),transparent 38%),var(--card)!important}
+.fast-hero-copy{display:none!important}.fast-protocol-row{top:14px!important;right:14px!important;z-index:30!important}.fast-protocol-row label{min-width:96px!important;min-height:34px!important;padding:0 28px 0 9px!important}.fast-protocol-row label::before{content:'◷'!important;margin-right:5px!important;font-size:12px!important}.fast-protocol-row select{font-size:12px!important;padding:7px 0!important}.fast-protocol-row svg{right:8px!important;width:14px!important}
+.revised-fast-instrument{display:grid!important;grid-template-rows:410px 64px 44px!important;align-content:start!important;justify-items:center!important;width:100%!important;height:100%!important;min-height:0!important;padding:42px 0 0!important;margin:0!important;translate:none!important}
+.revised-journey-ring{position:relative!important;width:340px!important;height:340px!important;min-width:340px!important;min-height:340px!important;max-width:340px!important;max-height:340px!important;aspect-ratio:1/1!important;border-radius:50%!important;background:#30383d!important;background-image:none!important;box-shadow:0 0 28px color-mix(in srgb,var(--phase) 14%,transparent)!important}
+.revised-journey-ring::before{inset:16px!important;background:#06120e!important;box-shadow:inset 0 0 34px #0009!important}
+.revised-ring-center{inset:25%!important;cursor:default!important}.revised-ring-center strong{font-size:38px!important}.revised-ring-center small{font-size:13px!important}.revised-ring-center em{margin-top:9px!important;color:#fb923c!important;font-size:12px!important;font-style:normal!important;font-weight:900!important;letter-spacing:.04em!important}.revised-ring-center i{display:none!important}
+.fast-phase-point.embedded{box-sizing:border-box!important;width:46px!important;height:46px!important;min-width:46px!important;min-height:46px!important;max-width:46px!important;max-height:46px!important;aspect-ratio:1/1!important;margin:-23px!important;padding:0!important;border-radius:50%!important;flex:0 0 46px!important;transform:rotate(var(--angle)) translate(170px) rotate(calc(-1*var(--angle)))!important;display:grid!important;place-content:center!important;gap:1px!important}.fast-phase-point.embedded span{font-size:17px!important}.fast-phase-point.embedded b{font-size:8px!important}.fast-phase-point.embedded.locked{background:#20282d!important;border-color:#53606a!important;color:#98a1a7!important;box-shadow:0 2px 8px #0008!important}.fast-phase-point.embedded.locked span{filter:grayscale(1)!important;opacity:.65!important}.fast-phase-point.embedded.reached{background:color-mix(in srgb,var(--phase) 22%,#13221c)!important;border-color:var(--phase)!important;color:#fff!important}.fast-phase-point.embedded.current{box-shadow:0 0 0 4px color-mix(in srgb,var(--phase) 20%,transparent),0 0 18px var(--phase)!important}
+.fast-progress-marker{--marker-angle:-90deg;position:absolute!important;z-index:12!important;left:50%!important;top:50%!important;width:12px!important;height:12px!important;margin:-6px!important;border:2px solid #dfffea!important;border-radius:50%!important;background:#54e78b!important;box-shadow:0 0 12px #54e78b!important;transform:rotate(var(--marker-angle)) translate(170px) rotate(calc(-1*var(--marker-angle)))!important}
+.revised-ring-times{display:grid!important;grid-template-columns:1fr 1fr!important;gap:34px!important;width:min(100%,410px)!important;height:64px!important;margin:0!important}.revised-ring-times>button,.revised-ring-times>span{position:relative!important;display:grid!important;align-content:center!important;gap:4px!important;height:64px!important;min-height:64px!important;padding:7px 10px!important;border:0!important;border-radius:0!important;background:transparent!important}.revised-ring-times>button:first-child,.revised-ring-times>span:first-child{border-right:1px solid var(--line)!important}.revised-ring-times small{font-size:9px!important;color:#4ade80!important}.revised-ring-times b{font-size:13px!important}.revised-ring-times svg{position:absolute!important;right:9px!important;bottom:9px!important;width:14px!important;color:#4ade80!important}.revised-end-fast{display:grid!important;place-items:center!important;width:42px!important;height:42px!important;margin:2px 0 0!important;padding:0!important;border:1px solid color-mix(in srgb,var(--primary) 60%,var(--line))!important;border-radius:12px!important;background:color-mix(in srgb,var(--primary) 12%,var(--card2))!important;color:var(--primary)!important}
+.fast-current-phase.compact-phase-card{grid-template-columns:138px minmax(0,1fr)!important;gap:15px!important;padding:14px!important;overflow:hidden!important}.fast-current-phase.compact-phase-card .fast-phase-art{width:100%!important;height:177px!important;min-height:177px!important;max-height:177px!important}.fast-current-phase.compact-phase-card h2{font-size:20px!important}.fast-current-phase.compact-phase-card p{display:-webkit-box!important;-webkit-line-clamp:3!important;-webkit-box-orient:vertical!important;overflow:hidden!important;font-size:10px!important}.fast-current-phase.compact-phase-card button{min-height:38px!important}
+.fast-calendar-data-dots{position:absolute!important;left:50%!important;bottom:4px!important;translate:-50% 0!important;display:flex!important;align-items:center!important;gap:3px!important;height:7px!important}.fast-calendar-data-dots i,.fast-calendar-dot-legend i{width:6px!important;height:6px!important;border-radius:50%!important}.fast-calendar-data-dots small{display:inline!important;font-size:6px!important;color:var(--muted)!important}.fast-calendar-data-dots .fast,.fast-calendar-dot-legend .fast{background:#7dcc4a!important}.fast-calendar-data-dots .nutrition,.fast-calendar-dot-legend .nutrition{background:#328bd2!important}.fast-calendar-data-dots .glucose,.fast-calendar-dot-legend .glucose{background:#f97373!important}.fast-calendar-data-dots .rhr,.fast-calendar-dot-legend .rhr{background:#ec4899!important}.fast-calendar-data-dots .weight,.fast-calendar-dot-legend .weight{background:#27c2bd!important}.fast-calendar-data-dots .hba1c,.fast-calendar-dot-legend .hba1c{background:#7c3aed!important}.fast-calendar-dot-legend{display:flex!important;flex-wrap:wrap!important;gap:8px 14px!important;margin:11px 0!important;padding-top:9px!important;border-top:1px solid var(--line)!important;color:var(--muted)!important;font-size:8px!important}.fast-calendar-dot-legend span{display:flex!important;align-items:center!important;gap:5px!important}.fast-month-day.future{opacity:.2!important;filter:blur(.3px) saturate(.35)!important;pointer-events:none!important}
+.metric-link-hyperlink{border:0!important;background:transparent!important;color:var(--primary)!important;text-decoration:underline!important;text-underline-offset:3px!important;padding:6px 0!important}.metabolic-month-grid>button{touch-action:manipulation!important}.metric-choice-drawer,.metric-card-picker{height:auto!important;min-height:0!important;max-height:calc(100dvh - 40px)!important;margin:auto!important}.metric-choice-actions{margin-bottom:0!important}
+@media(max-width:1050px){.fasting-page{grid-template-columns:1fr!important}.fast-hero,.inactive-fast-hero,.fast-current-phase.compact-phase-card,.fast-calendar-card.exercises-style-calendar{grid-column:1!important;grid-row:auto!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important}.fast-hero{min-height:575px!important}.revised-fast-instrument{grid-template-rows:390px 62px 44px!important}.revised-journey-ring{width:310px!important;height:310px!important;min-width:310px!important;min-height:310px!important}.fast-phase-point.embedded{width:42px!important;height:42px!important;min-width:42px!important;min-height:42px!important;max-width:42px!important;max-height:42px!important;margin:-21px!important;transform:rotate(var(--angle)) translate(155px) rotate(calc(-1*var(--angle)))!important}.fast-progress-marker{transform:rotate(var(--marker-angle)) translate(155px) rotate(calc(-1*var(--marker-angle)))!important}}
+@media(max-width:650px){.fasting-page{padding:10px!important;gap:12px!important}.fast-hero{min-height:500px!important;padding:12px!important}.revised-fast-instrument{grid-template-rows:330px 62px 42px!important;padding-top:38px!important}.revised-journey-ring{width:250px!important;height:250px!important;min-width:250px!important;min-height:250px!important}.fast-phase-point.embedded{width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;max-width:36px!important;max-height:36px!important;margin:-18px!important;transform:rotate(var(--angle)) translate(125px) rotate(calc(-1*var(--angle)))!important}.fast-progress-marker{width:10px!important;height:10px!important;margin:-5px!important;transform:rotate(var(--marker-angle)) translate(125px) rotate(calc(-1*var(--marker-angle)))!important}.revised-ring-center strong{font-size:29px!important}.revised-ring-times{width:min(100%,300px)!important;gap:18px!important}.revised-ring-times b{font-size:11px!important}.fast-current-phase.compact-phase-card{grid-template-columns:86px minmax(0,1fr)!important;height:auto!important;min-height:145px!important}.fast-current-phase.compact-phase-card .fast-phase-art{height:122px!important;min-height:122px!important}.fast-calendar-card .fast-recent-list>button:nth-of-type(n+4){display:none!important}}
+
+
+/* FASTING PATCH 37 TIMER SWITCH AND ADAPTIVE PLOTS */
+.revised-ring-center{border:0!important;background:transparent!important;color:var(--text)!important;cursor:pointer!important}.revised-ring-center:hover,.revised-ring-center:focus-visible{outline:2px solid color-mix(in srgb,var(--primary) 50%,transparent)!important;outline-offset:5px!important}.adaptive-shell{height:auto!important;min-height:0!important;padding:0!important;border:0!important;background:transparent!important}.adaptive-plot-card{box-sizing:border-box;display:grid;gap:12px;width:100%;padding:17px;border:1px solid color-mix(in srgb,var(--metric) 25%,var(--line));border-radius:19px;background:var(--card2)}.adaptive-plot-card>header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.adaptive-plot-card>header>div{display:grid;gap:3px}.adaptive-plot-card>header small{color:var(--muted);font-size:8px}.adaptive-legend{display:flex;align-items:center;gap:5px;color:var(--muted);font-size:8px}.adaptive-legend i{width:9px;height:9px;border:2px solid var(--metric);border-radius:50%}.adaptive-legend i.linked{background:var(--metric)}.adaptive-empty{display:grid;place-items:center;align-content:center;gap:9px;min-height:250px;padding:25px;text-align:center}.adaptive-empty>span{font-size:36px;color:var(--metric)}.adaptive-empty p,.adaptive-hint{max-width:290px;margin:0 auto;color:var(--muted);font-size:10px;line-height:1.5;text-align:center}.adaptive-single{display:grid;place-items:center;gap:9px;min-height:255px;padding:24px;border:1px solid var(--line);border-radius:16px;background:var(--card);text-align:center}.adaptive-single>small{color:var(--primary);font-size:9px;font-weight:900}.adaptive-single>strong{font-size:clamp(30px,4vw,43px)}.adaptive-single>strong i{font-size:16px;font-style:normal}.adaptive-single p{margin:0;color:var(--muted);font-size:10px}.adaptive-dot{box-sizing:border-box;width:13px;height:13px;min-width:13px;min-height:13px;border:2px solid var(--reading,var(--metric));border-radius:50%;background:var(--reading,var(--metric));box-shadow:0 0 9px color-mix(in srgb,var(--reading,var(--metric)) 50%,transparent)}.adaptive-dot.manual{background:var(--card2);box-shadow:0 0 0 2px color-mix(in srgb,var(--reading,var(--metric)) 14%,transparent)}.adaptive-single em,.adaptive-latest em{padding:4px 7px;border-radius:999px;font-size:8px;font-style:normal}.adaptive-single em.linked,.adaptive-latest em.linked{background:color-mix(in srgb,var(--metric) 14%,var(--card));color:var(--metric)}.adaptive-single em.manual,.adaptive-latest em.manual{border:1px solid var(--line);color:var(--muted)}.adaptive-chart{display:grid;grid-template-columns:42px minmax(0,1fr);height:220px}.adaptive-plot-card.compact .adaptive-chart{height:165px}.adaptive-y{display:flex;flex-direction:column;justify-content:space-between;padding-right:7px;color:var(--muted);font-size:8px;text-align:right}.adaptive-stage{position:relative;overflow:hidden;border-left:1px solid var(--line);border-bottom:1px solid var(--line);background:repeating-linear-gradient(to top,transparent 0,transparent calc(33.33% - 1px),rgba(255,255,255,.05) 33.33%)}.adaptive-dot.plotted{position:absolute;z-index:3;translate:-50% 50%;padding:0}.adaptive-band{position:absolute;z-index:1;left:0;right:0;min-height:2px;border-block:1px dashed color-mix(in srgb,var(--metric) 40%,transparent);background:color-mix(in srgb,var(--metric) 6%,transparent)}.adaptive-band b{position:absolute;top:2px;right:4px;color:var(--muted);font-size:7px}.adaptive-stage svg{position:absolute;z-index:2;inset:0;width:100%;height:100%}.adaptive-stage polyline{fill:none;stroke:color-mix(in srgb,var(--metric) 55%,transparent);stroke-width:1.3;vector-effect:non-scaling-stroke}.adaptive-x{display:flex;justify-content:space-between;padding-left:42px;color:var(--muted);font-size:8px}.adaptive-latest{display:grid;border-top:1px solid var(--line)}.adaptive-latest h4{margin:11px 0 4px;color:var(--primary);font-size:9px;letter-spacing:.08em}.adaptive-latest>button{display:grid;grid-template-columns:minmax(115px,.8fr) minmax(90px,.6fr) minmax(120px,1fr);align-items:center;gap:8px;width:100%;min-height:40px;padding:6px 2px;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--text);text-align:left}.adaptive-latest>button span{display:grid}.adaptive-latest small{color:var(--muted);font-size:8px}.adaptive-latest strong{font-size:10px}.adaptive-latest em{justify-self:end}.adaptive-plot-card.empty{min-height:340px}.adaptive-plot-card.single{min-height:410px}.adaptive-plot-card.compact{min-height:380px}.adaptive-plot-card.full{min-height:510px}@media(max-width:650px){.adaptive-plot-card{padding:13px}.adaptive-plot-card>header{display:grid}.adaptive-latest>button{grid-template-columns:1fr auto}.adaptive-latest em{grid-column:1/-1;justify-self:start}.adaptive-plot-card.single{min-height:380px}}
+
+
+/* FASTING PATCH 38 MOCKUP ALIGNMENT */
+/* Dark track + precise green-to-cyan arc. The roaming dot shares the same endpoint. */
+.revised-journey-ring{
+  background:
+    conic-gradient(from 0deg,#45d66f 0deg,#22d3b6 var(--arc),#30383d var(--arc) 360deg)!important;
+  box-shadow:0 0 24px rgba(55,211,122,.12)!important;
+}
+.revised-journey-ring[data-complete="true"]{
+  background:conic-gradient(from 0deg,#45d66f,#22d3b6 48%,#45d66f 100%)!important;
+}
+/* Nodes overlap the track by half their diameter, visually embedded rather than floating. */
+.fast-phase-point.embedded{border-width:2px!important;background:#152027!important}
+.fast-phase-point.embedded.reached{background:color-mix(in srgb,var(--phase) 20%,#112019)!important}
+/* Reduce dead space and integrate the end control beside the Started/Goal row. */
+@media(min-width:1051px){
+  .fasting-page{grid-template-rows:auto 570px 190px auto!important}
+  .fast-hero,.inactive-fast-hero{height:570px!important;min-height:570px!important;max-height:570px!important}
+  .fast-current-phase.compact-phase-card{height:190px!important;min-height:190px!important;max-height:190px!important}
+  .fast-calendar-card.exercises-style-calendar{height:778px!important;min-height:778px!important;max-height:778px!important}
+}
+.revised-fast-instrument{grid-template-rows:385px 68px!important;padding-top:38px!important}
+.revised-end-fast{position:absolute!important;right:18px!important;bottom:18px!important;margin:0!important}
+.revised-ring-times{padding-right:54px!important;gap:24px!important}
+.revised-ring-times>button,.revised-ring-times>span{padding-inline:8px!important}
+/* Calendar controls and dots */
+.fast-calendar-month-head{grid-template-columns:42px 1fr auto 42px!important}
+.fast-calendar-today{width:auto!important;min-width:66px!important;padding-inline:12px!important;border:1px solid #286b42!important;background:transparent!important;color:#65d67d!important;font-size:10px!important}
+.fast-calendar-data-dots{z-index:4!important;bottom:4px!important;height:6px!important}
+.fast-calendar-data-dots i,.fast-calendar-dot-legend i{display:block!important;width:6px!important;height:6px!important;min-width:6px!important;min-height:6px!important;max-width:6px!important;max-height:6px!important;margin:0!important;padding:0!important;border:0!important;border-radius:50%!important;box-shadow:none!important;transform:none!important}
+.fast-calendar-data-dots .data-fast,.fast-calendar-dot-legend .data-fast{background:#7dcc4a!important}
+.fast-calendar-data-dots .data-nutrition,.fast-calendar-dot-legend .data-nutrition{background:#328bd2!important}
+.fast-calendar-data-dots .data-glucose,.fast-calendar-dot-legend .data-glucose{background:#f97373!important}
+.fast-calendar-data-dots .data-rhr,.fast-calendar-dot-legend .data-rhr{background:#ec4899!important}
+.fast-calendar-data-dots .data-weight,.fast-calendar-dot-legend .data-weight{background:#27c2bd!important}
+.fast-calendar-data-dots .data-hba1c,.fast-calendar-dot-legend .data-hba1c{background:#7c3aed!important}
+.fast-calendar-dot-legend{align-items:center!important;min-height:24px!important}
+.fast-calendar-dot-legend span{font-size:8px!important}
+/* Recent fasts match the approved compact rows. */
+.fast-recent-list>button{grid-template-columns:minmax(88px,1fr) 58px 64px auto 16px!important;gap:8px!important}
+.fast-recent-list>button em{justify-self:end;padding:3px 8px;border:1px solid #286b42;border-radius:999px;color:#65d67d;font-size:8px;font-style:normal}
+.fast-view-all-fasts{display:flex!important;justify-content:center!important;align-items:center!important;gap:6px!important;width:100%!important;min-height:34px!important;border:0!important;background:transparent!important;color:#65d67d!important;font-size:10px!important}
+.fast-view-all-fasts svg{width:13px!important}
+/* Warm compact phase illustration instead of the tall blue silhouette. */
+.fast-current-phase.compact-phase-card{grid-template-columns:140px minmax(0,1fr)!important;padding:14px!important}
+.fast-current-phase.compact-phase-card .fast-phase-art{position:relative!important;height:162px!important;min-height:162px!important;max-height:162px!important;background:radial-gradient(circle at 34% 37%,#ffb347 0 8%,#d85224 9% 14%,transparent 15%),radial-gradient(circle at 66% 28%,#ff7b36 0 6%,#8f2e20 7% 12%,transparent 13%),radial-gradient(circle at 62% 66%,#ffb347 0 10%,#b93c24 11% 17%,transparent 18%),radial-gradient(circle at 30% 70%,#f46c2c 0 7%,#6e221d 8% 13%,transparent 14%),linear-gradient(145deg,#29120c,#100b0a)!important}
+.fast-current-phase.compact-phase-card .art-body,.fast-current-phase.compact-phase-card .art-body:before,.fast-current-phase.compact-phase-card .art-orbit,.fast-current-phase.compact-phase-card .art-particle{display:none!important}
+.fast-current-phase.compact-phase-card h2{font-size:19px!important}.fast-current-phase.compact-phase-card p{font-size:10px!important}
+@media(max-width:1050px){.revised-fast-instrument{grid-template-rows:365px 66px!important}.revised-end-fast{right:15px!important;bottom:15px!important}}
+@media(max-width:650px){.fast-hero{min-height:455px!important}.revised-fast-instrument{grid-template-rows:315px 76px!important;padding-top:34px!important}.revised-ring-times{grid-template-columns:1fr!important;gap:0!important;padding-right:48px!important;height:76px!important}.revised-ring-times>button,.revised-ring-times>span{height:38px!important;min-height:38px!important}.revised-ring-times>button:first-child{border-right:0!important;border-bottom:1px solid var(--line)!important}.revised-end-fast{right:12px!important;bottom:20px!important}.fast-calendar-month-head{grid-template-columns:34px 1fr auto 34px!important}.fast-calendar-today{min-width:52px!important;padding-inline:7px!important}.fast-current-phase.compact-phase-card{grid-template-columns:90px minmax(0,1fr)!important}.fast-current-phase.compact-phase-card .fast-phase-art{height:122px!important;min-height:122px!important}.fast-recent-list>button{grid-template-columns:55px 40px 48px auto 12px!important;font-size:8px!important}}
+
+
+/* FASTING PATCH 39 THICK TRACK AND LARGER MARKER */
+
+/*
+ * Visual direction:
+ * - substantial deep-teal track instead of the thin white ring
+ * - green/cyan elapsed section remains clearly visible
+ * - milestone circles sit across the middle of the track
+ * - roaming progress marker is large enough to see
+ */
+.revised-journey-ring {
+  --track-colour: #176583;
+  --track-shadow: #082c3d;
+  --progress-start: #45d66f;
+  --progress-end: #22d3b6;
+
+  background-color: var(--track-colour) !important;
+  background-image: conic-gradient(
+    from 0deg,
+    var(--progress-start) 0deg,
+    var(--progress-end) var(--arc),
+    var(--track-colour) var(--arc),
+    var(--track-colour) 360deg
+  ) !important;
+  box-shadow:
+    0 0 0 3px var(--track-shadow),
+    0 0 30px rgba(34, 211, 182, .13) !important;
+}
+
+/* A wider track, matching the reference sketch. */
+.revised-journey-ring::before {
+  inset: 25px !important;
+  background: #06120e !important;
+  box-shadow:
+    inset 0 0 0 3px #082c3d,
+    inset 0 0 35px rgba(0, 0, 0, .72) !important;
+}
+
+/* Completed fast retains the same substantial geometry. */
+.revised-journey-ring[data-complete="true"] {
+  background-color: #45d66f !important;
+  background-image: conic-gradient(
+    from 0deg,
+    #45d66f 0deg,
+    #22d3b6 52%,
+    #45d66f 100%
+  ) !important;
+}
+
+/*
+ * Milestones straddle the track instead of floating outside it.
+ * Equal dimensions and aspect-ratio prevent oblong shapes.
+ */
+.fast-phase-point.embedded {
+  box-sizing: border-box !important;
+  width: 50px !important;
+  height: 50px !important;
+  min-width: 50px !important;
+  min-height: 50px !important;
+  max-width: 50px !important;
+  max-height: 50px !important;
+  aspect-ratio: 1 / 1 !important;
+  margin: -25px !important;
+  border: 3px solid var(--track-shadow) !important;
+  border-radius: 50% !important;
+  background: #16262d !important;
+  color: #aab5ba !important;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, .52),
+    inset 0 0 0 1px #3d5964 !important;
+}
+
+.fast-phase-point.embedded span {
+  font-size: 17px !important;
+}
+
+.fast-phase-point.embedded b {
+  font-size: 8px !important;
+}
+
+/* Reached milestones become clearly green, similar to the sketch. */
+.fast-phase-point.embedded.reached {
+  border-color: #0a5038 !important;
+  background: #45d66f !important;
+  color: #04150c !important;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, .42),
+    0 0 13px rgba(69, 214, 111, .34) !important;
+}
+
+.fast-phase-point.embedded.reached span {
+  filter: none !important;
+  opacity: 1 !important;
+}
+
+/* Current milestone remains distinct without becoming oversized. */
+.fast-phase-point.embedded.current {
+  border-color: #d8fff0 !important;
+  background: #22d3b6 !important;
+  color: #03130f !important;
+  box-shadow:
+    0 0 0 5px rgba(34, 211, 182, .18),
+    0 0 20px rgba(34, 211, 182, .7) !important;
+}
+
+/* Large roaming endpoint marker. */
+.fast-progress-marker {
+  box-sizing: border-box !important;
+  width: 22px !important;
+  height: 22px !important;
+  min-width: 22px !important;
+  min-height: 22px !important;
+  margin: -11px !important;
+  border: 4px solid #dffff0 !important;
+  border-radius: 50% !important;
+  background: #45d66f !important;
+  box-shadow:
+    0 0 0 5px rgba(69, 214, 111, .16),
+    0 0 18px rgba(69, 214, 111, .82) !important;
+}
+
+/* Keep the marker and milestones centred on the thicker track. */
+@media (min-width: 1051px) {
+  .fast-phase-point.embedded {
+    transform:
+      rotate(var(--angle))
+      translate(170px)
+      rotate(calc(-1 * var(--angle))) !important;
+  }
+
+  .fast-progress-marker {
+    transform:
+      rotate(var(--marker-angle))
+      translate(170px)
+      rotate(calc(-1 * var(--marker-angle))) !important;
+  }
+}
+
+@media (max-width: 1050px) {
+  .revised-journey-ring::before {
+    inset: 23px !important;
+  }
+
+  .fast-phase-point.embedded {
+    width: 46px !important;
+    height: 46px !important;
+    min-width: 46px !important;
+    min-height: 46px !important;
+    max-width: 46px !important;
+    max-height: 46px !important;
+    margin: -23px !important;
+    transform:
+      rotate(var(--angle))
+      translate(155px)
+      rotate(calc(-1 * var(--angle))) !important;
+  }
+
+  .fast-progress-marker {
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px !important;
+    min-height: 20px !important;
+    margin: -10px !important;
+    transform:
+      rotate(var(--marker-angle))
+      translate(155px)
+      rotate(calc(-1 * var(--marker-angle))) !important;
+  }
+}
+
+@media (max-width: 650px) {
+  .revised-journey-ring::before {
+    inset: 19px !important;
+  }
+
+  .fast-phase-point.embedded {
+    width: 39px !important;
+    height: 39px !important;
+    min-width: 39px !important;
+    min-height: 39px !important;
+    max-width: 39px !important;
+    max-height: 39px !important;
+    margin: -19.5px !important;
+    border-width: 2px !important;
+    transform:
+      rotate(var(--angle))
+      translate(125px)
+      rotate(calc(-1 * var(--angle))) !important;
+  }
+
+  .fast-progress-marker {
+    width: 17px !important;
+    height: 17px !important;
+    min-width: 17px !important;
+    min-height: 17px !important;
+    margin: -8.5px !important;
+    border-width: 3px !important;
+    transform:
+      rotate(var(--marker-angle))
+      translate(125px)
+      rotate(calc(-1 * var(--marker-angle))) !important;
+  }
+}
+
+
+/* FASTING PATCH 40 RING REBUILD FINAL */
+.revised-journey-ring{
+  position:relative!important;
+  background:none!important;
+  isolation:isolate!important;
+}
+.revised-journey-ring::before{content:none!important}
+.revised-journey-ring::after{
+  content:''!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:0!important;
+  border-radius:50%!important;
+  background:
+    conic-gradient(
+      from 0deg,
+      #45d66f 0deg,
+      #22d3b6 var(--arc),
+      #176583 var(--arc) 360deg
+    )!important;
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 34px),#000 calc(100% - 33px));
+          mask:radial-gradient(farthest-side,transparent calc(100% - 34px),#000 calc(100% - 33px));
+  box-shadow:0 0 26px rgba(34,211,182,.14)!important;
+}
+.revised-journey-ring[data-complete="true"]::after{
+  background:conic-gradient(from 0deg,#45d66f 0deg,#22d3b6 55%,#45d66f 100%)!important;
+}
+.revised-ring-center{position:relative!important;z-index:2!important}
+.fast-phase-point.embedded{position:absolute!important;left:50%!important;top:50%!important;z-index:3!important;box-sizing:border-box!important;width:50px!important;height:50px!important;min-width:50px!important;min-height:50px!important;max-width:50px!important;max-height:50px!important;aspect-ratio:1/1!important;margin:-25px!important;border:3px solid #082c3d!important;border-radius:50%!important;background:#16262d!important;color:#aab5ba!important;transform:rotate(var(--angle)) translate(170px) rotate(calc(-1*var(--angle)))!important;display:grid!important;place-content:center!important;box-shadow:0 4px 12px rgba(0,0,0,.52),inset 0 0 0 1px #3d5964!important}
+.fast-phase-point.embedded span{font-size:17px!important}.fast-phase-point.embedded b{font-size:8px!important}
+.fast-phase-point.embedded.reached{border-color:#0a5038!important;background:#45d66f!important;color:#04150c!important;box-shadow:0 4px 12px rgba(0,0,0,.42),0 0 13px rgba(69,214,111,.34)!important}
+.fast-phase-point.embedded.reached span{filter:none!important;opacity:1!important}
+.fast-phase-point.embedded.current{border-color:#d8fff0!important;background:#22d3b6!important;color:#03130f!important;box-shadow:0 0 0 5px rgba(34,211,182,.18),0 0 20px rgba(34,211,182,.7)!important}
+.fast-progress-marker{position:absolute!important;left:50%!important;top:50%!important;z-index:4!important;box-sizing:border-box!important;width:22px!important;height:22px!important;min-width:22px!important;min-height:22px!important;margin:-11px!important;border:4px solid #dffff0!important;border-radius:50%!important;background:#45d66f!important;transform:rotate(var(--marker-angle)) translate(170px) rotate(calc(-1*var(--marker-angle)))!important;box-shadow:0 0 0 5px rgba(69,214,111,.16),0 0 18px rgba(69,214,111,.82)!important}
+@media(max-width:1050px){
+  .revised-journey-ring::after{-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 30px),#000 calc(100% - 29px));mask:radial-gradient(farthest-side,transparent calc(100% - 30px),#000 calc(100% - 29px))}
+  .fast-phase-point.embedded{width:46px!important;height:46px!important;min-width:46px!important;min-height:46px!important;max-width:46px!important;max-height:46px!important;margin:-23px!important;transform:rotate(var(--angle)) translate(155px) rotate(calc(-1*var(--angle)))!important}
+  .fast-progress-marker{width:20px!important;height:20px!important;min-width:20px!important;min-height:20px!important;margin:-10px!important;transform:rotate(var(--marker-angle)) translate(155px) rotate(calc(-1*var(--marker-angle)))!important}
+}
+@media(max-width:650px){
+  .revised-journey-ring::after{-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 24px),#000 calc(100% - 23px));mask:radial-gradient(farthest-side,transparent calc(100% - 24px),#000 calc(100% - 23px))}
+  .fast-phase-point.embedded{width:39px!important;height:39px!important;min-width:39px!important;min-height:39px!important;max-width:39px!important;max-height:39px!important;margin:-19.5px!important;border-width:2px!important;transform:rotate(var(--angle)) translate(125px) rotate(calc(-1*var(--angle)))!important}
+  .fast-progress-marker{width:17px!important;height:17px!important;min-width:17px!important;min-height:17px!important;margin:-8.5px!important;border-width:3px!important;transform:rotate(var(--marker-angle)) translate(125px) rotate(calc(-1*var(--marker-angle)))!important}
+}
+
+
+/* FASTING PATCH 41 FINAL RING CONTROLS */
+
+/* Ring centre: no grey disc, no green outline, no browser button chrome. */
+.revised-ring-center,
+.revised-ring-center:hover,
+.revised-ring-center:focus,
+.revised-ring-center:focus-visible,
+.revised-ring-center:active {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  position: absolute !important;
+  z-index: 2 !important;
+  inset: 25% !important;
+  display: grid !important;
+  place-content: center !important;
+  justify-items: center !important;
+  gap: 5px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  outline: 0 !important;
+  outline-offset: 0 !important;
+  background: #06120e !important;
+  background-image: none !important;
+  color: var(--text) !important;
+  box-shadow: inset 0 0 34px rgba(0,0,0,.68) !important;
+  filter: none !important;
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+.revised-ring-center strong {
+  color: #f8fbf9 !important;
+}
+
+.revised-ring-center small {
+  color: #94a39c !important;
+}
+
+.revised-ring-center em {
+  color: #fb923c !important;
+}
+
+/* Track: absolute final authority over all older white-ring rules. */
+.revised-journey-ring {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+.revised-journey-ring::before {
+  content: none !important;
+  display: none !important;
+}
+
+.revised-journey-ring::after {
+  content: '' !important;
+  position: absolute !important;
+  z-index: 1 !important;
+  inset: 0 !important;
+  border-radius: 50% !important;
+  background: conic-gradient(
+    from 0deg,
+    #45d66f 0deg,
+    #22d3b6 var(--arc),
+    #176583 var(--arc),
+    #176583 360deg
+  ) !important;
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 33px),
+    #000 calc(100% - 32px)
+  ) !important;
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 33px),
+    #000 calc(100% - 32px)
+  ) !important;
+  pointer-events: none !important;
+}
+
+/* Milestones and roaming dot sit above the track overlay. */
+.fast-phase-point.embedded {
+  z-index: 4 !important;
+}
+
+.fast-progress-marker {
+  z-index: 5 !important;
+}
+
+/* Started / Goal: a unified compact strip, not two floating blocks. */
+.revised-ring-times {
+  box-sizing: border-box !important;
+  display: grid !important;
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr) !important;
+  gap: 0 !important;
+  width: min(100%, 390px) !important;
+  height: 68px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(83,126,105,.36) !important;
+  border-radius: 14px !important;
+  background: rgba(5,22,15,.66) !important;
+}
+
+.revised-ring-times > button,
+.revised-ring-times > span {
+  box-sizing: border-box !important;
+  position: relative !important;
+  display: grid !important;
+  align-content: center !important;
+  justify-items: start !important;
+  gap: 5px !important;
+  width: 100% !important;
+  height: 68px !important;
+  min-height: 68px !important;
+  margin: 0 !important;
+  padding: 10px 34px 10px 15px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  color: var(--text) !important;
+  text-align: left !important;
+}
+
+.revised-ring-times > button:first-child {
+  border-right: 1px solid rgba(83,126,105,.34) !important;
+}
+
+.revised-ring-times > button:hover,
+.revised-ring-times > button:focus-visible {
+  background: rgba(69,214,111,.055) !important;
+  outline: 0 !important;
+}
+
+.revised-ring-times small {
+  color: #4ade80 !important;
+  font-size: 9px !important;
+  font-weight: 900 !important;
+  letter-spacing: .08em !important;
+}
+
+.revised-ring-times b {
+  overflow: hidden !important;
+  color: #f2f8f4 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.revised-ring-times svg {
+  position: absolute !important;
+  right: 13px !important;
+  bottom: 13px !important;
+  width: 15px !important;
+  height: 15px !important;
+  color: #4ade80 !important;
+}
+
+/* End Fast sits beside the strip, aligned and deliberate. */
+.revised-end-fast {
+  position: absolute !important;
+  right: 18px !important;
+  bottom: 18px !important;
+  z-index: 8 !important;
+  width: 46px !important;
+  min-width: 46px !important;
+  height: 46px !important;
+  min-height: 46px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid #28784a !important;
+  border-radius: 13px !important;
+  background: #0b2a1a !important;
+  color: #57df83 !important;
+  box-shadow: 0 5px 14px rgba(0,0,0,.28) !important;
+}
+
+@media (max-width: 650px) {
+  .revised-ring-times {
+    width: min(100%, 300px) !important;
+    height: 116px !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: 58px 58px !important;
+  }
+
+  .revised-ring-times > button,
+  .revised-ring-times > span {
+    height: 58px !important;
+    min-height: 58px !important;
+    padding: 8px 34px 8px 12px !important;
+  }
+
+  .revised-ring-times > button:first-child {
+    border-right: 0 !important;
+    border-bottom: 1px solid rgba(83,126,105,.34) !important;
+  }
+
+  .revised-end-fast {
+    right: 12px !important;
+    bottom: 52px !important;
+    width: 42px !important;
+    min-width: 42px !important;
+    height: 42px !important;
+    min-height: 42px !important;
+  }
+}
+
+
+/* FASTING PATCH 42 LAYERED SVG RING */
+/*
+  Layer order:
+  1. SVG base track
+  2. SVG progress track
+  3. roaming progress dot
+  4. milestone buttons
+  5. timer centre
+*/
+.layered-fast-instrument{
+  box-sizing:border-box!important;
+  display:grid!important;
+  grid-template-rows:380px 76px!important;
+  justify-items:center!important;
+  align-content:start!important;
+  width:100%!important;
+  height:100%!important;
+  padding:38px 0 0!important;
+  margin:0!important;
+}
+
+.layered-ring{
+  position:relative!important;
+  width:340px!important;
+  height:340px!important;
+  min-width:340px!important;
+  min-height:340px!important;
+  aspect-ratio:1/1!important;
+  border-radius:50%!important;
+  isolation:isolate!important;
+}
+
+.layered-ring-svg{
+  position:absolute!important;
+  z-index:1!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  overflow:visible!important;
+  transform:rotate(-90deg)!important;
+}
+
+.layered-base-track,
+.layered-progress-track{
+  fill:none!important;
+  stroke-width:30!important;
+  stroke-linecap:round!important;
+}
+
+.layered-base-track{
+  stroke:#176583!important;
+  filter:drop-shadow(0 0 3px #082c3d)!important;
+}
+
+.layered-progress-track{
+  stroke:url(#fastingProgressGradient)!important;
+  transition:stroke-dasharray .35s ease!important;
+  filter:drop-shadow(0 0 5px rgba(34,211,182,.23))!important;
+}
+
+.layered-progress-dot{
+  box-sizing:border-box!important;
+  position:absolute!important;
+  z-index:4!important;
+  width:20px!important;
+  height:20px!important;
+  min-width:20px!important;
+  min-height:20px!important;
+  translate:-50% -50%!important;
+  border:4px solid #e4fff0!important;
+  border-radius:50%!important;
+  background:#45d66f!important;
+  box-shadow:0 0 0 5px rgba(69,214,111,.16),0 0 17px rgba(69,214,111,.78)!important;
+  pointer-events:none!important;
+}
+
+.layered-milestone{
+  box-sizing:border-box!important;
+  position:absolute!important;
+  z-index:5!important;
+  left:50%!important;
+  top:50%!important;
+  display:grid!important;
+  place-content:center!important;
+  gap:1px!important;
+  width:48px!important;
+  height:48px!important;
+  min-width:48px!important;
+  min-height:48px!important;
+  max-width:48px!important;
+  max-height:48px!important;
+  aspect-ratio:1/1!important;
+  margin:-24px!important;
+  padding:0!important;
+  border:3px solid #082c3d!important;
+  border-radius:50%!important;
+  background:#16262d!important;
+  color:#9eaaaf!important;
+  transform:rotate(var(--node-angle)) translate(151px) rotate(calc(-1*var(--node-angle)))!important;
+  box-shadow:0 4px 11px rgba(0,0,0,.48),inset 0 0 0 1px #3d5964!important;
+  cursor:pointer!important;
+}
+
+.layered-milestone span{
+  font-size:16px!important;
+  line-height:1!important;
+}
+
+.layered-milestone b{
+  font-size:8px!important;
+  line-height:1!important;
+}
+
+.layered-milestone.locked span{
+  filter:grayscale(1)!important;
+  opacity:.62!important;
+}
+
+.layered-milestone.reached{
+  border-color:#0a5038!important;
+  background:#45d66f!important;
+  color:#04150c!important;
+  box-shadow:0 4px 11px rgba(0,0,0,.42),0 0 11px rgba(69,214,111,.3)!important;
+}
+
+.layered-milestone.current{
+  border-color:#e4fff7!important;
+  background:#22d3b6!important;
+  color:#03130f!important;
+  box-shadow:0 0 0 5px rgba(34,211,182,.18),0 0 19px rgba(34,211,182,.72)!important;
+}
+
+.layered-ring-centre,
+.layered-ring-centre:hover,
+.layered-ring-centre:focus,
+.layered-ring-centre:focus-visible{
+  appearance:none!important;
+  position:absolute!important;
+  z-index:6!important;
+  inset:25%!important;
+  display:grid!important;
+  place-content:center!important;
+  justify-items:center!important;
+  gap:5px!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:50%!important;
+  outline:0!important;
+  background:#06120e!important;
+  color:#f8fbf9!important;
+  box-shadow:inset 0 0 30px rgba(0,0,0,.74)!important;
+  cursor:pointer!important;
+  -webkit-tap-highlight-color:transparent!important;
+}
+
+.layered-ring-centre strong{
+  font-size:38px!important;
+  line-height:1!important;
+}
+
+.layered-ring-centre small{
+  color:#94a39c!important;
+  font-size:12px!important;
+}
+
+.layered-ring-centre em{
+  margin-top:7px!important;
+  color:#fb923c!important;
+  font-size:11px!important;
+  font-style:normal!important;
+  font-weight:900!important;
+  letter-spacing:.04em!important;
+}
+
+.layered-time-strip{
+  box-sizing:border-box!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) 50px!important;
+  align-items:stretch!important;
+  gap:0!important;
+  width:min(100%,430px)!important;
+  height:68px!important;
+  overflow:hidden!important;
+  border:1px solid rgba(83,126,105,.36)!important;
+  border-radius:14px!important;
+  background:rgba(5,22,15,.66)!important;
+}
+
+.layered-started,
+.layered-goal{
+  box-sizing:border-box!important;
+  position:relative!important;
+  display:grid!important;
+  align-content:center!important;
+  gap:5px!important;
+  min-width:0!important;
+  padding:9px 32px 9px 14px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#f2f8f4!important;
+  text-align:left!important;
+}
+
+.layered-started{
+  border-right:1px solid rgba(83,126,105,.34)!important;
+  cursor:pointer!important;
+}
+
+.layered-started:hover,
+.layered-started:focus-visible{
+  outline:0!important;
+  background:rgba(69,214,111,.055)!important;
+}
+
+.layered-started small,
+.layered-goal small{
+  color:#4ade80!important;
+  font-size:9px!important;
+  font-weight:900!important;
+  letter-spacing:.08em!important;
+}
+
+.layered-started b,
+.layered-goal b{
+  overflow:hidden!important;
+  font-size:12px!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+
+.layered-started svg{
+  position:absolute!important;
+  right:11px!important;
+  bottom:11px!important;
+  width:14px!important;
+  color:#4ade80!important;
+}
+
+.layered-end-fast{
+  display:grid!important;
+  place-items:center!important;
+  width:50px!important;
+  min-width:50px!important;
+  height:68px!important;
+  min-height:68px!important;
+  padding:0!important;
+  border:0!important;
+  border-left:1px solid rgba(83,126,105,.34)!important;
+  border-radius:0!important;
+  background:#0b2a1a!important;
+  color:#57df83!important;
+  cursor:pointer!important;
+}
+
+.layered-end-fast:hover,
+.layered-end-fast:focus-visible{
+  outline:0!important;
+  background:#103a24!important;
+}
+
+/* Suppress every older ring implementation after structural replacement. */
+.revised-fast-instrument,
+.revised-journey-ring,
+.revised-ring-times,
+.revised-end-fast,
+.fast-progress-marker,
+.fast-phase-point.embedded,
+.revised-ring-center{
+  display:none!important;
+}
+
+@media(max-width:1050px){
+  .layered-fast-instrument{grid-template-rows:350px 70px!important;padding-top:34px!important}
+  .layered-ring{width:310px!important;height:310px!important;min-width:310px!important;min-height:310px!important}
+  .layered-base-track,.layered-progress-track{stroke-width:27!important}
+  .layered-milestone{width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;max-width:44px!important;max-height:44px!important;margin:-22px!important;transform:rotate(var(--node-angle)) translate(138px) rotate(calc(-1*var(--node-angle)))!important}
+}
+
+@media(max-width:650px){
+  .layered-fast-instrument{grid-template-rows:292px 116px!important;padding-top:30px!important}
+  .layered-ring{width:252px!important;height:252px!important;min-width:252px!important;min-height:252px!important}
+  .layered-base-track,.layered-progress-track{stroke-width:22!important}
+  .layered-milestone{width:37px!important;height:37px!important;min-width:37px!important;min-height:37px!important;max-width:37px!important;max-height:37px!important;margin:-18.5px!important;border-width:2px!important;transform:rotate(var(--node-angle)) translate(112px) rotate(calc(-1*var(--node-angle)))!important}
+  .layered-milestone span{font-size:13px!important}.layered-milestone b{font-size:7px!important}
+  .layered-progress-dot{width:16px!important;height:16px!important;min-width:16px!important;min-height:16px!important;border-width:3px!important}
+  .layered-ring-centre strong{font-size:28px!important}.layered-ring-centre small{font-size:10px!important}.layered-ring-centre em{font-size:9px!important}
+  .layered-time-strip{grid-template-columns:1fr 48px!important;grid-template-rows:58px 58px!important;width:min(100%,300px)!important;height:116px!important}
+  .layered-started,.layered-goal{height:58px!important;min-height:58px!important;padding:7px 30px 7px 11px!important}
+  .layered-started{grid-column:1!important;grid-row:1!important;border-right:0!important;border-bottom:1px solid rgba(83,126,105,.34)!important}
+  .layered-goal{grid-column:1!important;grid-row:2!important}
+  .layered-end-fast{grid-column:2!important;grid-row:1/3!important;width:48px!important;min-width:48px!important;height:116px!important;min-height:116px!important}
+}

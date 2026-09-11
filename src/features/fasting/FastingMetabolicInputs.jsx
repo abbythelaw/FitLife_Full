@@ -525,6 +525,7 @@ export default function FastingMetabolicInputs() {
       'fitlife:metric-mapping-changed',
       refreshHealth
     )
+    window.addEventListener('fitlife:fasting-local-readings-changed',refreshHealth)
     window.addEventListener('storage',refreshNutrition)
     window.addEventListener('storage',refreshHealth)
 
@@ -603,32 +604,37 @@ export default function FastingMetabolicInputs() {
     })
   }
 
-  function handleCalendarActivation(date) {
-    const dateValue = localDateKey(date)
-    const timestamp = Date.now()
-    const previous = calendarTapRef.current
-    const isDouble = previous.date === dateValue && timestamp - previous.time <= 650
 
-    chooseDate(date)
-    calendarTapRef.current = {date:dateValue,time:timestamp}
-
-    if (!isDouble) return
-
-    calendarTapRef.current = {date:'',time:0}
-
-    if (tab === 'nutrition') {
-      inspectDate(date)
-      return
-    }
-
-    const reading = latestForDate(readingsForMetric(tab),dateValue)
-    setMetricRecorder({
-      metric:tab,
-      date:dateValue,
-      existing:reading || null
-    })
+function openDateEditor(date) {
+  const dateValue=localDateKey(date)
+  if(dateValue>localDateKey())return
+  setSelectedDate(dateValue)
+  if(tab==='nutrition'){
+    setEditor(true)
+    return
   }
-
+  const reading=latestForDate(readingsForMetric(tab),dateValue)
+  setMetricRecorder({metric:tab,date:dateValue,existing:reading||null})
+}
+function handleCalendarActivation(date) {
+  const dateValue=localDateKey(date)
+  if(dateValue>localDateKey())return
+  const now=Date.now()
+  const previous=calendarTapRef.current
+  if(previous.timer)clearTimeout(previous.timer)
+  const doubled=previous.key===dateValue&&now-previous.time<=650
+  chooseDate(date)
+  if(doubled){
+    calendarTapRef.current={key:'',time:0,timer:null}
+    openDateEditor(date)
+    return
+  }
+  const timer=setTimeout(()=>{
+    openDateEditor(date)
+    calendarTapRef.current={key:'',time:0,timer:null}
+  },240)
+  calendarTapRef.current={key:dateValue,time:now,timer}
+}
 
   return (
     <section className="fast-metabolic-inputs">
@@ -737,6 +743,7 @@ export default function FastingMetabolicInputs() {
                     tab
                   ].filter(Boolean).join(' ')}
                   onClick={() => handleCalendarActivation(date)}
+                  onDoubleClick={(event)=>{event.preventDefault();openDateEditor(date)}}
                   disabled={future} aria-disabled={future}
                 >
                   <b>{date.getDate()}</b>

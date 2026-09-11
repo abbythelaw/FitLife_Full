@@ -615,37 +615,24 @@ export function saveFastingOnlyReading(input){
   return row
 }
 
-export function saveMappedMetricReading(metric,input){
-  const cards=compatibleHealthMetricCards(metric)
-  const mappings=listMetricMappings()
-  const preferred=mappings[metric]
-  const selected=cards.find(card=>String(card.card_id)===String(preferred?.metric_card_id))||cards[0]
-  if(!selected) return saveFastingOnlyReading({...input,metric_type:metric})
 
+export function saveMappedMetricReading(metric,input){
+  const definitions=healthMetricDefinitions()
+  const preferredId=String(input.metric_card_id||listMetricMappings()[metric]?.metric_card_id||'')
+  const selected=definitions.find(card=>String(card.id||card.card_id)===preferredId)
+    || compatibleHealthMetricCards(metric)[0]
+  if(!selected)return saveFastingOnlyReading({...input,metric_type:metric})
   const key='fitlife-health-readings-v2'
   const existing=parse(localStorage.getItem(key),[])
-  const date=input.date||localDateKey()
-  const time=input.time||'12:00'
-  const row={
-    id:input.id||crypto.randomUUID(),
-    metric_id:selected.id||selected.metric_id||selected.card_id,
-    value:Number(input.value),
-    recorded_at:`${date}T${time}:00`,
-    record_date:date,
-    local_date:date,
-    notes:input.notes||input.context||'',
-    context:input.context||'',
-    source_type:'fasting-linked',
-    updated_at:new Date().toISOString()
-  }
-  const next=[row,...existing.filter(item=>String(item.id)!==String(row.id))]
+  const date=input.date||localDateKey(),time=input.time||'12:00'
+  const id=input.id||crypto.randomUUID()
+  const row={id,metric_id:selected.id||selected.metric_id||selected.card_id,value:Number(input.value),unit:input.unit,recorded_at:`${date}T${time}:00`,record_date:date,local_date:date,notes:input.notes||'',context:input.context||'',source_type:'fasting-linked',updated_at:new Date().toISOString()}
+  const next=[row,...existing.filter(item=>String(item.id)!==String(id))]
   localStorage.setItem(key,JSON.stringify(next))
-  saveMetricMapping(metric,{destination:'health_metrics',metric_card_id:selected.card_id})
+  saveMetricMapping(metric,{destination:'health_metrics',metric_card_id:String(selected.id||selected.card_id)})
   window.dispatchEvent(new CustomEvent('fitlife:health-readings-changed',{detail:next}))
   return {...row,source:'health_metrics'}
 }
-
-
 
 export function allReadingsForMetric(metric){
  const linked=readingsForMetric(metric)
