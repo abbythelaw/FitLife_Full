@@ -156,6 +156,7 @@ function metricComparisonText(metric, rawValue) {
 }
 
 function MetricChart({ metric, data, type = 'line', compact = false }) {
+  if (!Array.isArray(data) || data.length === 0) return <div className="health-chart-empty"><b>No dated readings</b><span>Add a saved reading to begin this graph.</span></div>
   const height = compact ? 142 : 330
   const tick = { fill: 'var(--muted)', fontSize: compact ? 8 : 10 }
   const margin = compact ? { top: 10, right: 12, bottom: 25, left: 2 } : { top: 15, right: 20, bottom: 38, left: 17 }
@@ -213,45 +214,41 @@ function StreakStrip({ metric, data }) {
 }
 
 function MetricCard({ metric, onOpen, onEdit, onDelete }) {
-  const latest = readingsForMetric(metric.id)[0]
+  const savedReadings = readingsForMetric(metric.id)
+  const latest = savedReadings[0] || null
   const liveMetric = {
     ...metric,
-    current: Number(latest?.value ?? metric.current)
+    current: latest ? Number(latest.value) : null
   }
-  const data = generateSeries(liveMetric, 7)
-  const status = targetStatus(liveMetric, liveMetric.current)
-  const previous = data[data.length - 2]?.value ?? liveMetric.current
-  const delta = liveMetric.current - previous
+  const data = savedReadings
+    .slice(0,7)
+    .reverse()
+    .map(row => ({
+      date: row.record_date || row.local_date || row.recorded_at,
+      label: new Date(row.recorded_at || `${row.record_date}T12:00:00`).toLocaleDateString('en-GB',{weekday:'short'}),
+      value: Number(row.value)
+    }))
+    .filter(row => row.date && Number.isFinite(row.value))
+  const status = latest
+    ? targetStatus(liveMetric,liveMetric.current)
+    : {label:'No data',tone:'neutral'}
   return (
     <article className="metric-card" style={{ '--metric': metric.color }} onClick={onOpen}>
       <header>
         <span className="metric-icon">{metric.icon}</span>
         <div>
           <small>{metric.name}</small>
-          <h3>{liveMetric.current.toLocaleString('en-GB', { maximumFractionDigits: metric.decimals })} <i>{metric.unit}</i></h3>
+          <h3>{latest ? liveMetric.current.toLocaleString('en-GB',{maximumFractionDigits:metric.decimals}) : '—'} <i>{metric.unit}</i></h3>
         </div>
-        <button onClick={(event) => { event.stopPropagation(); onEdit() }} aria-label={`Edit ${metric.name}`}><Edit3 size={15} /></button>
+        <button onClick={(event)=>{event.stopPropagation();onEdit()}} aria-label={`Edit ${metric.name}`}><Edit3 size={15}/></button>
       </header>
       <div className="metric-status-row metric-context-status">
-        <span className={status.tone}>
-          {status.label === 'Below target'
-            ? 'Under target'
-            : status.label === 'Below range'
-              ? 'Under range'
-              : status.label}
-        </span>
-
-        <span className="metric-comparison-context">
-          {metricComparisonText(liveMetric, liveMetric.current)}
-        </span>
+        <span className={status.tone}>{status.label}</span>
+        <span className="metric-comparison-context">{latest ? metricComparisonText(liveMetric,liveMetric.current) : 'No dated reading recorded'}</span>
       </div>
-      <MetricChart metric={liveMetric} data={data} type={metric.chart} compact />
-      <footer>
-        <span><Target size={13} />{targetText(liveMetric)}</span>
-        <ChevronRight size={15} />
-      </footer>
-    
-      <HealthMetricCardCompletion metric={liveMetric} />
+      <MetricChart metric={liveMetric} data={data} type={metric.chart} compact/>
+      <footer><span><Target size={13}/>{targetText(liveMetric)}</span><ChevronRight size={15}/></footer>
+      <HealthMetricCardCompletion metric={liveMetric}/>
     </article>
   )
 }
@@ -267,12 +264,8 @@ export default function HealthMetricsPage() {
   const [selected, setSelected] = useState(null)
   const [editor, setEditor] = useState(null)
   const visible = metrics.filter((metric) => metric.name.toLowerCase().includes(query.toLowerCase()))
-  const readingsInRange = metrics.filter((metric) => targetStatus(metric, metric.current).tone === 'good').length
-  const longestStreak = Math.max(...metrics.map((metric) => {
-    const states = generateSeries(metric, 14).map((row) => targetStatus(metric, row.value).tone === 'good')
-    const miss = [...states].reverse().findIndex((value) => !value)
-    return miss === -1 ? states.length : miss
-  }))
+  const readingsInRange = metrics.filter(metric => { const latest=readingsForMetric(metric.id)[0]; return latest && targetStatus(metric,Number(latest.value)).tone==='good' }).length
+  const longestStreak = Math.max(0,...metrics.map(metric => { const rows=readingsForMetric(metric.id); let run=0; for(const row of rows){ if(targetStatus(metric,Number(row.value)).tone==='good') run+=1; else break } return run }))
 
   function saveMetric(metric) {
     const row = { ...metric, id: metric.id || crypto.randomUUID() }
@@ -508,7 +501,7 @@ function MetricDetail({ metric, onClose, onDelete }) {
   const count = period === '7D' ? 7 : period === '90D' ? 90 : period === '1Y' ? 365 : 30
   const allReadings = readHealthLogs()
   const readings = allReadings.filter(row => String(row.metric_id) === String(metric.id)).sort((a,b) => String(b.recorded_at).localeCompare(String(a.recorded_at)))
-  const graphData = readings.length ? readings.slice(0,count).reverse().map(row => ({ date: row.recorded_at, value: Number(row.value) })) : generateSeries(metric, count)
+  const graphData = readings.slice(0,count).reverse().map(row => ({ date: row.recorded_at || row.record_date, label: new Date(row.recorded_at || `${row.record_date}T12:00:00`).toLocaleDateString('en-GB',{day:'numeric',month:'short'}), value: Number(row.value) })).filter(row => row.date && Number.isFinite(row.value))
   const values = graphData.map(row => Number(row.value)).filter(Number.isFinite)
   const average = values.length ? values.reduce((sum,value) => sum + value,0) / values.length : 0
   const style = categoryStyle(metric.category)
@@ -520,7 +513,7 @@ function MetricDetail({ metric, onClose, onDelete }) {
     : rollingValues.length
       ? rollingValues.reduce((sum, value) => sum + value, 0) / rollingValues.length
       : null
-  const currentValue = Number(readings[0]?.value ?? metric.current)
+  const currentValue = readings.length ? Number(readings[0].value) : null
   const currentStatus = readingStatus(metric, currentValue)
   const trendValue = baseline != null && Number.isFinite(currentValue) ? currentValue - baseline : null
   const targetLabel = targetText(metric)
@@ -535,7 +528,7 @@ function MetricDetail({ metric, onClose, onDelete }) {
     if (!window.confirm('Delete this health reading?')) return
     writeHealthLogs(allReadings.filter(item => item.id !== row.id)); setVersion(value => value + 1)
   }
-  return <div className="health-layer"><button className="health-backdrop" onClick={onClose} aria-label="Close"/><section className="metric-detail" style={{ '--metric-color': style.color }}><button className="close" onClick={onClose}><X/></button><header className="metric-detail-header"><div><span className="health-big-icon">{style.icon}</span><small>{metric.name.toUpperCase()}</small><h2>{readings[0]?.value ?? metric.current} {metric.unit}</h2></div><div className="metric-detail-actions"><button className="add-reading" onClick={() => setAddingReading(true)}><Plus size={16}/><span>Add Reading</span></button><button className="delete-metric-detail" onClick={onDelete}>Delete metric</button></div></header><div className="chart-controls"><div>{['line','dot','bar'].map(item => <button className={type===item?'selected':''} onClick={() => setType(item)} key={item}>{item}</button>)}</div><div>{['7D','30D','90D','1Y'].map(item => <button className={period===item?'selected':''} onClick={() => setPeriod(item)} key={item}>{item}</button>)}</div></div><MetricChart metric={{...metric,color:style.color}} data={graphData} type={type}/><div className="health-target-baseline-summary"><article><small>Current</small><b>{Number.isFinite(currentValue) ? `${currentValue} ${metric.unit}` : 'No reading'}</b><span>{readings[0] ? new Date(readings[0].recorded_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : 'Add a reading to begin'}</span></article><article><small>Baseline</small><b>{baseline != null ? `${baseline.toFixed(metric.decimals)} ${metric.unit}` : 'Not set'}</b><span>{metric.baselineMode === 'manual' ? 'Manual baseline' : `${String(metric.baselineMode || '30d').toUpperCase()} rolling average`}</span></article><article><small>Target / normal range</small><b>{targetLabel}</b><span>Configured metric goal</span></article><article className="status-card"><small>Status</small><b>{currentStatus.label}</b><span>{trendValue == null ? 'No trend yet' : `${trendValue >= 0 ? '↑' : '↓'} ${Math.abs(trendValue).toFixed(metric.decimals)} ${metric.unit} vs baseline`}</span></article></div><RollingThirtyDayStrip metric={{...metric,color:style.color}} readings={readings}/><section className="health-reading-history"><header><h3>Reading history</h3><button className="add-reading" onClick={() => setAddingReading(true)}><Plus size={15}/><span>Add Reading</span></button></header>{readings.length?readings.map(row => { const status=readingStatus(metric,row.value); return <article className="health-reading-row" key={row.id}><div><b>{row.value} {metric.unit}</b><small>{new Date(row.recorded_at).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:false})}{row.notes?` · ${row.notes}`:''}</small></div><span className={`reading-status ${status.key}`}>{status.label}</span><div className="reading-actions"><button onClick={() => setEditingReading(row)} aria-label="Edit reading">✎</button><button onClick={() => deleteReading(row)} aria-label="Delete reading">×</button></div></article> }):<div className="health-reading-empty">No readings recorded yet.<br/><button onClick={() => setAddingReading(true)}>Add the first reading</button></div>}</section></section>{(addingReading||editingReading)&&<ReadingEditor metric={metric} reading={editingReading} onClose={() => {setAddingReading(false);setEditingReading(null)}} onSave={saveReading}/>}</div>
+  return <div className="health-layer"><button className="health-backdrop" onClick={onClose} aria-label="Close"/><section className="metric-detail" style={{ '--metric-color': style.color }}><button className="close" onClick={onClose}><X/></button><header className="metric-detail-header"><div><span className="health-big-icon">{style.icon}</span><small>{metric.name.toUpperCase()}</small><h2>{readings.length ? readings[0].value : '—'} {metric.unit}</h2></div><div className="metric-detail-actions"><button className="add-reading" onClick={() => setAddingReading(true)}><Plus size={16}/><span>Add Reading</span></button><button className="delete-metric-detail" onClick={onDelete}>Delete metric</button></div></header><div className="chart-controls"><div>{['line','dot','bar'].map(item => <button className={type===item?'selected':''} onClick={() => setType(item)} key={item}>{item}</button>)}</div><div>{['7D','30D','90D','1Y'].map(item => <button className={period===item?'selected':''} onClick={() => setPeriod(item)} key={item}>{item}</button>)}</div></div><MetricChart metric={{...metric,color:style.color}} data={graphData} type={type}/><div className="health-target-baseline-summary"><article><small>Current</small><b>{Number.isFinite(currentValue) ? `${currentValue} ${metric.unit}` : 'No reading'}</b><span>{readings[0] ? new Date(readings[0].recorded_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : 'Add a reading to begin'}</span></article><article><small>Baseline</small><b>{baseline != null ? `${baseline.toFixed(metric.decimals)} ${metric.unit}` : 'Not set'}</b><span>{metric.baselineMode === 'manual' ? 'Manual baseline' : `${String(metric.baselineMode || '30d').toUpperCase()} rolling average`}</span></article><article><small>Target / normal range</small><b>{targetLabel}</b><span>Configured metric goal</span></article><article className="status-card"><small>Status</small><b>{currentStatus.label}</b><span>{trendValue == null ? 'No trend yet' : `${trendValue >= 0 ? '↑' : '↓'} ${Math.abs(trendValue).toFixed(metric.decimals)} ${metric.unit} vs baseline`}</span></article></div><RollingThirtyDayStrip metric={{...metric,color:style.color}} readings={readings}/><section className="health-reading-history"><header><h3>Reading history</h3><button className="add-reading" onClick={() => setAddingReading(true)}><Plus size={15}/><span>Add Reading</span></button></header>{readings.length?readings.map(row => { const status=readingStatus(metric,row.value); return <article className="health-reading-row" key={row.id}><div><b>{row.value} {metric.unit}</b><small>{new Date(row.recorded_at).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:false})}{row.notes?` · ${row.notes}`:''}</small></div><span className={`reading-status ${status.key}`}>{status.label}</span><div className="reading-actions"><button onClick={() => setEditingReading(row)} aria-label="Edit reading">✎</button><button onClick={() => deleteReading(row)} aria-label="Delete reading">×</button></div></article> }):<div className="health-reading-empty">No readings recorded yet.<br/><button onClick={() => setAddingReading(true)}>Add the first reading</button></div>}</section></section>{(addingReading||editingReading)&&<ReadingEditor metric={metric} reading={editingReading} onClose={() => {setAddingReading(false);setEditingReading(null)}} onSave={saveReading}/>}</div>
 }
 
 function MetricEditor({ metric, onClose, onSave }) {

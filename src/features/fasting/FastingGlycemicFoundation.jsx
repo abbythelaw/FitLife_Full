@@ -1,4 +1,3 @@
-
 import {
   Activity,
   ArrowDownRight,
@@ -356,15 +355,6 @@ export default function FastingGlycemicFoundation({sessions = []}) {
         </article>
       </div>
 
-      <section className="glycemic-weekly-targets">
-        <h3>This week</h3>
-        <div>
-          <span><b>{Math.min(model.counts.glucose,4)} / 4</b>Glucose readings</span>
-          <span><b>{Math.min(model.counts.completeNutrition,7)} / 7</b>Complete nutrition days</span>
-          <span><b>{Math.min(model.counts.qualifyingFasts,5)} / 5</b>12h+ fasts</span>
-          <span><b>{Math.min(model.counts.weight,1)} / 1</b>Weight check-in</span>
-        </div>
-      </section>
       <footer>
         The displayed range is deliberately broad. Finger-prick readings,
         meal timing, red-blood-cell factors and laboratory methods can differ.
@@ -373,3 +363,4 @@ export default function FastingGlycemicFoundation({sessions = []}) {
     </section>
   )
 }
+

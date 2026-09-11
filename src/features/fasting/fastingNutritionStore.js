@@ -1,6 +1,5 @@
-
 const NUTRITION_KEY = 'fitlife-nutrition-daily'
-const HEALTH_KEY = 'fitlife-health-readings'
+const HEALTH_KEY = 'fitlife-health-readings-v2'
 
 function parse(raw, fallback = []) {
   try {
@@ -168,40 +167,33 @@ export function listHealthReadings() {
 
 export function readingsForMetric(metric) {
   const aliases = {
-    glucose: [
-      'glucose',
-      'blood glucose',
-      'blood-glucose',
-      'blood_glucose'
-    ],
-    rhr: [
-      'rhr',
-      'resting heart rate',
-      'resting-heart-rate',
-      'resting_heart_rate'
-    ],
-    weight: [
-      'weight',
-      'body weight',
-      'body-weight',
-      'body_weight'
-    ],
-    hba1c: [
-      'hba1c',
-      'a1c',
-      'haemoglobin a1c',
-      'hemoglobin a1c'
-    ]
+    glucose:['glucose','blood glucose','blood-glucose','blood_glucose'],
+    rhr:['rhr','resting heart rate','resting-heart-rate','resting_heart_rate'],
+    weight:['weight','body weight','body-weight','body_weight'],
+    hba1c:['hba1c','a1c','haemoglobin a1c','hemoglobin a1c']
   }
-
-  const accepted = aliases[metric] || [metric]
-
-  return listHealthReadings().filter(row =>
-    accepted.some(alias =>
-      row.normalized_metric === alias ||
-      row.normalized_metric.includes(alias)
-    )
+  const accepted=(aliases[metric]||[metric]).map(normalizeText)
+  const definitions=parse(localStorage.getItem('fitlife-health-defs-v2'),[])
+  const mapping=listMetricMappings()[metric]
+  const mappedId=String(mapping?.metric_card_id||'')
+  const matchingDefinitionIds=new Set(
+    definitions
+      .filter(definition=>{
+        const label=normalizeText(definition.name||definition.label||definition.short||definition.id)
+        return String(definition.id)===mappedId || accepted.some(alias=>label===alias||label.includes(alias))
+      })
+      .map(definition=>String(definition.id))
   )
+  if(mappedId) matchingDefinitionIds.add(mappedId)
+
+  return normalizedHealthReadings()
+    .filter(row=>{
+      const rowMetricId=String(row.metric_id||row.metric_card_id||row.card_id||'')
+      const rowLabel=normalizeText(row.normalized_metric||row.metric||row.name||row.label)
+      return matchingDefinitionIds.has(rowMetricId) || accepted.some(alias=>rowLabel===alias||rowLabel.includes(alias))
+    })
+    .filter(isRealHealthReading)
+    .sort((left,right)=>`${right.normalized_date}T${right.normalized_time||'00:00'}`.localeCompare(`${left.normalized_date}T${left.normalized_time||'00:00'}`))
 }
 
 export function macroContribution(row) {
@@ -380,8 +372,66 @@ function matchesMetric(row, metric) {
   })
 }
 
+
+
+export function isRealHealthReading(row) {
+  if (!row || typeof row !== 'object') return false
+
+  const marker = [
+    row.id,
+    row.record_id,
+    row.reading_id,
+    row.source,
+    row.origin,
+    row.name,
+    row.label,
+    row.notes
+  ].filter(Boolean).join(' ').toLowerCase()
+
+  const explicitlySynthetic =
+    row.is_dummy === true ||
+    row.isDummy === true ||
+    row.is_demo === true ||
+    row.isDemo === true ||
+    row.is_sample === true ||
+    row.isSample === true ||
+    row.synthetic === true ||
+    row.placeholder === true ||
+    marker.includes('dummy') ||
+    marker.includes('sample data') ||
+    marker.includes('demo data') ||
+    marker.includes('placeholder') ||
+    marker.includes('synthetic')
+
+  if (explicitlySynthetic || row.deleted_at) return false
+
+  const value = Number(
+    row.normalized_value ??
+    row.value ??
+    row.numeric_value ??
+    row.reading ??
+    row.amount ??
+    row.result
+  )
+
+  const date = String(
+    row.normalized_date ||
+    row.record_date ||
+    row.entry_date ||
+    row.local_date ||
+    row.date ||
+    row.reading_date ||
+    row.occurred_at ||
+    row.created_at ||
+    ''
+  ).slice(0, 10)
+
+  return Number.isFinite(value) && /^\d{4}-\d{2}-\d{2}$/.test(date)
+}
+
 export function normalizedHealthReadings() {
   const candidates = [
+    'fitlife-health-readings-v2',
     'fitlife-health-readings',
     'fitlife-health-metrics-readings',
     'fitlife-health-metrics',
@@ -419,7 +469,7 @@ export function normalizedHealthReadings() {
     })
   }
 
-  return [...byId.values()].sort((left, right) => {
+  return [...byId.values()].filter(isRealHealthReading).sort((left, right) => {
     const leftStamp = `${left.normalized_date}T${left.normalized_time || '00:00'}`
     const rightStamp = `${right.normalized_date}T${right.normalized_time || '00:00'}`
     return rightStamp.localeCompare(leftStamp)
@@ -537,7 +587,7 @@ export function saveMetricMapping(metric,mapping){
 }
 
 export function compatibleHealthMetricCards(metric){
-  const keys=['fitlife-health-cards','fitlife-health-metrics','health-metric-cards']
+  const keys=['fitlife-health-defs-v2','fitlife-health-cards','fitlife-health-metrics','health-metric-cards']
   const aliases={
     glucose:['glucose','blood glucose','fasting glucose'],
     rhr:['rhr','resting heart rate'],
@@ -572,55 +622,86 @@ export function saveMappedMetricReading(metric,input){
   const selected=cards.find(card=>String(card.card_id)===String(preferred?.metric_card_id))||cards[0]
   if(!selected) return saveFastingOnlyReading({...input,metric_type:metric})
 
-  const existing=parse(localStorage.getItem('fitlife-health-readings'),[])
+  const key='fitlife-health-readings-v2'
+  const existing=parse(localStorage.getItem(key),[])
+  const date=input.date||localDateKey()
+  const time=input.time||'12:00'
   const row={
     id:input.id||crypto.randomUUID(),
-    metric_card_id:selected.card_id,
-    metric_id:selected.metric_id||selected.id||metric,
-    metric:metric,
+    metric_id:selected.id||selected.metric_id||selected.card_id,
     value:Number(input.value),
-    unit:input.unit,
-    date:input.date,
-    time:input.time||'12:00',
+    recorded_at:`${date}T${time}:00`,
+    record_date:date,
+    local_date:date,
+    notes:input.notes||input.context||'',
     context:input.context||'',
-    source:'health_metrics',
+    source_type:'fasting-linked',
     updated_at:new Date().toISOString()
   }
-  const next=[row,...existing.filter(x=>String(x.id)!==String(row.id))]
-  localStorage.setItem('fitlife-health-readings',JSON.stringify(next))
+  const next=[row,...existing.filter(item=>String(item.id)!==String(row.id))]
+  localStorage.setItem(key,JSON.stringify(next))
   saveMetricMapping(metric,{destination:'health_metrics',metric_card_id:selected.card_id})
   window.dispatchEvent(new CustomEvent('fitlife:health-readings-changed',{detail:next}))
-  return row
+  return {...row,source:'health_metrics'}
 }
 
 
-export function allReadingsForMetric(metric) {
-  const linked = readingsForMetric(metric)
-  const local = listFastingLocalReadings()
-    .filter(row => String(row.metric_type || row.metric || '').toLowerCase() === metric)
-    .map(row => ({
+
+export function allReadingsForMetric(metric){
+ const linked=readingsForMetric(metric)
+ const local=listFastingLocalReadings().filter(row=>String(row.metric_type||row.metric||'').toLowerCase()===metric).map(row=>({...row,normalized_date:row.date,normalized_time:row.time||'',normalized_metric:metric,normalized_value:Number(row.value),normalized_unit:row.unit||'',attachment_id:row.id,source:'fasting'}))
+ return [...linked,...local].filter(isRealHealthReading).filter((row,index,all)=>all.findIndex(item=>String(item.attachment_id||item.id)===String(row.attachment_id||row.id))===index).sort((a,b)=>`${b.normalized_date}T${b.normalized_time||'00:00'}`.localeCompare(`${a.normalized_date}T${a.normalized_time||'00:00'}`))
+}
+
+
+export function healthMetricDefinitions(){
+  const rows=parse(localStorage.getItem('fitlife-health-defs-v2'),[])
+  return Array.isArray(rows)?rows.filter(row=>row&&!row.deleted_at):[]
+}
+
+export function healthMetricDefinitionForReading(row,metric){
+  const definitions=healthMetricDefinitions()
+  const mappings=listMetricMappings()
+  const mappedId=String(mappings[metric]?.metric_card_id||'')
+  const rowId=String(row?.metric_id||row?.metric_card_id||row?.card_id||'')
+  return definitions.find(def=>String(def.id)===rowId)
+    || definitions.find(def=>String(def.id)===mappedId)
+    || definitions.find(def=>normalizeText(def.name||def.short||def.id).includes(normalizeText(metric)))
+    || null
+}
+
+export function displayReadingsForMetric(metric){
+  return allReadingsForMetric(metric).map(row=>{
+    const definition=healthMetricDefinitionForReading(row,metric)
+    const linked=row.source==='health_metrics'||row.source_type==='fasting-linked'||Boolean(definition)
+    return {
       ...row,
-      normalized_date: row.date,
-      normalized_time: row.time || '',
-      normalized_metric: metric,
-      normalized_value: Number(row.value),
-      normalized_unit: row.unit || '',
-      attachment_id: row.id,
-      source: 'fasting'
-    }))
-  return [...linked, ...local].sort((a,b) =>
-    `${b.normalized_date}T${b.normalized_time || '00:00'}`.localeCompare(
-      `${a.normalized_date}T${a.normalized_time || '00:00'}`
-    )
-  )
+      display_source:linked?'linked':'manual',
+      display_metric_name:linked?(definition?.name||definition?.short||'Health Metrics'):'Fasting',
+      display_colour:linked?(definition?.color||definition?.colour||null):null,
+      configured_min:definition?.min??definition?.minimum_value??definition?.range_min??null,
+      configured_max:definition?.max??definition?.maximum_value??definition?.range_max??null,
+      configured_target:definition?.target??definition?.target_value??null,
+      configured_mode:definition?.targetMode||definition?.target_mode||definition?.target_type||null
+    }
+  })
 }
 
-export function preferredMetricDestination(metric) {
-  const cards = compatibleHealthMetricCards(metric)
-  const saved = listMetricMappings()[metric]
-  if (saved?.destination === 'fasting') return {destination:'fasting',cards}
-  const selected = cards.find(card => String(card.card_id) === String(saved?.metric_card_id)) || cards[0]
-  return selected
-    ? {destination:'health_metrics',card:selected,cards}
-    : {destination:'fasting',cards:[]}
+
+// FASTING MASTER P33 DATA HELPERS
+export function p33HealthMetricDefinitions(){
+  const rows=parse(localStorage.getItem('fitlife-health-defs-v2'),[])
+  return Array.isArray(rows)?rows.filter(row=>row&&!row.deleted_at&&!row.is_dummy&&!row.is_demo&&!row.is_sample):[]
+}
+export function p33DefinitionForReading(row,metric){
+  const defs=p33HealthMetricDefinitions(),mapping=listMetricMappings()[metric]
+  const ids=[row?.metric_id,row?.metric_card_id,row?.card_id,mapping?.metric_card_id].filter(Boolean).map(String)
+  return defs.find(def=>ids.includes(String(def.id)))||defs.find(def=>normalizeText(def.name||def.short||def.id).includes(normalizeText(metric)))||null
+}
+export function p33DisplayReadings(metric){
+  return allReadingsForMetric(metric).filter(isRealHealthReading).map(row=>{
+    const def=p33DefinitionForReading(row,metric)
+    const linked=Boolean(def)||row.source==='health_metrics'||row.source_type==='fasting-linked'
+    return {...row,display_source:linked?'linked':'manual',display_metric_name:linked?(def?.name||def?.short||'Health Metrics'):'Fasting',display_colour:linked?(def?.color||def?.colour||null):null,configured_min:def?.min??def?.minimum_value??def?.range_min??null,configured_max:def?.max??def?.maximum_value??def?.range_max??null,configured_target:def?.target??def?.target_value??null,configured_mode:def?.targetMode||def?.target_mode||def?.target_type||null}
+  })
 }

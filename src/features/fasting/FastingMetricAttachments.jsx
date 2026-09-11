@@ -1,4 +1,3 @@
-
 import {
   Activity,
   Check,
@@ -331,3 +330,4 @@ export default function FastingMetricAttachments({
     </section>
   )
 }
+

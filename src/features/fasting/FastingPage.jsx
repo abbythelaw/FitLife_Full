@@ -1,8 +1,6 @@
-
 import {useEffect,useMemo,useState} from 'react'
 import {CalendarDays,ChevronDown,Clock3,Edit3,Flame,Pause,Play,Plus,Sparkles,Timer,X} from 'lucide-react'
 import './FastingPage.css'
-import {formatDuration,formatNumber} from './formatters'
 import FastingMetabolicInputs from './FastingMetabolicInputs'
 import FastingGlycemicFoundation from './FastingGlycemicFoundation'
 import {listFasts,saveFast,validateFastInterval} from './fastingStore'
@@ -23,7 +21,7 @@ const PHASES=[
  {hour:72,icon:'✨',title:'Multi-day fasting',color:'#f2c94c',image:'long',short:'This is an advanced, prolonged fast requiring careful individual consideration.',body:['A three-day fast produces substantial changes in fuel use and daily routine. The body continues using fatty acids, ketones and internally produced glucose to maintain energy supply.','This duration is not necessary for most time-restricted eating goals and should not be pursued simply to unlock an illustration.'],science:['The interface is educational and does not certify safety or biological outcomes.','Clinical supervision may be appropriate for prolonged fasting, especially with symptoms, medication or health conditions.']}
 ]
 const read=listFasts
-const fmt=ms=>formatDuration(Math.max(0,Number(ms)||0)/1000)
+const fmt=ms=>{const s=Math.max(0,Math.floor(ms/1000));return `${String(Math.floor(s/3600)).padStart(2,'0')}:${String(Math.floor(s%3600/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`}
 const localValue=date=>{const d=new Date(date);const off=d.getTimezoneOffset()*60000;return new Date(d-off).toISOString().slice(0,16)}
 function visiblePhases(target,elapsed){const ceiling=Math.max(Number(target)||16,elapsed);return PHASES.filter(p=>p.hour<=ceiling||p.hour===(PHASES.find(x=>x.hour>ceiling)?.hour)).filter(p=>p.hour<=Math.max(16,ceiling<24?16:ceiling<36?24:ceiling<48?36:ceiling<72?48:72))}
 function phaseAt(hours){return [...PHASES].reverse().find(p=>hours>=p.hour)||PHASES[0]}
@@ -51,7 +49,7 @@ function Ring({fast,now,onPhase,onEditStart}) {
 
   return <div className={`fast-journey-wrap ${completed?'target-complete':''}`}>
     <div
-      className="fast-journey-ring"
+      className="fast-journey-ring" data-elapsed-hours={elapsed} data-target-hours={target}
       data-complete={completed?'true':'false'}
       style={{'--progress':`${progress*360}deg`}}
     >
@@ -79,7 +77,7 @@ function Ring({fast,now,onPhase,onEditStart}) {
         <small>{center[1]}</small>
         <em>{Math.round(rawPercent)}% of target</em>
         {completed&&<i>Exceeded by {fmt(exceeded*36e5)}</i>}
-        
+        {!completed&&<i>Tap to change</i>}
       </button>
     </div>
 
@@ -132,7 +130,7 @@ function InactiveFastingRing({onStart,onPhase}) {
   return <article className="fast-hero inactive-fast-hero">
     <div className="inactive-fast-target">
       <label>
-        <span>Fasting type</span>
+        <span>Target</span>
         <select
           value={protocol}
           onChange={event=>changeProtocol(event.target.value)}
@@ -205,22 +203,26 @@ function InactiveFastingRing({onStart,onPhase}) {
         Fasting journey
       </span>
 
-      <h3>Fasting journey</h3>
+      <h3>Your fasting circle is ready</h3>
 
-      
+      <p>
+        Every phase starts untouched and grey. As elapsed fasting time
+        reaches a phase, its marker illuminates and its detailed
+        explanation becomes available.
+      </p>
 
       <div className="inactive-fast-rules">
         <span>
           <i className="rule-grey"/>
-          Grey = Not reached
+          Grey means not reached
         </span>
         <span>
           <i className="rule-colour"/>
-          Colour = Reached
+          Colour means reached
         </span>
         <span>
           <i className="rule-glow"/>
-          Glow = Current phase
+          Glow marks the current phase
         </span>
       </div>
     </div>
@@ -286,7 +288,7 @@ export default function FastingPage(){const [sessions,setSessions]=useState(read
     </select>
     <ChevronDown/>
   </label>
-</div><Ring fast={active} now={now} onPhase={setPhase} onEditStart={()=>setStartEditor(active)}/><div className="fast-hero-copy"><span className="fast-stage"><Flame/>{current.title}</span><p>Started {new Date(active.started_at).toLocaleString()}</p><p>Estimated end {new Date(active.expected_end_at).toLocaleString()}</p><div><button className="end-fast" onClick={endFast}><Pause/>End fast</button></div></div></article><section className="fast-current-phase compact-phase-card" style={{'--phase':current.color}}><FastingVisual type={current.image}/><div><small>CURRENT PHASE</small><h2>{current.icon} {current.title}</h2><p>{current.short}</p><button onClick={()=>setPhase(current)}>Read the detailed explanation</button></div></section></>:<InactiveFastingRing
+</div><Ring fast={active} now={now} onPhase={setPhase} onEditStart={()=>setStartEditor(active)}/><div className="fast-hero-copy"><span className="fast-stage"><Flame/>{current.title}</span><p>Started {new Date(active.started_at).toLocaleString()}</p><p>Estimated end {new Date(active.expected_end_at).toLocaleString()}</p><div><button className="end-fast icon-fast-control" aria-label="End fast" title="End fast" onClick={endFast}><Pause/></button></div></div></article><section className="fast-current-phase compact-phase-card" style={{'--phase':current.color}}><FastingVisual type={current.image}/><div><small>CURRENT PHASE</small><h2>{current.icon} {current.title}</h2><p>{current.short}</p><button onClick={()=>setPhase(current)}>Read the detailed explanation</button></div></section></>:<InactiveFastingRing
   onStart={start}
   onPhase={setPhase}
 />}<FastingCalendar sessions={sessions} now={now} onEditFast={fast=>setEditor({mode:'edit',session:fast})} onChooseDate={date=>setEditor({mode:'previous',prefillDate:date})}/><FastingMetabolicInputs/><FastingGlycemicFoundation sessions={sessions}/><FastingAnalytics sessions={sessions}/>{startEditor&&<QuickStartEditor
@@ -447,7 +449,7 @@ function FastEditor({state,onClose,onSave}) {
   const nowLocal=localValue(now)
 
   const [start,setStart]=useState(
-    state.prefillDate ? `${state.prefillDate}T12:00` : localValue(session.started_at||now)
+    state.prefillDate ? `${state.prefillDate}T12:00` : state.prefillDate ? `${state.prefillDate}T12:00` : localValue(session.started_at||now)
   )
 
   const [end,setEnd]=useState(() => {
@@ -732,7 +734,7 @@ function FastEditor({state,onClose,onSave}) {
               ?'ACTUAL DURATION'
               :'CURRENT ELAPSED'}
           </small>
-          <b>{formatDuration(calculatedHours*3600)}</b>
+          <b>{calculatedHours.toFixed(2)} hours</b>
         </span>
 
         <span>
@@ -742,7 +744,7 @@ function FastEditor({state,onClose,onSave}) {
 
         {(isPrevious||isComplete)&&<span>
           <small>EXCEEDED BY</small>
-          <b>{formatDuration(exceededHours*3600)}</b>
+          <b>{exceededHours.toFixed(2)} hours</b>
         </span>}
       </section>
 
@@ -769,3 +771,4 @@ function FastEditor({state,onClose,onSave}) {
     </aside>
   </div>
 }
+
