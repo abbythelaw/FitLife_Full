@@ -1,0 +1,11 @@
+create extension if not exists pgcrypto;
+create table if not exists public.fitlife_records(id uuid primary key default gen_random_uuid(),user_id uuid not null references auth.users(id) on delete cascade,record_type text not null,record_date date not null,payload jsonb not null default '{}'::jsonb,client_id text not null,updated_at timestamptz not null default now(),deleted_at timestamptz,unique(user_id,record_type,client_id));
+create index if not exists fitlife_records_user_type_date on public.fitlife_records(user_id,record_type,record_date desc) where deleted_at is null;
+alter table public.fitlife_records enable row level security;
+drop policy if exists fitlife_records_owner_all on public.fitlife_records;
+create policy fitlife_records_owner_all on public.fitlife_records for all using(auth.uid()=user_id) with check(auth.uid()=user_id);
+create table if not exists public.fitlife_user_data(user_id uuid not null references auth.users(id) on delete cascade,data_key text not null,data jsonb not null default '[]'::jsonb,updated_at timestamptz not null default now(),primary key(user_id,data_key));
+alter table public.fitlife_user_data enable row level security;
+drop policy if exists fitlife_user_data_owner_all on public.fitlife_user_data;
+create policy fitlife_user_data_owner_all on public.fitlife_user_data for all using(auth.uid()=user_id) with check(auth.uid()=user_id);
+alter publication supabase_realtime add table public.fitlife_records;
