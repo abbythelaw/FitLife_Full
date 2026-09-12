@@ -1,0 +1,603 @@
+
+import {useEffect, useMemo, useRef, useState} from 'react'
+import {ChevronDown, Save} from 'lucide-react'
+import MediaEditor from '../media/MediaEditor'
+import {SPORT_GROUPS, sportHasField, templateFor} from './sportsTemplates'
+import '../media/media.css'
+
+const today = () => {
+  const date = new Date()
+  const offset = date.getTimezoneOffset() * 60000
+  return new Date(date.getTime() - offset).toISOString().slice(0, 10)
+}
+
+const number = value => {
+  const parsed = Number(value)
+  return Number.isFinite(parsed) ? parsed : 0
+}
+
+const durationDigits = value => String(value ?? '').replace(/\D/g, '').slice(-6).padStart(6, '0')
+const formatDurationDigits = value => {
+  const digits = durationDigits(value)
+  return `${digits.slice(0, 2)}:${digits.slice(2, 4)}:${digits.slice(4, 6)}`
+}
+const secondsToDuration = value => {
+  const total = Math.max(0, Math.round(Number(value) || 0))
+  const hours = Math.floor(total / 3600)
+  const minutes = Math.floor((total % 3600) / 60)
+  const seconds = total % 60
+  return [hours, minutes, seconds].map(part => String(part).padStart(2, '0')).join(':')
+}
+const durationToSeconds = value => {
+  const [hours, minutes, seconds] = formatDurationDigits(value).split(':').map(Number)
+  return hours * 3600 + minutes * 60 + seconds
+}
+
+const FIELD_LABELS = {
+  maxHr: 'Maximum heart rate',
+  elevation: 'Elevation gain, m',
+  steps: 'Steps',
+  packWeight: 'Pack weight, kg',
+  cadence: 'Cadence',
+  power: 'Average power, W',
+  resistance: 'Resistance level',
+  poolLength: 'Pool length, m',
+  stroke: 'Stroke',
+  waterTemperature: 'Water temperature, °C',
+  strokeRate: 'Stroke rate',
+  sessionType: 'Session type',
+  format: 'Singles / doubles',
+  score: 'Score',
+  opponent: 'Opponent',
+  routine: 'Routine / workout',
+  sets: 'Total sets',
+  reps: 'Total reps',
+  weight: 'Weight used, kg',
+  rounds: 'Rounds',
+  workSeconds: 'Work interval, seconds',
+  restSeconds: 'Rest interval, seconds',
+  division: 'Division',
+  placement: 'Placement',
+  penalties: 'Penalties',
+  raceType: 'Race type',
+  obstacles: 'Obstacles completed',
+  highestGrade: 'Highest grade',
+  attempts: 'Attempts',
+  sends: 'Completed climbs / sends',
+  holes: 'Holes played',
+  course: 'Course',
+  putts: 'Putts',
+  position: 'Position',
+  goals: 'Goals',
+  assists: 'Assists',
+  points: 'Points',
+  rebounds: 'Rebounds',
+  roundMinutes: 'Minutes per round',
+  style: 'Style',
+  bodyAreas: 'Body areas',
+  terrain: 'Terrain',
+  swimDistance: 'Swim distance, km',
+  bikeDistance: 'Cycling distance, km',
+  runDistance: 'Running distance, km',
+  swimMinutes: 'Swim duration, min',
+  bikeMinutes: 'Cycling duration, min',
+  runMinutes: 'Running duration, min',
+  transitionMinutes: 'Transition time, min'
+}
+
+function readWeight() {
+  try {
+    const defs = JSON.parse(
+      localStorage.getItem('fitlife-health-defs-v2') || '[]'
+    )
+    const weight = defs.find(metric =>
+      String(metric.id).toLowerCase() === 'weight' ||
+      String(metric.name).toLowerCase() === 'weight'
+    )
+    return number(weight?.current || weight?.value)
+  } catch {
+    return 0
+  }
+}
+
+function baseMetForSport(category, distance, duration) {
+  const sport = String(category || '').toLowerCase()
+  const hours = Number(duration) / 60
+  const speed = Number(distance) > 0 && hours > 0
+    ? Number(distance) / hours
+    : 0
+
+  if (sport.includes('trail running')) return 9
+  if (sport.includes('running')) {
+    if (speed >= 13) return 13
+    if (speed >= 11) return 11
+    if (speed >= 9) return 9.5
+    if (speed >= 7) return 8
+    return 7
+  }
+
+  if (sport.includes('walking')) {
+    if (speed >= 7) return 7
+    if (speed >= 6) return 5.8
+    if (speed >= 5) return 4.3
+    return 3.5
+  }
+
+  if (sport.includes('hiking')) return 6.5
+
+  if (sport.includes('indoor cycling')) return 7.5
+  if (sport.includes('cycling')) {
+    if (speed >= 30) return 12
+    if (speed >= 25) return 10
+    if (speed >= 20) return 8
+    if (speed >= 15) return 6
+    return 4.5
+  }
+
+  if (sport.includes('swimming')) return 7
+  if (sport.includes('rowing')) return 7
+  if (sport.includes('hyrox')) return 10
+  if (sport.includes('spartan') || sport.includes('ocr')) return 10
+  if (sport.includes('triathlon')) return 9
+  if (sport.includes('hiit')) return 9
+  if (sport.includes('boxing')) return 8
+  if (sport.includes('football')) return 8
+  if (sport.includes('basketball')) return 7.5
+  if (sport.includes('tennis')) return 7
+  if (sport.includes('badminton')) return 6
+  if (sport.includes('strength')) return 5
+  if (sport.includes('bouldering')) return 6
+  if (sport.includes('climbing')) return 6
+  if (sport.includes('yoga')) return 2.8
+  if (sport.includes('pilates')) return 3
+  if (sport.includes('mobility')) return 2.5
+
+  return 4
+}
+
+function estimateCalories({
+  category,
+  duration,
+  distance,
+  weight,
+  averageHr,
+  rpe
+}) {
+  const minutes = Number(duration)
+  const bodyWeight = Number(weight)
+  const heartRate = Number(averageHr)
+
+  if (!minutes || !bodyWeight) {
+    return {
+      value: 0,
+      method: 'unavailable',
+      confidence: 'low'
+    }
+  }
+
+  const hours = minutes / 60
+  const baseMet = baseMetForSport(category, distance, duration)
+
+  // HR is the primary intensity modifier when available.
+  // The bands deliberately create meaningful differences between
+  // lower-, moderate-, and higher-heart-rate sessions.
+  if (heartRate >= 40 && heartRate <= 230) {
+    let intensityMultiplier = 1
+
+    if (heartRate < 90) intensityMultiplier = 0.65
+    else if (heartRate < 110) intensityMultiplier = 0.78
+    else if (heartRate < 130) intensityMultiplier = 0.92
+    else if (heartRate < 145) intensityMultiplier = 1.05
+    else if (heartRate < 160) intensityMultiplier = 1.18
+    else if (heartRate < 175) intensityMultiplier = 1.34
+    else intensityMultiplier = 1.5
+
+    const adjustedMet = Math.max(
+      1.5,
+      Math.min(18, baseMet * intensityMultiplier)
+    )
+
+    return {
+      value: Math.round(adjustedMet * bodyWeight * hours),
+      method: 'heart_rate_met',
+      confidence: 'medium-high'
+    }
+  }
+
+  // RPE is only a secondary fallback when HR is unavailable.
+  const rpeValue = Number(rpe)
+  const rpeMultiplier = rpeValue
+    ? Math.max(0.85, Math.min(1.15, 0.8 + rpeValue * 0.04))
+    : 1
+
+  return {
+    value: Math.round(baseMet * rpeMultiplier * bodyWeight * hours),
+    method: rpeValue ? 'sport_met_rpe' : 'sport_met',
+    confidence: rpeValue ? 'medium' : 'low'
+  }
+}
+
+export default function SportsEntryForm({
+  entry,
+  onCancel,
+  onSave,
+  defaultDate,
+  onDirtyChange
+}) {
+  const initial = entry || {}
+  const [saving, setSaving] = useState(false)
+  const [dirty, setDirty] = useState(false)
+  const [more, setMore] = useState(false)
+  const saveLock = useRef(false)
+
+  const [category, setCategory] = useState(initial.category || 'Walking')
+  const [title, setTitle] = useState(initial.title || '')
+  const [date, setDate] = useState(
+    initial.entry_date || defaultDate || today()
+  )
+  const [start, setStart] = useState(initial.start_time || '07:30')
+  const [durationInput, setDurationInput] = useState(() =>
+    secondsToDuration(initial.duration_seconds ?? Number(initial.duration_minutes || 45) * 60)
+  )
+  const durationSeconds = useMemo(() => durationToSeconds(durationInput), [durationInput])
+  const duration = durationSeconds / 60
+  const [distance, setDistance] = useState(initial.distance_km || '')
+  const [avgHr, setAvgHr] = useState(initial.average_hr || '')
+  const [maxHr, setMaxHr] = useState(initial.max_hr || '')
+  const [rpe, setRpe] = useState(initial.rpe || '')
+  const [notes, setNotes] = useState(initial.notes || '')
+  const [details, setDetails] = useState(initial.sport_details || {})
+  const [manualCalories, setManualCalories] = useState(
+    Boolean(initial.calories_overridden)
+  )
+  const [calorieValue, setCalorieValue] = useState(
+    initial.calories_overridden ? initial.calories : ''
+  )
+  const [media, setMedia] = useState({
+    photos: initial.photos || [],
+    files: [],
+    featured: initial.featured_index || 0,
+    positionX: initial.position_x || 50,
+    positionY: initial.position_y || 50
+  })
+
+  const template = useMemo(() => templateFor(category), [category])
+  const weight = useMemo(readWeight, [])
+
+  const calorieEstimate = useMemo(() => estimateCalories({
+    category,
+    duration: number(duration),
+    distance: number(distance),
+    weight,
+    averageHr: number(avgHr),
+    rpe: number(rpe)
+  }), [category, duration, distance, weight, avgHr, rpe])
+
+  const estimatedCalories = calorieEstimate.value
+
+  const calories = manualCalories
+    ? number(calorieValue)
+    : estimatedCalories
+
+  const pace = number(distance) && number(duration)
+    ? number(duration) / number(distance)
+    : 0
+
+  const speed = number(distance) && number(duration)
+    ? number(distance) / (number(duration) / 60)
+    : 0
+
+  const end = useMemo(() => {
+    const [hours, minutes] = start.split(':').map(Number)
+    const total = hours * 60 + minutes + number(duration)
+    return `${String(Math.floor(total / 60) % 24).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`
+  }, [start, duration])
+
+  useEffect(() => {
+    onDirtyChange?.(dirty)
+  }, [dirty, onDirtyChange])
+
+  useEffect(() => {
+    const guard = event => {
+      if (!dirty || saving) return
+      event.preventDefault()
+      event.returnValue = ''
+    }
+    window.addEventListener('beforeunload', guard)
+    return () => window.removeEventListener('beforeunload', guard)
+  }, [dirty, saving])
+
+  function changed(setter, value) {
+    setter(value)
+    setDirty(true)
+  }
+
+  function setDetail(field, value) {
+    setDetails(previous => ({...previous, value}))
+    setDirty(true)
+  }
+
+  function renderDetailField(field) {
+    const label = FIELD_LABELS[field] || field
+    const textFields = [
+      'sessionType', 'format', 'score', 'opponent', 'routine',
+      'division', 'raceType', 'course', 'position', 'style',
+      'bodyAreas', 'terrain', 'highestGrade', 'stroke'
+    ]
+    return (
+      <label key={field}>
+        {label}
+        <input
+          type={textFields.includes(field) ? 'text' : 'number'}
+          step="any"
+          value={details[field] ?? ''}
+          onChange={event => setDetail(field, event.target.value)}
+        />
+      </label>
+    )
+  }
+
+  async function submit(event) {
+    event.preventDefault()
+    if (saving || saveLock.current) return
+
+    saveLock.current = true
+    setSaving(true)
+
+    try {
+      await onSave({
+        ...initial,
+        category,
+        title: title.trim() || `${category} activity`,
+        entry_date: date,
+        start_time: start,
+        end_time: end,
+        duration_seconds: durationSeconds,
+        duration_minutes: durationSeconds / 60,
+        duration_display: secondsToDuration(durationSeconds),
+        distance_km: number(distance),
+        pace_min_km: pace,
+        average_speed_kmh: speed,
+        calories,
+        estimated_calories: estimatedCalories,
+        calories_overridden: manualCalories,
+        calorie_method: manualCalories
+          ? 'manual'
+          : calorieEstimate.method,
+        calorie_confidence: manualCalories
+          ? 'manual'
+          : calorieEstimate.confidence,
+        calorie_weight_kg: weight || null,
+        calorie_average_hr: number(avgHr) || null,
+        average_hr: number(avgHr) || null,
+        max_hr: number(maxHr) || null,
+        rpe: number(rpe) || null,
+        training_load: (durationSeconds / 60) * number(rpe),
+        sport_details: details,
+        notes
+      }, media)
+      setDirty(false)
+    } finally {
+      setSaving(false)
+      saveLock.current = false
+    }
+  }
+
+  return (
+    <form className="sports-form" onSubmit={submit}>
+      <div className="sports-form-grid">
+        <label>
+          Sport
+          <select
+            value={category}
+            onChange={event => changed(setCategory, event.target.value)}
+          >
+            {SPORT_GROUPS.map(group => (
+              <optgroup key={group.label} label={group.label}>
+                {group.sports.map(sport => (
+                  <option key={sport}>{sport}</option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
+        </label>
+
+        <label>
+          Activity title
+          <input
+            value={title}
+            onChange={event => changed(setTitle, event.target.value)}
+            placeholder={`${category} activity`}
+          />
+        </label>
+
+        <label>
+          Date
+          <input
+            type="date"
+            max={today()}
+            value={date}
+            onChange={event => changed(setDate, event.target.value)}
+            required
+          />
+        </label>
+
+        <label>
+          Start time
+          <input
+            type="time"
+            value={start}
+            onChange={event => changed(setStart, event.target.value)}
+            required
+          />
+        </label>
+
+        <label>
+          Duration, HH:MM:SS
+          <input
+            className="sports-duration-input"
+            type="text"
+            inputMode="numeric"
+            autoComplete="off"
+            maxLength="8"
+            value={durationInput}
+            placeholder="00:00:00"
+            onFocus={event => event.currentTarget.select()}
+            onChange={event => changed(setDurationInput, formatDurationDigits(event.target.value))}
+            onKeyDown={event => {
+              if (event.key !== 'Backspace') return
+              event.preventDefault()
+              const digits = durationDigits(durationInput).replace(/^0+/, '').slice(0, -1)
+              changed(setDurationInput, formatDurationDigits(digits))
+            }}
+            required
+          />
+          <small className="sports-duration-help">Type numbers only. Example: 13000 becomes 01:30:00.</small>
+        </label>
+
+        <label>
+          End time
+          <input value={end} disabled />
+        </label>
+
+        {sportHasField(template, 'distance') && (
+          <label>
+            Distance, km
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              value={distance}
+              onChange={event => changed(setDistance, event.target.value)}
+              required={template.fields.includes('distance')}
+            />
+          </label>
+        )}
+
+        {sportHasField(template, 'averageHr') && (
+          <label>
+            Average heart rate
+            <input
+              type="number"
+              min="30"
+              max="250"
+              value={avgHr}
+              onChange={event => changed(setAvgHr, event.target.value)}
+            />
+          </label>
+        )}
+
+        {sportHasField(template, 'rpe') && (
+          <label>
+            RPE, 1–10
+            <input
+              type="number"
+              min="1"
+              max="10"
+              value={rpe}
+              onChange={event => changed(setRpe, event.target.value)}
+              required
+            />
+          </label>
+        )}
+
+        {pace > 0 && (
+          <label>
+            Calculated pace
+            <input value={`${pace.toFixed(2)} min/km`} disabled />
+          </label>
+        )}
+
+        {speed > 0 && (
+          <label>
+            Calculated speed
+            <input value={`${speed.toFixed(2)} km/h`} disabled />
+          </label>
+        )}
+
+        <label>
+          Calories
+          <input
+            type="number"
+            min="0"
+            value={manualCalories ? calorieValue : calories || ''}
+            disabled={!manualCalories}
+            placeholder={
+              weight ? 'Automatically estimated' : 'Add weight in Health Metrics'
+            }
+            onChange={event => changed(setCalorieValue, event.target.value)}
+          />
+          <span className="sports-calorie-toggle">
+            <input
+              type="checkbox"
+              checked={manualCalories}
+              onChange={event => changed(
+                setManualCalories,
+                event.target.checked
+              )}
+            />
+            Override calculated calories
+          </span>
+        </label>
+      </div>
+
+      <button
+        type="button"
+        className="sports-more-toggle"
+        onClick={() => setMore(value => !value)}
+      >
+        <ChevronDown className={more ? 'open' : ''} />
+        {more ? 'Hide details' : 'More details'}
+      </button>
+
+      {more && (
+        <div className="sports-form-grid sports-more-fields">
+          {template.optional
+            .filter(field => !['distance', 'averageHr', 'maxHr'].includes(field))
+            .map(renderDetailField)}
+
+          {template.optional.includes('maxHr') && (
+            <label>
+              Maximum heart rate
+              <input
+                type="number"
+                min="30"
+                max="250"
+                value={maxHr}
+                onChange={event => changed(setMaxHr, event.target.value)}
+              />
+            </label>
+          )}
+
+          <label className="sports-notes-field">
+            Notes
+            <textarea
+              value={notes}
+              onChange={event => changed(setNotes, event.target.value)}
+            />
+          </label>
+        </div>
+      )}
+
+      <MediaEditor
+        existing={initial.photos || []}
+        positionX={initial.position_x || 50}
+        positionY={initial.position_y || 50}
+        onChange={value => {
+          setMedia(value)
+          setDirty(true)
+        }}
+      />
+
+      <div className="sports-form-actions">
+        <button type="button" onClick={onCancel}>
+          Cancel
+        </button>
+        <button className="primary" disabled={saving}>
+          <Save />
+          {saving ? 'Saving…' : 'Save activity'}
+        </button>
+      </div>
+    </form>
+  )
+}

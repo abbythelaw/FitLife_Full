@@ -1,0 +1,164 @@
+/* Health Metric outside-card hero hierarchy */
+
+/*
+ * Remove the large top-left icon.
+ * Category identity remains available through colour and subtle text.
+ */
+.metric-card > .health-big-icon,
+.metric-card > header .health-big-icon,
+.metric-card .metric-card-icon,
+.metric-card .health-metric-icon,
+.metric-card > header > span:first-child:not(.metric-card-title) {
+  display: none !important;
+}
+
+/* Centre the primary card header. */
+.metric-card > header,
+.metric-card .metric-card-header {
+  position: relative;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  justify-items: center !important;
+  align-items: center !important;
+  text-align: center !important;
+  gap: 4px !important;
+  padding-inline: 54px !important;
+}
+
+/* Keep Edit in the upper-right corner. */
+.metric-card > header button,
+.metric-card .metric-card-header button {
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+}
+
+/* Centre the metric name. */
+.metric-card > header h2,
+.metric-card > header h3,
+.metric-card .metric-card-header h2,
+.metric-card .metric-card-header h3,
+.metric-card .metric-name {
+  width: 100% !important;
+  margin: 0 !important;
+  text-align: center !important;
+}
+
+/* Category becomes subtle supporting information. */
+.metric-card > header small,
+.metric-card .metric-card-header small,
+.metric-card .metric-category {
+  display: block !important;
+  width: 100% !important;
+  color: var(--metric-color, var(--muted)) !important;
+  text-align: center !important;
+  font-size: 8px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+
+/* Make the current reading the visual hero. */
+.metric-card .metric-current,
+.metric-card .current-value,
+.metric-card .metric-value,
+.metric-card > h2,
+.metric-card > h3 {
+  width: 100% !important;
+  margin: 10px 0 3px !important;
+  color: #ffffff !important;
+  text-align: center !important;
+  font-size: clamp(30px, 3vw, 42px) !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  letter-spacing: -0.035em !important;
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.42) !important;
+}
+
+/* Units remain readable but secondary. */
+.metric-card .metric-current small,
+.metric-card .metric-current span,
+.metric-card .current-value small,
+.metric-card .current-value span,
+.metric-card .metric-value small,
+.metric-card .metric-value span {
+  margin-left: 4px !important;
+  color: var(--metric-color, #9fb5aa) !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0 !important;
+}
+
+/* Centre status and trend above the graph. */
+.metric-card .metric-status,
+.metric-card .metric-status-row,
+.metric-card .metric-current-status {
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+/*
+ * Remove the duplicated nested category mini-card:
+ * icon + Uncategorized + No reading yet + target.
+ *
+ * The useful target/range row higher in the card is retained.
+ */
+.metric-card .health-card-completion-summary {
+  display: none !important;
+}
+
+/* Preserve and strengthen the target/range row, such as 55–65 bpm. */
+.metric-card .metric-target,
+.metric-card .metric-target-row,
+.metric-card .target-row,
+.metric-card .health-target-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  min-height: 44px !important;
+  margin-top: 8px !important;
+  padding: 9px 2px !important;
+}
+
+/* Keep the new streak section compact and impactful. */
+.metric-card .health-card-streak {
+  margin-top: 9px !important;
+}
+
+/* LAST 30 DAYS remains outside the bordered rectangle. */
+.metric-card .health-card-history-section {
+  margin-top: 8px !important;
+}
+
+/* Ensure the bordered history rectangle has breathing room. */
+.metric-card .health-card-history-compact {
+  min-height: 78px !important;
+  padding: 13px 14px 11px !important;
+}
+
+/* Steps and other large-number metrics. */
+.metric-card[data-metric-name="steps"] .metric-current,
+.metric-card[data-metric-name="steps"] .current-value,
+.metric-card[data-metric-name="steps"] .metric-value {
+  font-variant-numeric: tabular-nums !important;
+}
+
+/* Avoid excessive card height after removing duplicated content. */
+.metric-card {
+  align-content: start !important;
+}
+
+@media (max-width: 700px) {
+  .metric-card > header,
+  .metric-card .metric-card-header {
+    padding-inline: 46px !important;
+  }
+
+  .metric-card .metric-current,
+  .metric-card .current-value,
+  .metric-card .metric-value,
+  .metric-card > h2,
+  .metric-card > h3 {
+    font-size: 34px !important;
+  }
+}

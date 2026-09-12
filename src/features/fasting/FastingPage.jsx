@@ -1,0 +1,831 @@
+import {useEffect,useMemo,useState} from 'react'
+import {CalendarDays,ChevronDown,Clock3,Edit3,Flame,Pause,Play,Plus,Sparkles,Timer,X} from 'lucide-react'
+import './FastingPage.css'
+import FastingMetabolicInputs from './FastingMetabolicInputs'
+import FastingGlycemicFoundation from './FastingGlycemicFoundation'
+import {deleteFast,listFasts,saveFast,validateFastInterval} from './fastingStore'
+import FastingCalendar from './FastingCalendar'
+import FastingAnalytics from './FastingAnalytics'
+
+const KEY='fitlife-fasting-sessions'
+const PROTOCOLS=[['12:12',12],['14:10',14],['16:8',16],['18:6',18],['20:4',20],['OMAD',23],['24h',24],['36h',36],['48h',48],['72h',72]]
+const PHASES=[
+ {hour:4,icon:'🍽️',title:'Fed to post-absorptive transition',color:'#58d68d',image:'meal',short:'Digestion is winding down while recently absorbed fuel remains important.',body:['During the first hours after a meal, carbohydrate, fat and amino acids from food remain available. Insulin generally remains higher than later in a fast, helping tissues use and store nutrients.','As digestion progresses, the contribution from the most recent meal gradually falls. This is a transition, not an on-and-off switch, and timing depends on meal size, composition, activity and individual metabolism.'],science:['Ghrelin-related hunger can rise near habitual meal times and then fall again. Hunger therefore often arrives in waves rather than increasing continuously.','Amino acids from the recent meal still support protein turnover. FitLife does not infer muscle loss from elapsed time alone.']},
+ {hour:8,icon:'⚖️',title:'Post-absorptive energy balance',color:'#54d6c3',image:'balance',short:'The body increasingly coordinates stored fuel to maintain blood glucose and energy supply.',body:['The digestive contribution from the last meal is usually smaller. Liver glycogen increasingly contributes to maintaining blood glucose while fat release begins to rise.','Insulin generally trends downward and glucagon becomes more influential, but exact concentrations cannot be estimated from a timer.'],science:['Glycogen availability differs with previous carbohydrate intake, body size and exercise.','Hunger signals can still track normal meal routines even when immediate energy availability is adequate.']},
+ {hour:12,icon:'🔥',title:'Stored-fat contribution rising',color:'#43bdf2',image:'fuel',short:'Fat oxidation commonly contributes more as the fast continues.',body:['The body uses a mixture of liver glycogen, fatty acids and glucose produced internally. The proportional contribution from fat commonly increases compared with the fed state.','This phase is often used in time-restricted eating, but the metabolic response varies between people and between days.'],science:['Fat use does not mean body-fat loss can be calculated from the timer. Whole-day energy balance remains important.','Amino acids continue to participate in normal protein turnover, while the body also uses glycerol, lactate and other substrates for glucose production.']},
+ {hour:16,icon:'💧',title:'Established intermittent-fast window',color:'#5d7df5',image:'flow',short:'Reliance on stored energy is generally more established.',body:['Many common intermittent-fasting protocols end around this point. Fatty-acid availability may be higher and ketone production may be beginning to rise, especially after lower carbohydrate intake or activity.','Appetite may feel stronger, weaker or unchanged. Hydration, caffeine habits, sleep and usual meal timing can all influence symptoms.'],science:['A fasting timer cannot verify ketosis. Blood or breath measurements would be needed to assess ketones directly.','Muscle protein is not simply switched off or rapidly consumed at a specific hour. Protein turnover and fuel selection are continuous processes.']},
+ {hour:18,icon:'🧠',title:'Ketone availability may be increasing',color:'#8c62e8',image:'brain',short:'Fat-derived ketones may provide a growing share of energy for some tissues.',body:['As liver glycogen becomes less available, fatty acids and ketones generally become more prominent fuels. The brain can begin using a greater proportion of ketones while still requiring glucose.','Some people report steadier concentration or reduced hunger, while others experience headache, cold sensation or reduced performance. These experiences are not proof of a specific metabolic state.'],science:['Ghrelin secretion is pulsatile and linked to learned meal timing, helping explain why hunger can peak and subside.','The timing and magnitude of ketone production vary with diet, exercise, body composition and previous fasting exposure.']},
+ {hour:24,icon:'♻️',title:'One-day fasting adaptation',color:'#c45ee5',image:'cell',short:'Stored-fuel use is well established and cellular stress responses may be changing.',body:['After roughly a day without energy intake, liver glycogen is often considerably reduced and the body relies more heavily on fatty acids, ketones and internally produced glucose.','Cellular maintenance pathways are influenced by nutrient availability, but a precise autophagy start time cannot be established from elapsed time in a human app.'],science:['Evidence for exact hour-by-hour autophagy thresholds in humans is limited. FitLife presents this phase as educational context, not a measured biological event.','Extended fasting deserves more attention to hydration, medication, symptoms and prior medical advice.']},
+ {hour:36,icon:'🌱',title:'Extended-fasting adaptation',color:'#ed6d78',image:'adapt',short:'Dependence on stored fuel and ketones may be more pronounced.',body:['At this duration, the body is operating in an extended fast rather than a routine overnight fast. Fat oxidation and ketone availability may be considerably higher than in the fed state.','The experience can differ sharply depending on health, recent training, fluid intake, sodium balance and previous fasting exposure.'],science:['Hormonal and metabolic adaptations are continuous and individual. FitLife avoids claiming that a single threshold guarantees repair, detoxification or immune effects.','Longer is not automatically better. Stop and seek appropriate help for concerning symptoms.']},
+ {hour:48,icon:'⭐',title:'Prolonged-fasting territory',color:'#f49a45',image:'deep',short:'Physiological adaptation continues, while safety considerations become more important.',body:['Two days without energy intake is a prolonged fast. Fuel use is dominated by stored substrates, but individual tolerance and risk vary.','Training performance, sleep, hydration and medication requirements may be affected. This phase should not be treated as a routine challenge for everyone.'],science:['Human evidence does not support using a timer to promise immune renewal, detoxification or a fixed growth-hormone benefit.','People with medical conditions, pregnancy, a history of disordered eating or glucose-lowering medication require professional guidance.']},
+ {hour:72,icon:'✨',title:'Multi-day fasting',color:'#f2c94c',image:'long',short:'This is an advanced, prolonged fast requiring careful individual consideration.',body:['A three-day fast produces substantial changes in fuel use and daily routine. The body continues using fatty acids, ketones and internally produced glucose to maintain energy supply.','This duration is not necessary for most time-restricted eating goals and should not be pursued simply to unlock an illustration.'],science:['The interface is educational and does not certify safety or biological outcomes.','Clinical supervision may be appropriate for prolonged fasting, especially with symptoms, medication or health conditions.']}
+]
+const read=listFasts
+const fmt=ms=>{const s=Math.max(0,Math.floor(ms/1000));return `${String(Math.floor(s/3600)).padStart(2,'0')}:${String(Math.floor(s%3600/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`}
+const localValue=date=>{const d=new Date(date);const off=d.getTimezoneOffset()*60000;return new Date(d-off).toISOString().slice(0,16)}
+function visiblePhases(target,elapsed){const ceiling=Math.max(Number(target)||16,elapsed);return PHASES.filter(p=>p.hour<=ceiling||p.hour===(PHASES.find(x=>x.hour>ceiling)?.hour)).filter(p=>p.hour<=Math.max(16,ceiling<24?16:ceiling<36?24:ceiling<48?36:ceiling<72?48:72))}
+function phaseAt(hours){return [...PHASES].reverse().find(p=>hours>=p.hour)||PHASES[0]}
+function FastingVisual({type}){return <div className={`fast-phase-art art-${type}`} aria-hidden="true"><span className="art-body"/><span className="art-orbit one"/><span className="art-orbit two"/><span className="art-particle p1"/><span className="art-particle p2"/><span className="art-particle p3"/></div>}
+
+
+
+const RING_NODE_SET_16=[4,8,12,16,18,24]
+const RING_NODE_SET_36=[4,8,12,16,18,24,36]
+const RING_NODE_SET_48=[4,8,12,16,18,24,36,48]
+const RING_NODE_SET_72=[4,8,12,16,18,24,36,48,72]
+
+function ringNodeHours(target){
+  if(target<=16)return RING_NODE_SET_16
+  if(target<=36)return RING_NODE_SET_36
+  if(target<=48)return RING_NODE_SET_48
+  return RING_NODE_SET_72
+}
+
+// A single geometry source: identical hour input always yields the
+// identical ring angle, whether used for a milestone node or for the
+// live progress arc/marker.
+function ringGeometryFor(target){
+  const hours=ringNodeHours(target)
+  const angleStep=360/hours.length
+  const nodes=hours.map((hour,index)=>({
+    hour,
+    angle:-90+index*angleStep
+  }))
+
+  function angleForElapsed(elapsedHours){
+    const clamped=Math.max(0,Math.min(target,elapsedHours))
+    if(clamped<=nodes[0].hour){
+      const ratio=nodes[0].hour?clamped/nodes[0].hour:0
+      return -90+ratio*angleStep
+    }
+    for(let index=1;index<nodes.length;index++){
+      const left=nodes[index-1],right=nodes[index]
+      if(clamped<=right.hour){
+        const ratio=(clamped-left.hour)/(right.hour-left.hour||1)
+        return left.angle+(right.angle-left.angle)*ratio
+      }
+    }
+    const last=nodes.at(-1)
+    const remainder=target-last.hour
+    const ratio=remainder?(clamped-last.hour)/remainder:1
+    return last.angle+angleStep*Math.min(1,Math.max(0,ratio))
+  }
+
+  return {nodes,angleForElapsed}
+}
+
+function shortPhase(hours){
+  if(hours>=24)return 'DEEP FASTING'
+  if(hours>=18)return 'KETONES RISING'
+  if(hours>=12)return 'FAT BURNING'
+  if(hours>=8)return 'POST-ABSORPTIVE'
+  return 'FASTING STARTED'
+}
+
+
+function ringMilestonesForTarget(target){
+  const targetHours=Math.max(1,Number(target)||16)
+  const recognised=[4,8,12,16,18,24,36,48,72]
+  const visible=recognised.filter(hour=>hour<=targetHours)
+
+  // Short/custom targets below 4h still retain a clean ring without a fake milestone.
+  return visible
+}
+
+function visualMilestoneAngle(hour,targetHours){
+  const ratio=Math.max(0,Math.min(1,hour/Math.max(1,targetHours)))
+  return -90+ratio*360
+}
+
+
+function markerCoordinates(progress,radius=151){
+  const angle=-90+progress*360
+  const radians=angle*Math.PI/180
+  return {
+    angle,
+    x:170+Math.cos(radians)*radius,
+    y:170+Math.sin(radians)*radius
+  }
+}
+
+function shortPhaseLabel(hours){
+  if(hours>=24)return 'DEEP FASTING'
+  if(hours>=18)return 'KETONES RISING'
+  if(hours>=12)return 'FAT BURNING'
+  if(hours>=8)return 'POST-ABSORPTIVE'
+  return 'FASTING STARTED'
+}
+
+function Ring({fast,now,onPhase,onEditStart,onEnd}){
+  const [mode,setMode]=useState('elapsed')
+  const startedAt=new Date(fast.started_at).getTime()
+  const elapsedMs=Math.max(0,now-startedAt)
+  const elapsedHours=elapsedMs/36e5
+  const targetHours=Math.max(1,Number(fast.target_hours||16))
+  const targetEnd=new Date(startedAt+targetHours*36e5)
+  const remainingMs=Math.max(0,targetEnd.getTime()-now)
+  const milestoneHours=ringMilestonesForTarget(targetHours)
+  const progress=Math.max(0,Math.min(1,elapsedHours/targetHours))
+  const marker=markerCoordinates(progress)
+  const currentPhase=elapsedHours<4?null:phaseAt(elapsedHours)
+  const centreValue=mode==='elapsed'?fmt(elapsedMs):fmt(remainingMs)
+  const centreLabel=mode==='elapsed'?'Elapsed':'Remaining'
+
+  return <div className="fast-journey-wrap layered-fast-instrument">
+    <div className="layered-ring" data-complete={progress>=1?'true':'false'}>
+      <svg className="layered-ring-svg" viewBox="0 0 340 340" aria-hidden="true">
+        <defs>
+          <linearGradient id="fastingProgressGradient" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#45d66f"/>
+            <stop offset="100%" stopColor="#22d3b6"/>
+          </linearGradient>
+        </defs>
+        <circle className="layered-base-track" cx="170" cy="170" r="151"/>
+        <circle
+          className="layered-progress-track"
+          cx="170" cy="170" r="151"
+          pathLength="1"
+          strokeDasharray={`${progress} ${1-progress}`}
+        />
+      </svg>
+
+      <span
+        className="layered-progress-dot"
+        style={{left:`${marker.x/340*100}%`,top:`${marker.y/340*100}%`}}
+        aria-label={`${elapsedHours.toFixed(1)} fasting hours elapsed`}
+      />
+
+      {milestoneHours.map(hour=>{
+        const phase=PHASES.find(item=>item.hour===hour)
+        if(!phase)return null
+        const angle=visualMilestoneAngle(hour,targetHours)
+        const reached=elapsedHours>=hour
+        const current=reached && currentPhase?.hour===hour
+        return <button
+          type="button"
+          key={hour}
+          className={`layered-milestone ${reached?'reached':'locked'} ${current?'current':''}`}
+          style={{'--node-angle':`${angle}deg`,'--phase':phase.color}}
+          onClick={()=>onPhase(phase)}
+          aria-label={`${hour} hour milestone: ${phase.title}`}
+        >
+          <span>{phase.icon}</span>
+          <b>{hour}h</b>
+        </button>
+      })}
+
+      <button
+        type="button"
+        className="layered-ring-centre"
+        onClick={()=>setMode(mode==='elapsed'?'remaining':'elapsed')}
+        aria-label={`Show ${mode==='elapsed'?'remaining':'elapsed'} fasting time`}
+      >
+        <strong>{centreValue}</strong>
+        <small>{centreLabel}</small>
+        <em>{currentPhase?.icon||'◌'} {shortPhaseLabel(elapsedHours)}</em>
+      </button>
+    </div>
+
+    <div className="layered-time-strip">
+      <button type="button" onClick={onEditStart} className="layered-started">
+        <small>STARTED</small>
+        <b>{new Date(startedAt).toLocaleString([],{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</b>
+        <Edit3/>
+      </button>
+      <span className="layered-goal">
+        <small>GOAL</small>
+        <b>{targetEnd.toLocaleString([],{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</b>
+      </span>
+      <button type="button" className="layered-end-fast" onClick={onEnd} aria-label="End fast" title="End fast">
+        <Pause/>
+      </button>
+    </div>
+  </div>
+}
+
+
+function InactiveFastingRing({onStart,onPhase}){
+  const [protocol,setProtocol]=useState('16:8')
+  const [customHours,setCustomHours]=useState(16)
+  const selected=PROTOCOLS.find(item=>item[0]===protocol)
+  const targetHours=Math.max(1,Number(selected?.[1]||customHours||16))
+  const milestoneHours=ringMilestonesForTarget(targetHours)
+
+  function changeProtocol(value){
+    setProtocol(value)
+    const found=PROTOCOLS.find(item=>item[0]===value)
+    if(found)setCustomHours(Number(found[1]))
+  }
+
+  function startSelectedFast(){
+    const name=protocol==='Custom'?`Custom ${targetHours}h`:protocol
+    onStart(name,targetHours)
+  }
+
+  return <article className="fast-hero inactive-fast-hero inactive-layered-card">
+    <div className="inactive-fast-target compact-inactive-target">
+      <label>
+        <span>Target</span>
+        <select value={protocol} onChange={event=>changeProtocol(event.target.value)}>
+          {PROTOCOLS.map(([name])=><option key={name} value={name}>{name}</option>)}
+          <option value="Custom">Custom</option>
+        </select>
+        <ChevronDown/>
+      </label>
+      {protocol==='Custom'&&<label className="inactive-custom-hours">
+        <span>Hours</span>
+        <input type="number" min="1" step=".25" value={customHours} onChange={event=>setCustomHours(event.target.value)}/>
+      </label>}
+    </div>
+
+    <div className="inactive-layered-instrument">
+      <div className="inactive-layered-ring">
+        <svg className="inactive-layered-svg" viewBox="0 0 340 340" aria-hidden="true">
+          <circle className="inactive-layered-track" cx="170" cy="170" r="151"/>
+        </svg>
+
+        {milestoneHours.map(hour=>{
+          const phase=PHASES.find(item=>item.hour===hour)
+          if(!phase)return null
+          const angle=visualMilestoneAngle(hour,targetHours)
+          return <button
+            type="button"
+            key={hour}
+            className="inactive-layered-milestone"
+            style={{'--node-angle':`${angle}deg`}}
+            onClick={()=>onPhase({...phase,previewOnly:true})}
+            aria-label={`${hour} hour milestone, not reached`}
+          >
+            <span>{phase.icon}</span>
+            <b>{hour}h</b>
+          </button>
+        })}
+
+        <div className="inactive-layered-centre">
+          <strong>Ready</strong>
+          <small>to fast</small>
+        </div>
+      </div>
+
+      <button type="button" className="inactive-layered-start" onClick={startSelectedFast}>
+        <Play aria-hidden="true"/>
+        <span>Start Fast</span>
+      </button>
+    </div>
+  </article>
+}
+
+function InactivePhaseCard(){
+  return <section className="fast-current-phase compact-phase-card inactive-phase-card">
+    <div className="inactive-phase-icon" aria-hidden="true"><Sparkles/></div>
+    <div>
+      <small>CURRENT PHASE</small>
+      <h2>Fasting journey ready</h2>
+      <p>Start a fast to begin tracking elapsed time and unlocking each fasting milestone.</p>
+    </div>
+  </section>
+}
+
+function PhasePanel({phase,elapsed,onClose}){const reached=elapsed>=phase.hour;const remaining=Math.max(0,phase.hour-elapsed);return <div className="fast-phase-panel" style={{'--phase':phase.color}}><button className="phase-close" onClick={onClose}><X/></button><FastingVisual type={phase.image}/><div className="phase-copy"><small>{phase.hour}-HOUR PHASE</small><h2>{phase.icon} {phase.title}</h2><p className="phase-lead">{phase.short}</p>{!reached?<div className="phase-locked"><b>{remaining.toFixed(1)} hours remaining</b><p>Continue this fast to illuminate the phase and open the full explanation.</p></div>:<><h3>What may be happening</h3>{phase.body.map((p,i)=><p key={i}>{p}</p>)}<h3>Scientific context</h3>{phase.science.map((p,i)=><p key={i}>{p}</p>)}<div className="phase-caution"><b>Important</b><p>These are approximate educational ranges, not measurements or medical advice. Stop a fast if you feel unwell and follow guidance appropriate to your health and medication.</p></div></>}</div></div>}
+export default function FastingPage(){const [sessions,setSessions]=useState(read());const [now,setNow]=useState(Date.now());const [editor,setEditor]=useState(null);const [phase,setPhase]=useState(null);const [customTarget,setCustomTarget]=useState(null);const [startEditor,setStartEditor]=useState(null);useEffect(()=>{const tick=setInterval(()=>setNow(Date.now()),1000);const refresh=()=>setSessions(read());window.addEventListener('fitlife:fasting-synced',refresh);window.addEventListener('storage',refresh);return()=>{clearInterval(tick);window.removeEventListener('fitlife:fasting-synced',refresh);window.removeEventListener('storage',refresh)}},[]);const active=sessions.find(x=>x.status==='active');const elapsed=active?Math.max(0,(now-new Date(active.started_at).getTime())/36e5):0;const current=phaseAt(elapsed);function save(row){
+    const candidate={
+      ...row,
+      id:row.id||crypto.randomUUID(),
+      updated_at:new Date().toISOString()
+    }
+    const validation=validateFastInterval(candidate,sessions)
+    if(!validation.valid){
+      setEditor(current=>current?{...current,error:validation.message}:current)
+      return false
+    }
+    saveFast(candidate)
+    setSessions(listFasts())
+    setEditor(null)
+    return true
+  }function start(name,hours){const d=new Date();save({protocol:name,target_hours:hours,started_at:d.toISOString(),expected_end_at:new Date(d.getTime()+hours*36e5).toISOString(),status:'active'})}function endFast(){
+    if(!active)return
+
+    setEditor({
+      mode:'complete',
+      session:active
+    })
+  }return <section className="fasting-page"><header className="fasting-heading"><div><small>FASTING</small><h2>Fasting</h2><p>A calm, evidence-informed view of the fasting journey.</p></div><div className="fasting-heading-actions">
+  <button onClick={()=>setEditor({mode:'previous'})}><CalendarDays/>Log previous fast</button>
+  <button onClick={()=>setEditor({mode:'new'})}><Plus/>Custom fast</button>
+</div></header>{active?<><article className="fast-hero" style={{'--phase':current.color}}><div className="fast-protocol-row">
+  <label>
+    <span className="fast-type-label">Fasting type</span>
+    <select
+      value={PROTOCOLS.some(item=>item[0]===active.protocol)?active.protocol:'Custom...'}
+      onChange={event=>{
+        const value=event.target.value
+
+        if(value==='Custom...'){
+          setCustomTarget(active)
+          return
+        }
+
+        const selected=PROTOCOLS.find(item=>item[0]===value)
+        if(!selected)return
+
+        const targetHours=Number(selected[1])
+        const startAt=new Date(active.started_at)
+        const targetEnd=new Date(startAt.getTime()+targetHours*36e5)
+
+        save({
+          ...active,
+          protocol:selected[0],
+          target_hours:targetHours,
+          expected_end_at:targetEnd.toISOString()
+        })
+      }}
+    >
+      {PROTOCOLS.map(([name])=><option key={name} value={name}>{name}</option>)}
+      <option value="Custom...">Custom...</option>
+    </select>
+    <ChevronDown/>
+  </label>
+</div><Ring fast={active} now={now} onPhase={setPhase} onEditStart={()=>setStartEditor(active)} onEnd={endFast}/></article><section className="fast-current-phase compact-phase-card" style={{'--phase':current.color}}><FastingVisual type={current.image}/><div><small>CURRENT PHASE</small><h2>{current.icon} {current.title}</h2><p>{current.short}</p><button onClick={()=>setPhase(current)}>Read the detailed explanation</button></div></section></>:<>
+  <InactiveFastingRing onStart={start} onPhase={setPhase}/>
+  <InactivePhaseCard/>
+</>}<FastingCalendar sessions={sessions} now={now} onDeleteFast={async fast=>{if(!confirm('Delete this fasting session?'))return;await deleteFast(fast);setSessions(listFasts())}} onEditFast={fast=>setEditor({mode:'edit',session:fast})} onChooseDate={date=>setEditor({mode:'previous',prefillDate:date})}/><FastingMetabolicInputs/><FastingGlycemicFoundation sessions={sessions}/><FastingAnalytics sessions={sessions}/>{startEditor&&<QuickStartEditor
+  fast={startEditor}
+  sessions={sessions}
+  onClose={()=>setStartEditor(null)}
+  onSave={row=>{
+    if(save(row))setStartEditor(null)
+  }}
+/>}
+{customTarget&&<CustomTargetEditor
+  fast={customTarget}
+  onClose={()=>setCustomTarget(null)}
+  onSave={row=>{
+    if(save(row))setCustomTarget(null)
+  }}
+/>}
+{phase&&<div className="fast-layer"><button className="fast-backdrop" onClick={()=>setPhase(null)}/><PhasePanel phase={phase} elapsed={elapsed} onClose={()=>setPhase(null)}/></div>}{editor&&<FastEditor state={editor} onClose={()=>setEditor(null)} onSave={save}/>}</section>}
+
+function QuickStartEditor({fast,sessions,onClose,onSave}) {
+  const [value,setValue]=useState(localValue(fast.started_at))
+  const [error,setError]=useState('')
+  const startAt=new Date(value)
+  const targetHours=Number(fast.target_hours||16)
+  const targetEnd=new Date(startAt.getTime()+targetHours*36e5)
+
+  function submit(){
+    if(Number.isNaN(startAt.getTime())){
+      setError('Enter a valid start date and time.')
+      return
+    }
+
+    if(startAt.getTime()>Date.now()){
+      setError('The start date and time cannot be in the future.')
+      return
+    }
+
+    const candidate={
+      ...fast,
+      started_at:startAt.toISOString(),
+      expected_end_at:targetEnd.toISOString(),
+      status:'active'
+    }
+
+    const validation=validateFastInterval(candidate,sessions)
+    if(!validation.valid){
+      setError(validation.message)
+      return
+    }
+
+    onSave(candidate)
+  }
+
+  return <div className="fast-layer">
+    <button className="fast-backdrop" aria-label="Close" onClick={onClose}/>
+    <aside className="fast-drawer quick-fast-editor">
+      <button className="close" aria-label="Close" onClick={onClose}><X/></button>
+      <small>EDIT FAST START</small>
+      <h2>Started</h2>
+      <p>Update the active fast's start. Target End recalculates automatically.</p>
+
+      {error&&<div className="fast-validation-error" role="alert">
+        <b>Cannot update start</b>
+        <span>{error}</span>
+      </div>}
+
+      <label>Start date and time
+        <input
+          type="datetime-local"
+          max={localValue(new Date())}
+          value={value}
+          onChange={event=>{
+            setValue(event.target.value)
+            setError('')
+          }}
+        />
+      </label>
+
+      <section className="quick-fast-preview">
+        <span><small>FASTING TYPE</small><b>{fast.protocol}</b></span>
+        <span><small>TARGET END</small><b>{targetEnd.toLocaleString()}</b></span>
+      </section>
+
+      <div className="fast-editor-actions">
+        <button onClick={onClose}>Cancel</button>
+        <button className="save" onClick={submit}>Update start</button>
+      </div>
+    </aside>
+  </div>
+}
+
+function CustomTargetEditor({fast,onClose,onSave}) {
+  const [hours,setHours]=useState(Number(fast.target_hours||16))
+  const [error,setError]=useState('')
+  const startAt=new Date(fast.started_at)
+  const target=Number(hours||0)
+  const targetEnd=new Date(startAt.getTime()+target*36e5)
+
+  function submit(){
+    if(!Number.isFinite(target)||target<1){
+      setError('Enter a target of at least 1 hour.')
+      return
+    }
+
+    onSave({
+      ...fast,
+      protocol:`Custom · ${target}h`,
+      target_hours:target,
+      expected_end_at:targetEnd.toISOString()
+    })
+  }
+
+  return <div className="fast-layer">
+    <button className="fast-backdrop" aria-label="Close" onClick={onClose}/>
+    <aside className="fast-drawer custom-target-editor">
+      <button className="close" aria-label="Close" onClick={onClose}><X/></button>
+      <small>CUSTOM FASTING TARGET</small>
+      <h2>How many hours?</h2>
+
+      {error&&<div className="fast-validation-error">
+        <b>Cannot update target</b><span>{error}</span>
+      </div>}
+
+      <label>Target hours
+        <input
+          type="number"
+          min="1"
+          step=".25"
+          value={hours}
+          onChange={event=>{
+            setHours(event.target.value)
+            setError('')
+          }}
+        />
+      </label>
+
+      <section className="quick-fast-preview">
+        <span><small>CALCULATED TARGET END</small><b>{targetEnd.toLocaleString()}</b></span>
+      </section>
+
+      <div className="fast-editor-actions">
+        <button onClick={onClose}>Cancel</button>
+        <button className="save" onClick={submit}>Update target</button>
+      </div>
+    </aside>
+  </div>
+}
+
+function FastEditor({state,onClose,onSave}) {
+  const session=state.session||{}
+  const isPrevious=state.mode==='previous'
+  const isComplete=state.mode==='complete'
+  const isActiveEdit=
+    state.mode==='edit'||
+    state.mode==='goal'
+
+  const now=new Date()
+  const nowLocal=localValue(now)
+
+  const [start,setStart]=useState(
+    state.prefillDate ? `${state.prefillDate}T12:00` : state.prefillDate ? `${state.prefillDate}T12:00` : localValue(session.started_at||now)
+  )
+
+  const [end,setEnd]=useState(() => {
+    if(isComplete)return nowLocal
+    if(isPrevious)return localValue(session.ended_at||now)
+    return session.ended_at
+      ?localValue(session.ended_at)
+      :''
+  })
+
+  const [hours,setHours]=useState(
+    Number(session.target_hours||16)
+  )
+
+  const [protocol,setProtocol]=useState(
+    session.protocol||'16:8'
+  )
+
+  const [error,setError]=useState(
+    state.error||''
+  )
+
+  const startDate=new Date(start)
+  const endDate=end?new Date(end):null
+
+  const expected=useMemo(
+    ()=>new Date(
+      startDate.getTime()+
+      Number(hours||0)*36e5
+    ),
+    [start,hours]
+  )
+
+  const calculatedHours=
+    (isPrevious||isComplete)&&
+    endDate&&
+    !Number.isNaN(startDate.getTime())&&
+    !Number.isNaN(endDate.getTime())
+      ?Math.max(0,(endDate-startDate)/36e5)
+      :Math.max(0,(Date.now()-startDate)/36e5)
+
+  const targetPercent=Number(hours)>0
+    ?calculatedHours/Number(hours)*100
+    :0
+
+  const exceededHours=Math.max(
+    0,
+    calculatedHours-Number(hours||0)
+  )
+
+  function chooseProtocol(value) {
+    setProtocol(value)
+
+    const found=PROTOCOLS.find(
+      item=>item[0]===value
+    )
+
+    if(found){
+      setHours(Number(found[1]))
+    }
+  }
+
+  function validateLocally() {
+    const startMs=startDate.getTime()
+    const endMs=endDate?.getTime()
+
+    if(!Number.isFinite(startMs)){
+      return 'Enter a valid start date and time.'
+    }
+
+    if(startMs>Date.now()){
+      return 'The start date and time cannot be in the future.'
+    }
+
+    if(Number(hours)<=0){
+      return 'The target must be greater than zero hours.'
+    }
+
+    if(isPrevious||isComplete){
+      if(!Number.isFinite(endMs)){
+        return 'Enter a valid end date and time.'
+      }
+
+      if(endMs>Date.now()){
+        return 'The end date and time cannot be in the future.'
+      }
+
+      if(endMs<=startMs){
+        return 'The end must be later than the start.'
+      }
+    }
+
+    return ''
+  }
+
+  function submit() {
+    const localError=validateLocally()
+
+    if(localError){
+      setError(localError)
+      return
+    }
+
+    const completed=isPrevious||isComplete
+
+    const candidate={
+      ...session,
+      protocol,
+      target_hours:Number(hours),
+      started_at:startDate.toISOString(),
+      expected_end_at:expected.toISOString(),
+      status:completed
+        ?'completed'
+        :session.status||'active',
+      ended_at:completed
+        ?endDate.toISOString()
+        :session.ended_at||null,
+      actual_hours:completed
+        ?calculatedHours
+        :session.actual_hours,
+      completed_at:completed
+        ?new Date().toISOString()
+        :session.completed_at
+    }
+
+    const result=validateFastInterval(
+      candidate,
+      listFasts()
+    )
+
+    if(!result.valid){
+      setError(result.message)
+      return
+    }
+
+    setError('')
+    onSave(candidate)
+  }
+
+  return <div className="fast-layer">
+    <button
+      className="fast-backdrop"
+      aria-label="Close fasting editor"
+      onClick={onClose}
+    />
+
+    <aside className="fast-drawer fast-time-editor">
+      <button
+        type="button"
+        className="close fast-editor-close"
+        aria-label="Close"
+        title="Close"
+        onClick={onClose}
+      >
+        <X/>
+      </button>
+
+      <small>
+        {isPrevious
+          ?'LOG PREVIOUS FAST'
+          :isComplete
+            ?'COMPLETE FAST'
+            :isActiveEdit
+              ?'EDIT ONGOING FAST'
+              :'CUSTOM FAST'}
+      </small>
+
+      <h2>
+        {isComplete
+          ?'Review before completing'
+          :protocol}
+      </h2>
+
+      <p className="fast-editor-intro">
+        {isComplete
+          ?'The current time is used by default. Adjust the start, end or target before completing the fast.'
+          :isPrevious
+            ?'Enter a previous fasting period. Future dates and overlapping sessions are not allowed.'
+            :'Update the ongoing fast without restarting it. The estimated target end updates automatically.'}
+      </p>
+
+      {error&&<div
+        className="fast-validation-error"
+        role="alert"
+      >
+        <b>Cannot save fast</b>
+        <span>{error}</span>
+      </div>}
+
+      <label>
+        Fasting type
+        <select
+          value={protocol}
+          onChange={event=>chooseProtocol(
+            event.target.value
+          )}
+        >
+          {PROTOCOLS.map(([name])=><option
+            key={name}
+            value={name}
+          >
+            {name}
+          </option>)}
+          <option value="Custom">Custom</option>
+        </select>
+      </label>
+
+      <div className="fast-time-grid">
+        <label>
+          Start date and time
+          <input
+            type="datetime-local"
+            max={nowLocal}
+            value={start}
+            onChange={event=>{
+              setStart(event.target.value)
+              setError('')
+            }}
+          />
+        </label>
+
+        {(isPrevious||isComplete)&&<label>
+          End date and time
+          <input
+            type="datetime-local"
+            max={nowLocal}
+            value={end}
+            onChange={event=>{
+              setEnd(event.target.value)
+              setError('')
+            }}
+          />
+        </label>}
+      </div>
+
+      <label>
+        Target hours
+        <input
+          type="number"
+          min="1"
+          step=".25"
+          value={hours}
+          onChange={event=>{
+            setHours(event.target.value)
+            setProtocol('Custom')
+            setError('')
+          }}
+        />
+      </label>
+
+      <section className="fast-editor-preview">
+        <span>
+          <small>STARTED</small>
+          <b>
+            {Number.isNaN(startDate.getTime())
+              ?'Invalid start'
+              :startDate.toLocaleString()}
+          </b>
+        </span>
+
+        <span>
+          <small>TARGET END</small>
+          <b>
+            {Number.isNaN(expected.getTime())
+              ?'Invalid target'
+              :expected.toLocaleString()}
+          </b>
+        </span>
+
+        {(isPrevious||isComplete)&&<span>
+          <small>ACTUAL END</small>
+          <b>
+            {!endDate||Number.isNaN(endDate.getTime())
+              ?'Invalid end'
+              :endDate.toLocaleString()}
+          </b>
+        </span>}
+
+        <span>
+          <small>
+            {isPrevious||isComplete
+              ?'ACTUAL DURATION'
+              :'CURRENT ELAPSED'}
+          </small>
+          <b>{calculatedHours.toFixed(2)} hours</b>
+        </span>
+
+        <span>
+          <small>TARGET RESULT</small>
+          <b>{Math.round(targetPercent)}% of target</b>
+        </span>
+
+        {(isPrevious||isComplete)&&<span>
+          <small>EXCEEDED BY</small>
+          <b>{exceededHours.toFixed(2)} hours</b>
+        </span>}
+      </section>
+
+      <div className="fast-editor-actions">
+        <button
+          type="button"
+          onClick={onClose}
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          className="save"
+          onClick={submit}
+        >
+          {isComplete
+            ?'Complete fast'
+            :isPrevious
+              ?'Save previous fast'
+              :'Save changes'}
+        </button>
+      </div>
+    </aside>
+  </div>
+}
+

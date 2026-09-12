@@ -1,0 +1,342 @@
+import { useEffect, useMemo, useState } from 'react'
+import { Activity, Bike, BookHeart, Check, ChevronRight, Dumbbell, Eye, EyeOff, Flame, Footprints, GripVertical, HeartPulse, Moon, RotateCcw, Settings2, Target, Timer, X } from 'lucide-react'
+import './SnapshotUnified.css'
+import TrendCalendar from './TrendCalendar'
+
+const MATRICES=[
+ {id:'health',title:'Health & Recovery',x:'Strain',y:'Readiness',corners:['Training Opportunity','Recovery Needed','Maximum Performance','Overloaded'],states:['Recovery Needed','Balanced Recovery','Training Opportunity','Under-Recovered','Productive Momentum','Peak Readiness','Overloaded','High Strain Alert','Maximum Performance'],palette:['#efe7d5','#b8d9c6','#5ca69a','#ddb3bd','#9ca8c7','#6685b2','#b76f83','#745d87','#493d59'],now:[76,61],d7:[66,58],d30:[58,54]},
+ {id:'training',title:'Sports & Workouts',x:'Intensity',y:'Volume',corners:['Aerobic Base','Recovery Block','Peak Training Demand','Power Stimulus'],states:['Recovery Block','Low Training Stimulus','Aerobic Base','Power Stimulus','Balanced Training Load','Productive Training','Intensity Overload','Heavy Training Block','Peak Training Demand'],palette:['#eee6cd','#c5d9a7','#69ad7d','#d9b77d','#75aaa8','#477fa5','#bc7554','#7869a7','#424872'],now:[68,72],d7:[61,64],d30:[54,57]},
+ {id:'habits',title:'Habits & Mindfulness',x:'Rest',y:'Consistency',corners:['Sustainable Rhythm','Burnout Risk','Passive Reset','Routine Drift'],states:['Routine Drift','Habit Rebuild','Passive Reset','Burnout Risk','Balanced Routine','Sustainable Rhythm','High Consistency','Strong Momentum','Consistent and Restored'],palette:['#ead9df','#c9badd','#8089bd','#d9c8ca','#96bbb5','#6494a5','#add7ba','#68b19d','#566e9c'],now:[72,82],d7:[64,73],d30:[55,66]}
+]
+const DEFAULT_ORDER=['matrices','glance','fasting','timeline','habits','habitChecklist','sports']
+const DEFAULT_VISIBLE={matrices:true,glance:true,fasting:true,timeline:true,habits:true,habitChecklist:true,sports:true}
+const WIDGET_NAMES={matrices:'Activity at a glance',glance:'Today at a glance',fasting:'Fasting',timeline:'Today’s timeline',habits:'Habit contributions',habitChecklist:'Today’s habits',sports:'Sports & workouts'}
+const BASE_METRICS=[
+ {id:'sleep',label:'Sleep',value:'8.1 h',status:'In range',color:'#8b5cf6',Icon:Moon,target:'health'},
+ {id:'steps',label:'Steps',value:'9,257',status:'Target reached',color:'#38d38b',Icon:Footprints,target:'health'},
+ {id:'rhr',label:'RHR',value:'61 bpm',status:'In range',color:'#ef6f7d',Icon:HeartPulse,target:'health'},
+ {id:'hrv',label:'HRV',value:'67 ms',status:'Health metric',color:'#38bdf8',Icon:Activity,target:'health'}
+]
+function read(key,fallback){try{return JSON.parse(localStorage.getItem(key))??fallback}catch{return fallback}}
+function dateKey(d=new Date()){return d.toISOString().slice(0,10)}
+function navigate(tab,metric){if(metric)localStorage.setItem('fitlife-open-health-metric',String(metric));window.location.hash=tab;window.location.reload()}
+function clock(ms){const s=Math.max(0,Math.floor(ms/1000)),d=Math.floor(s/86400),h=Math.floor((s%86400)/3600),m=Math.floor((s%3600)/60),sec=s%60;return`${d?`${d}d `:''}${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`}
+
+export default function SnapshotPage(){
+ const[now,setNow]=useState(Date.now()),[edit,setEdit]=useState(false),[settings,setSettings]=useState(false)
+ const[order,setOrder]=useState(()=>{const saved=read('fitlife-snapshot-order',DEFAULT_ORDER).filter(id=>DEFAULT_ORDER.includes(id));return[...saved,...DEFAULT_ORDER.filter(id=>!saved.includes(id))]})
+ const[visible,setVisible]=useState(()=>({...DEFAULT_VISIBLE,...read('fitlife-snapshot-visible',DEFAULT_VISIBLE)}))
+ const[drag,setDrag]=useState(null)
+ useEffect(()=>{const id=setInterval(()=>setNow(Date.now()),1000);return()=>clearInterval(id)},[])
+ useEffect(()=>{localStorage.setItem('fitlife-snapshot-order',JSON.stringify(order));localStorage.setItem('fitlife-snapshot-visible',JSON.stringify(visible))},[order,visible])
+ const habits=read('fitlife-habits',[]),habitLogs=read('fitlife-habit-logs',[])
+ const fasting=read('fitlife-fasting-sessions-v4',read('fitlife-fasting-sessions',[])).find(x=>x.status==='active')
+ const timeline=read('fitlife-log-history',[]).filter(x=>(x.date||x.entry_date)===dateKey()).sort((a,b)=>(b.time||'').localeCompare(a.time||''))
+ const sports=read('fitlife-sports-entries',read('fitlife-sports',[]))
+ const workouts=read('fitlife-workout-history-v3',read('fitlife-workout-history',[])).filter(x=>x.date===dateKey())
+ function drop(target){if(!drag||drag===target)return setDrag(null);const next=[...order],from=next.indexOf(drag),to=next.indexOf(target);next.splice(from,1);next.splice(to,0,drag);setOrder(next);setDrag(null)}
+ const cards={matrices:<MatrixGrid/>,glance:<Glance habits={habits} logs={habitLogs} fasting={fasting} workouts={workouts}/>,fasting:<FastCard fast={fasting} now={now} sports={sports} workouts={workouts}/>,timeline:<Timeline rows={timeline}/>,habits:<HabitCard habits={habits} logs={habitLogs}/>,habitChecklist:<HabitChecklist habits={habits} logs={habitLogs}/>,sports:<SportsCard entries={sports}/>}
+ return <section className={`snapshot-unified ${edit?'editing':''}`}><header className="su-page-head"><div><small>COMMAND CENTER</small><h2>Snapshot</h2><p>Live values sourced from Health, Habits, Fasting, Workouts and Log History.</p></div><div><button onClick={()=>setSettings(true)}><Settings2/>Quick settings</button><button className={edit?'active':''} onClick={()=>setEdit(!edit)}><GripVertical/>{edit?'Done':'Edit dashboard'}</button></div></header>{edit&&<div className="su-edit-note"><span>Drag a card by its handle to reorder the dashboard.</span><button onClick={()=>{setOrder(DEFAULT_ORDER);setVisible(DEFAULT_VISIBLE)}}><RotateCcw/>Reset</button></div>}<div className="su-layout">{order.map(id=>visible[id]&&<div key={id} className={`su-widget su-${id}`} draggable={edit} onDragStart={()=>setDrag(id)} onDragOver={e=>e.preventDefault()} onDrop={()=>drop(id)}><div className="su-widget-tools"><GripVertical/><span>{WIDGET_NAMES[id]}</span><button onClick={()=>setVisible({...visible,[id]:false})}><EyeOff/></button></div>{cards[id]}</div>)}</div>{settings&&<Settings visible={visible} setVisible={setVisible} onClose={()=>setSettings(false)}/>}</section>
+}
+function MatrixGrid(){return <div className="su-trend-grid">{MATRICES.map(m=><TrendCard matrix={m} key={m.id}/>)}</div>}
+function TrendCard({matrix}){
+ const [period,setPeriod]=useState(()=>localStorage.getItem(`fitlife-trend-period-${matrix.id}`)||'30D')
+ const [selected,setSelected]=useState(null)
+ const history=read('fitlife-bivariate-history',[]).filter(row=>[matrix.id,matrix.id==='training'?'sports_workouts':matrix.id==='health'?'health_recovery':'habits_mindfulness'].includes(row.matrix||row.metric_type)).map(row=>({...row,date:row.date||row.record_date||String(row.recorded_at||'').slice(0,10)}))
+ const current=Math.max(0,Math.min(8,Math.floor(matrix.now[1]/34)*3+Math.floor(matrix.now[0]/34)))
+ const guides={health:'Recovery supports productive activity. Keep the planned effort controlled and protect sleep tonight.',training:'Training load is balanced. Maintain quality without abruptly increasing intensity or total volume.',habits:'Consistency is strong. Keep minimum targets realistic and protect rest to sustain the routine.'}
+ function change(next){setPeriod(next);localStorage.setItem(`fitlife-trend-period-${matrix.id}`,next)}
+ return <article className="su-trend direct-trend" style={{'--trend':matrix.palette[current]}}><header><div className="su-trend-title"><small>{matrix.title.toUpperCase()} TREND</small><h3>{matrix.states[current]}</h3></div><div className="su-trend-scores"><span><b>{matrix.now[1]}</b><small>{matrix.y}</small></span><span><b>{matrix.now[0]}</b><small>{matrix.x}</small></span></div><div className="direct-periods">{['30D','90D','1Y'].map(item=><button className={period===item?'active':''} onClick={()=>change(item)} key={item}>{item}</button>)}</div></header><div className="su-trend-guide"><span>✦</span><p>{guides[matrix.id]}</p></div><TrendCalendar period={period} records={history} palette={Object.fromEntries(matrix.states.map((state,index)=>[state,matrix.palette[index]]))} onCellClick={setSelected}/><footer><button onClick={()=>navigate('analytics',matrix.id)}>View Analytics <ChevronRight/></button></footer>{selected&&<div className="su-layer"><button className="su-backdrop" onClick={()=>setSelected(null)}/><section className="direct-history-pop"><button onClick={()=>setSelected(null)}><X/></button><small>HISTORICAL CLASSIFICATION</small><h2>{selected.record?.classification||'No data'}</h2><time>{selected.date.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}</time>{selected.record?<div className="direct-score-row"><span><b>{selected.record.y_value}</b><small>{matrix.y}</small></span><span><b>{selected.record.x_value}</b><small>{matrix.x}</small></span></div>:<p>There is not enough data to classify this date.</p>}</section></div>}</article>
+}
+function Matrix({matrix}) {
+  const [showX, setShowX] = useState(true)
+  const [show7, setShow7] = useState(true)
+  const [show30, setShow30] = useState(true)
+  const [showHistory, setShowHistory] = useState(true)
+  const [historyPeriod, setHistoryPeriod] = useState('90D')
+  const [selectedState, setSelectedState] = useState(null)
+  const [historyOpen, setHistoryOpen] = useState(false)
+  const [info, setInfo] = useState(false)
+
+  const index = Math.max(
+    0,
+    Math.min(
+      8,
+      Math.floor(matrix.now[1] / 34) * 3 +
+        Math.floor(matrix.now[0] / 34)
+    )
+  )
+
+  const state = matrix.states[index]
+  const stateColor = matrix.palette[index]
+  const points = [
+    show30 && { id: '30D', point: matrix.d30 },
+    show7 && { id: '7D', point: matrix.d7 },
+    showX && { id: 'X', point: matrix.now, current: true },
+  ].filter(Boolean)
+
+  const renderedPoints = separateMarkers(points)
+
+  return (
+    <article className="su-matrix">
+      <header>
+        <div>
+          <small>ACTIVITY AT A GLANCE</small>
+          <h3>{matrix.title}</h3>
+        </div>
+        <div>
+          <span>Current</span>
+          <button onClick={() => setInfo(true)}>ⓘ How calculated</button>
+        </div>
+      </header>
+
+      <div className="su-marker-toggles">
+        <button className={show30 ? 'on' : ''} onClick={() => setShow30(!show30)}>30D</button>
+        <button className={show7 ? 'on' : ''} onClick={() => setShow7(!show7)}>7D</button>
+        <button className={showX ? 'on' : ''} onClick={() => setShowX(!showX)}>X</button>
+      </div>
+
+      <div className="su-matrix-stage">
+        <strong className="su-corner top">{matrix.corners[0]}</strong>
+        <strong className="su-corner left">{matrix.corners[1]}</strong>
+        <strong className="su-corner right">{matrix.corners[2]}</strong>
+        <strong className="su-corner bottom">{matrix.corners[3]}</strong>
+
+        <span className="su-edge nw">High {matrix.x} · High {matrix.y}</span>
+        <span className="su-edge ne">Low {matrix.x} · High {matrix.y}</span>
+        <span className="su-edge sw">Low {matrix.x} · Low {matrix.y}</span>
+        <span className="su-edge se">High {matrix.x} · Low {matrix.y}</span>
+
+        <div className="su-diamond">
+          <div className="su-cells">
+            {matrix.palette.map((color, cellIndex) => (
+              <button
+                key={cellIndex}
+                style={{ background: color }}
+                title={matrix.states[cellIndex]}
+                aria-label={matrix.states[cellIndex]}
+                onClick={() => setSelectedState(cellIndex)}
+              />
+            ))}
+          </div>
+
+          {renderedPoints.map((marker) => (
+            <Marker key={marker.id} {...marker} />
+          ))}
+        </div>
+
+        {selectedState !== null && (
+          <button
+            className="su-state-description"
+            onClick={() => setSelectedState(null)}
+          >
+            <b>{matrix.states[selectedState]}</b>
+            <span>
+              {selectedState < 3
+                ? 'Lower combined load with stronger recovery emphasis.'
+                : selectedState < 6
+                ? 'A more balanced middle state with mixed inputs.'
+                : 'Higher combined demand that merits closer review.'}
+            </span>
+          </button>
+        )}
+      </div>
+
+      <div className="su-state-row">
+        <div className="su-score">
+          <b>{matrix.now[1]}</b>
+          <span>{matrix.y}</span>
+        </div>
+        <div className="su-current">
+          <b style={{ background: stateColor }}>{state}</b>
+          <span>Current state</span>
+          <button onClick={() => setShowHistory(!showHistory)}>
+            {showHistory ? 'Hide view' : 'Show view'}
+          </button>
+        </div>
+        <div className="su-score">
+          <b>{matrix.now[0]}</b>
+          <span>{matrix.x}</span>
+        </div>
+      </div>
+
+      {showHistory && (
+        <>
+          <div className="su-history-head">
+            <b>{matrix.title} · {historyPeriod} view</b>
+            <div className="su-history-periods">
+              {['7D', '30D', '90D', '1Y'].map((period) => (
+                <button
+                  key={period}
+                  className={historyPeriod === period ? 'on' : ''}
+                  onClick={() => setHistoryPeriod(period)}
+                >
+                  {period}
+                </button>
+              ))}
+            </div>
+          </div>
+          <History matrix={matrix} period={historyPeriod} />
+          <button
+            className="su-text-link su-history-popout-link"
+            onClick={() => setHistoryOpen(true)}
+          >
+            View historical record
+          </button>
+        </>
+      )}
+
+      {historyOpen && (
+        <HistoryModal matrix={matrix} onClose={() => setHistoryOpen(false)} />
+      )}
+      {info && <Info matrix={matrix} onClose={() => setInfo(false)} />}
+    </article>
+  )
+}
+
+function separateMarkers(points) {
+  const result = points.map((item) => ({
+    ...item,
+    displayPoint: [...item.point],
+    offset: 0,
+  }))
+
+  for (let i = 0; i < result.length; i += 1) {
+    for (let j = 0; j < i; j += 1) {
+      const dx = result[i].point[0] - result[j].point[0]
+      const dy = result[i].point[1] - result[j].point[1]
+      const distance = Math.sqrt(dx * dx + dy * dy)
+      if (distance < 12) {
+        const direction = i % 2 === 0 ? 1 : -1
+        result[i].displayPoint = [
+          result[i].point[0] + direction * (8 + i * 2),
+          result[i].point[1] + (i - 1) * 8,
+        ]
+        result[i].offset = distance
+      }
+    }
+  }
+  return result
+}
+
+function Marker({ id, point, displayPoint, current, offset }) {
+  const displaced = offset > 0
+  const x1 = point[0]
+  const y1 = 100 - point[1]
+  const x2 = displayPoint[0]
+  const y2 = 100 - displayPoint[1]
+
+  return (
+    <>
+      {displaced && (
+        <svg className="su-marker-line" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <line x1={x1} y1={y1} x2={x2} y2={y2} />
+        </svg>
+      )}
+      <b
+        className={`su-marker ${current ? 'current' : ''}`}
+        style={{ left: `${displayPoint[0]}%`, bottom: `${displayPoint[1]}%` }}
+        title={`${id}: ${point[0]} / ${point[1]}`}
+      >
+        {id}
+      </b>
+    </>
+  )
+}
+
+function History({ matrix, period }) {
+  const count = period === '7D' ? 7 : period === '30D' ? 30 : period === '90D' ? 90 : 365
+  const days = Array.from({ length: count }, (_, index) =>
+    index % 11 === 0 ? null : matrix.palette[(index * 5) % 9]
+  )
+
+  return (
+    <div className={`su-history period-${period.toLowerCase()}`}>
+      <div className="su-months">
+        {(period === '1Y'
+          ? ['Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug']
+          : period === '90D'
+          ? ['Jun','Jul','Aug','Sep']
+          : period === '30D'
+          ? ['Aug','Sep']
+          : ['Last 7 days']
+        ).map((month) => <span key={month}>{month}</span>)}
+      </div>
+      <div className="su-history-body">
+        <div className="su-days"><span>Mon</span><span>Wed</span><span>Fri</span></div>
+        <div className="su-heat" style={{ '--day-count': count }}>
+          {days.map((color, index) => (
+            <i
+              key={index}
+              className={!color ? 'empty' : ''}
+              style={{ background: color || '#b8bcba' }}
+              title={color ? `Saved classification · day ${index + 1}` : 'No data'}
+            />
+          ))}
+        </div>
+      </div>
+      <div className="su-legend"><i/><span>No data</span></div>
+    </div>
+  )
+}
+
+function HistoryModal({ matrix, onClose }) {
+  const [deleted, setDeleted] = useState([])
+  const rows = Array.from({ length: 30 }, (_, index) => {
+    const date = new Date()
+    date.setDate(date.getDate() - index)
+    const hasData = index % 6 !== 0
+    const x = Math.max(0, Math.round(matrix.now[0] - index * 0.7 + (index % 3) * 4))
+    const y = Math.max(0, Math.round(matrix.now[1] - index * 0.6 + (index % 4) * 3))
+    const stateIndex = Math.max(0, Math.min(8, Math.floor(y / 34) * 3 + Math.floor(x / 34)))
+    return { id: `${matrix.id}-${date.toISOString()}`, date, hasData, x, y, state: matrix.states[stateIndex] }
+  }).filter((row) => !deleted.includes(row.id))
+
+  function remove(row) {
+    if (window.confirm('Delete this saved classification record?')) {
+      setDeleted([...deleted, row.id])
+    }
+  }
+
+  return (
+    <div className="su-layer">
+      <button className="su-backdrop" onClick={onClose}/>
+      <section className="su-history-modal">
+        <header><div><small>HISTORY</small><h2>{matrix.title}</h2></div><button onClick={onClose}><X/></button></header>
+        <div className="su-history-list">
+          {rows.map((row) => (
+            <article className={!row.hasData ? 'no-data' : ''} key={row.id}>
+              <time>{new Intl.DateTimeFormat('en-GB',{day:'2-digit',month:'long',year:'numeric'}).format(row.date)}</time>
+              <div><b>{row.hasData ? row.state : 'No data'}</b><span>{row.hasData ? 'Saved classification' : 'Insufficient source coverage'}</span></div>
+              {row.hasData ? <><span><small>{matrix.y}</small><b>{row.y}</b></span><span><small>{matrix.x}</small><b>{row.x}</b></span></> : <><span/><span/></>}
+              <button onClick={() => remove(row)}>×</button>
+            </article>
+          ))}
+        </div>
+      </section>
+    </div>
+  )
+}
+
+function Info({matrix,onClose}){return <div className="su-layer"><button className="su-backdrop" onClick={onClose}/><section className="su-info"><button onClick={onClose}><X/></button><small>HOW THIS IS CALCULATED</small><h2>{matrix.title}</h2><p>The horizontal position uses the {matrix.x} score. The vertical position uses the {matrix.y} score. Available source metrics are normalised to 0–100 before saved weights are applied.</p><div><article><h3>{matrix.y}</h3><p>Uses configured personal targets, ranges and rolling baselines.</p></article><article><h3>{matrix.x}</h3><p>Uses the related activity, load or consistency inputs.</p></article></div><p className="su-note">Insufficient source coverage produces a grey No data cell instead of a calculated state.</p></section></div>}
+function Glance({ habits, logs, fasting, workouts }) {
+  const [selected, setSelected] = useState(() => read('fitlife-glance-selected', ['sleep','steps','fasting','habits','workout','rhr']))
+  const [max, setMax] = useState(() => Number(localStorage.getItem('fitlife-glance-max') || 6))
+  const [open, setOpen] = useState(false)
+  const list = [...BASE_METRICS,
+    {id:'fasting',label:'Fasting',value:fasting?clock(Date.now()-new Date(fasting.started_at)):'Not active',status:'Fasting',color:'#f58b42',Icon:Flame,target:'fasting'},
+    {id:'habits',label:'Habits',value:`${logs.filter(x=>x.completed&&x.log_date===dateKey()).length}/${Math.max(1,habits.length)}`,status:'Completed today',color:'#f1c34d',Icon:Target,target:'habits'},
+    {id:'workout',label:'Workout',value:workouts[0]?`${workouts[0].duration_minutes} min`:'Not logged',status:'Exercises',color:'#38bdf8',Icon:Dumbbell,target:'exercises'}
+  ]
+  const shown=list.filter(x=>selected.includes(x.id)).slice(0,max)
+  function toggle(id){const exists=selected.includes(id);if(!exists&&selected.length>=max)return;const next=exists?selected.filter(x=>x!==id):[...selected,id];setSelected(next);localStorage.setItem('fitlife-glance-selected',JSON.stringify(next))}
+  function changeMaximum(value){setMax(value);localStorage.setItem('fitlife-glance-max',String(value));if(selected.length>value){const next=selected.slice(0,value);setSelected(next);localStorage.setItem('fitlife-glance-selected',JSON.stringify(next))}}
+  return <section className="su-card"><header><div><h3>Today at a glance</h3><span>{shown.length} of {max} cards</span></div><button onClick={()=>setOpen(true)}>Choose cards</button></header><div className="su-glance-cards">{shown.map(item=>{const Icon=item.Icon;return <article key={item.id} style={{'--c':item.color}} onClick={()=>navigate(item.target,item.id)}><Icon/><small>{item.label}</small><b>{item.value}</b><p>{item.status}</p><i/></article>})}</div>{open&&<div className="su-layer"><button className="su-backdrop" onClick={()=>setOpen(false)} aria-label="Close card settings"/><aside className="su-chooser"><button onClick={()=>setOpen(false)} aria-label="Close"><X/></button><h2>Today at a glance</h2><h3>Maximum cards</h3><div className="su-limit">{[4,5,6,8].map(value=><button className={max===value?'on':''} key={value} onClick={()=>changeMaximum(value)}>{value}</button>)}</div>{list.map(item=>{const checked=selected.includes(item.id);const disabled=!checked&&selected.length>=max;return <label className={disabled?'disabled':''} key={item.id}><span>{item.label}</span><input type="checkbox" checked={checked} disabled={disabled} onChange={()=>toggle(item.id)}/></label>})}</aside></div>}</section>
+}
+function FastCard({fast,now,sports=[],workouts=[]}){if(!fast)return <section className="su-card su-fast"><header><h3>Fasting</h3><button onClick={()=>navigate('fasting')}>View Fasting <ChevronRight/></button></header><div className="su-empty"><Timer/><b>No fast in progress</b></div></section>;const elapsed=now-new Date(fast.started_at),target=(fast.target_hours||16)*36e5,raw=elapsed/target*100,p=Math.min(100,raw),hours=elapsed/36e5,stage=hours<4?'Fed state':hours<12?'Glycogen phase':hours<18?'Metabolic switch':hours<24?'Fat burning':'Extended fast';const activity=[...sports,...workouts].filter(entry=>{const raw=entry.entry_date?`${entry.entry_date}T${entry.time||'12:00'}`:`${entry.date}T${entry.time||'00:00'}`;const stamp=new Date(raw);return !Number.isNaN(stamp.getTime())&&stamp>=new Date(fast.started_at)&&stamp<=new Date(now)}).sort((a,b)=>String(b.entry_date||b.date||'').localeCompare(String(a.entry_date||a.date||'')));const first=activity[0];const name=first?.category||first?.title||'No activity recorded';const lower=name.toLowerCase();const icon=lower.includes('cycl')?'🚴':lower.includes('run')?'🏃':lower.includes('walk')?'👣':lower.includes('swim')?'🏊':first?'🏋':'○';const color=lower.includes('swim')?'#38bdf8':lower.includes('run')?'#f97316':lower.includes('walk')?'#38d38b':lower.includes('cycl')?'#a855f7':'#78ee3d';const calories=activity.reduce((sum,e)=>sum+Number(e.calories||0),0);const minutes=activity.reduce((sum,e)=>sum+Number(e.duration_minutes||e.duration||0),0);const acceleration=Math.round(calories*.4);const impact=acceleration>=60?`${Math.floor(acceleration/60)}h ${acceleration%60}m`:`${acceleration}m`;const stageIcon=hours<4?'🍽':hours<12?'⚡':hours<18?'↻':hours<24?'🔥':'⏳';const stageColor=hours<4?'#68c7ee':hours<12?'#f0c34f':hours<18?'#f58b42':hours<24?'#45d27d':'#9b7be5';return <section className="su-card su-fast"><header><h3>Fasting</h3><button onClick={()=>navigate('fasting')}>View Fasting <ChevronRight/></button></header><div className="su-fast-infographic"><div className="su-fast-ring" style={{'--p':`${p*3.6}deg`}}><div><small>ELAPSED TIME</small><b>{clock(elapsed)}</b><span>{Math.round(raw)}%</span></div></div><span className="su-goal">{fast.target_hours||16}h Goal</span><div className="su-fast-impact" style={{'--sport-c':color,'--sport-bg':`${color}22`}}><span>{icon}</span><div><small>EXERCISE IMPACT ESTIMATE</small><b>{name}</b><p>{calories} kcal · {minutes} min</p></div><strong>+{impact}</strong></div><div className="su-fast-stage" style={{borderColor:`${stageColor}66`}}><span style={{background:`${stageColor}33`}}>{stageIcon}</span><div><small style={{color:stageColor}}>CURRENT STAGE</small><b>{stage}</b><p>Educational time estimate</p></div></div><div className="su-fast-meta"><span>Elapsed<b>{clock(elapsed)}</b></span><span>Remaining<b>{clock(Math.max(0,target-elapsed))}</b></span></div><button className="su-primary" onClick={()=>navigate('fasting')}>Open fasting details</button></div></section>}
+function Timeline({rows}){function visual(row){const title=String(row.title||'').toLowerCase();if(title.includes('sleep'))return['🌙','#8b5cf6'];if(title.includes('water'))return['💧','#38bdf8'];if(title.includes('walk')||title.includes('steps'))return['👣','#38d38b'];if(title.includes('italian')||title.includes('study')||title.includes('read'))return['📚','#f1c34d'];if(row.type==='Sports')return['🚴','#38bdf8'];if(row.type==='Workout')return['🏋','#8b5cf6'];if(row.type==='Fasting')return['🔥','#f58b42'];if(row.type==='Grateful')return['💛','#ec4899'];return['✓','#38d38b']}return <section className="su-card"><header><div><h3>Today’s timeline</h3><span>Synced from Log History</span></div><button onClick={()=>navigate('history')}>View all <ChevronRight/></button></header><div className="su-timeline">{rows.length?rows.slice(0,8).map(row=>{const[icon,color]=visual(row);return <article key={row.id} style={{'--c':color}}><span>{icon}</span><time>{row.time||'—'}</time><div><b>{row.title}</b><p>{row.summary}</p></div></article>}):<div className="su-empty">No entries recorded today.</div>}</div></section>}
+function HabitCard({habits,logs}){const[selected,setSelected]=useState(habits[0]?.id||'');const habit=habits.find(x=>String(x.id)===String(selected))||habits[0];const days=Array.from({length:84},(_,i)=>{const d=new Date();d.setDate(d.getDate()-(83-i));const row=habit&&logs.find(x=>String(x.habit_id)===String(habit.id)&&x.log_date===dateKey(d));return{date:d,state:row?.completed?'done':row?'partial':''}});const completed=days.filter(x=>x.state==='done').length;const pct=Math.round(completed/days.length*100);const currentStreak=[...days].reverse().findIndex(x=>x.state!=='done');const streak=currentStreak===-1?days.length:currentStreak;return <section className="su-card su-habit-card su-habit-card-v6"><header><div><h3>Habit contributions</h3><span>{habits.length} active habits</span></div><div className="su-habit-filter-v6"><select value={selected} onChange={e=>setSelected(e.target.value)}>{habits.map(h=><option value={h.id} key={h.id}>{h.name}</option>)}</select><small>Selected habit</small></div></header>{habit?<><div className="su-habit-selected-v6" style={{'--habit':habit.color||'#38d38b'}}><span>{habit.icon||'✓'}</span><div><b>{habit.name}</b><small>{habit.category||'Custom'} · {streak} day streak</small></div><i>{pct}%</i></div><div className="su-contribution-v6" style={{'--habit':habit.color||'#38d38b'}}><div className="su-contribution-months-v6"><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span></div><div className="su-contribution-days-v6"><span>M</span><span>W</span><span>F</span></div><div className="su-contribution-heat-v6">{days.map((x,i)=><i className={x.state} title={`${new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'short'}).format(x.date)} · ${x.state==='done'?'Completed':x.state==='partial'?'Partial':'No entry'}`} key={i}/>)}</div></div><footer className="su-contribution-footer-v6"><span>Monthly completion: {pct}%</span><button type="button" onClick={()=>navigate('habits')}>View habit <ChevronRight/></button></footer></>:<div className="su-empty">No habits yet.</div>}</section>}
+function HabitChecklist({habits,logs}){const[localLogs,setLocalLogs]=useState(logs),[editing,setEditing]=useState(null);const today=habits.map(h=>({habit:h,log:localLogs.find(x=>String(x.habit_id)===String(h.id)&&x.log_date===dateKey())}));const done=today.filter(x=>x.log?.completed).length;function save(entry){const next=[entry,...localLogs.filter(x=>!(String(x.habit_id)===String(entry.habit_id)&&x.log_date===entry.log_date))];setLocalLogs(next);localStorage.setItem('fitlife-habit-logs',JSON.stringify(next));setEditing(null);window.dispatchEvent(new Event('fitlife:habit-changed'))}return <section className="su-card"><header><div><h3>Today’s habits</h3><span>{done} / {habits.length} completed</span></div><button onClick={()=>navigate('habits')}>View all <ChevronRight/></button></header><div className="su-checklist-v6">{today.map(({habit,log})=><button className="su-checklist-row-v6" key={habit.id} onClick={()=>setEditing({habit,log})}><span className={log?.completed?'done':''}>{log?.completed?'✓':'○'}</span><div><b>{habit.name}</b><p>{habit.target_value?`${log?.value||0} / ${habit.target_value} ${habit.unit||''}`:log?.completed?'Completed':'Tap to record'}</p></div><small>{log?.completed?'Done today':log?'Partial':'Not done'}</small></button>)}</div>{editing&&<HabitQuickRecord state={editing} onClose={()=>setEditing(null)} onSave={save}/>}</section>}
+function HabitQuickRecord({state,onClose,onSave}){const habit=state.habit,old=state.log;const[completed,setCompleted]=useState(!!old?.completed),[value,setValue]=useState(old?.value??old?.actual_value??''),[note,setNote]=useState(old?.note||'');const measured=Boolean(habit.target_value||habit.unit||habit.tracking_type==='measured');return <div className="su-layer"><button className="su-backdrop" onClick={onClose}/><section className="su-habit-modal-v6"><header><div><small>QUICK RECORD</small><h2>{habit.icon||'✓'} {habit.name}</h2></div><button onClick={onClose}><X/></button></header><div className="su-habit-binary-v6"><button className={!completed?'selected':''} onClick={()=>setCompleted(false)}>Not done</button><button className={completed?'selected':''} onClick={()=>setCompleted(true)}>Done</button></div>{measured&&<label>Actual value<input type="number" value={value} onChange={e=>setValue(e.target.value)} placeholder={`${habit.target_value||0} ${habit.unit||''}`}/><span className="su-habit-progress-v6">Target: {habit.target_value||'—'} {habit.unit||''}</span></label>}<label>Note<input value={note} onChange={e=>setNote(e.target.value)} placeholder="Optional note"/></label><button className="su-habit-save-v6" onClick={()=>onSave({...old,id:old?.id||crypto.randomUUID(),habit_id:habit.id,log_date:dateKey(),completed,value:value===''?null:Number(value),note,updated_at:new Date().toISOString()})}>Save record</button></section></div>}
+function SportsCard({entries}){const items=[...(entries||[])].sort((a,b)=>String(b.entry_date||b.date||'').localeCompare(String(a.entry_date||a.date||''))).slice(0,3);return <section className="su-card"><header><h3>Sports & workouts</h3><button onClick={()=>navigate('sports')}>View all <ChevronRight/></button></header>{items.length?<div className="su-sports-carousel"><div className="su-sports-track">{items.map((item,index)=>{const photo=item?.photos?.[item.featured_index||0];const src=photo&&(photo.signed_url||photo.url||photo.data_url||photo.preview);return <article className="su-sports-slide" key={item.id||index}><div className="su-sport-image">{src&&<img src={src} style={{objectPosition:`${item.position_x||50}% ${item.position_y||50}%`}}/>}<span>{item.category||'Activity'}</span></div><h3 className="su-sport-title">{item.title}</h3><time className="su-sport-date">{new Intl.DateTimeFormat('en-GB',{day:'2-digit',month:'long',year:'numeric'}).format(new Date(`${item.entry_date||item.date}T12:00`))}</time><div className="su-sport-stats"><b>{item.duration_minutes||'—'}<span>min</span></b><b>{item.distance_km||'—'}<span>km</span></b><b>{item.calories||'—'}<span>kcal</span></b><b>{item.average_hr||'—'}<span>bpm</span></b></div></article>})}</div><div className="su-sport-dots">{items.map((_,i)=><i key={i}/>)}</div></div>:<div className="su-empty"><Bike/><b>No sports entry found</b><button onClick={()=>navigate('sports')}>Go to Sports</button></div>}</section>}
+function Settings({visible,setVisible,onClose}){function clear(){if(!confirm('Delete all local demonstration data and create a blank profile?'))return;['fitlife-sports-entries','fitlife-log-history','fitlife-habits','fitlife-habit-logs','fitlife-fasting-sessions','fitlife-fasting-sessions-v4','fitlife-routines','fitlife-workout-history-v3','fitlife-health-readings','fitlife-grateful-entries'].forEach(k=>localStorage.setItem(k,'[]'));['fitlife-snapshot-order','fitlife-snapshot-visible','fitlife-snapshot-glance'].forEach(k=>localStorage.removeItem(k));location.reload()}return <div className="su-layer"><button className="su-backdrop" onClick={onClose}/><aside className="su-settings"><button onClick={onClose}><X/></button><small>SNAPSHOT SETTINGS</small><h2>Choose what appears</h2>{Object.entries(WIDGET_NAMES).map(([id,name])=><label key={id}><span>{visible[id]?<Eye/>:<EyeOff/>}{name}</span><input type="checkbox" checked={visible[id]} onChange={e=>setVisible({...visible,[id]:e.target.checked})}/></label>)}<section><h3>Blank profile</h3><p>Deletes local demonstration records and resets Snapshot preferences.</p><button onClick={clear}>Delete all dummy data</button></section></aside></div>}

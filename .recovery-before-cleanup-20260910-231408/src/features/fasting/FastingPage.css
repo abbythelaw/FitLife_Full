@@ -1,0 +1,516 @@
+
+.fasting-page{display:grid;gap:22px;max-width:1500px;margin:auto;padding:clamp(14px,2vw,28px)}.fasting-heading{display:flex;justify-content:space-between;align-items:center;gap:18px}.fasting-heading small,.fast-current-phase small,.phase-copy>small{color:var(--primary);font-weight:900;letter-spacing:.08em}.fasting-heading h2{font-size:clamp(32px,5vw,52px);margin:5px 0}.fasting-heading p{margin:0;color:var(--muted)}button,select,input{font:inherit}.fasting-heading button,.fast-drawer .save{background:var(--primary);color:#07110a;border:0;border-radius:14px;padding:13px 18px;font-weight:900;display:flex;gap:8px;align-items:center}.protocols{display:grid;grid-template-columns:repeat(5,minmax(130px,1fr));gap:12px}.protocols button{min-height:130px;background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:18px;display:grid;place-items:center}.protocols b{font-size:22px}.protocols span{color:var(--muted);font-size:11px}.fast-hero{position:relative;display:grid;grid-template-columns:minmax(360px,1fr) minmax(280px,.8fr);gap:38px;align-items:center;padding:28px;border:1px solid color-mix(in srgb,var(--phase) 58%,var(--line));border-radius:28px;background:radial-gradient(circle at 25% 45%,color-mix(in srgb,var(--phase) 12%,transparent),transparent 40%),var(--card);overflow:hidden}.fast-protocol-row{position:absolute;top:20px;right:22px}.fast-protocol-row label{position:relative;display:flex;align-items:center;border:1px solid color-mix(in srgb,var(--phase) 55%,var(--line));border-radius:999px;background:#07130fdd;padding:0 34px 0 14px}.fast-protocol-row select{appearance:none;border:0;background:transparent;color:var(--text);font-weight:900;padding:10px 0;outline:0}.fast-protocol-row svg{position:absolute;right:10px;width:16px;pointer-events:none}.fast-journey-wrap{display:grid;place-items:center;min-height:420px}.fast-journey-ring{--progress:0deg;position:relative;width:min(75vw,365px);aspect-ratio:1;border-radius:50%;background:conic-gradient(from -90deg,#43d6b5 0deg,#4aa8f5 calc(var(--progress)*.38),#8b63ed calc(var(--progress)*.65),#ef6c77 calc(var(--progress)*.84),#f4c84a var(--progress),#d5d8dc var(--progress) 360deg);box-shadow:0 0 36px color-mix(in srgb,var(--phase) 30%,transparent)}.fast-journey-ring:before{content:'';position:absolute;inset:25px;border-radius:50%;background:#07130f;box-shadow:inset 0 0 35px #0008}.fast-ring-center{position:absolute;inset:22%;z-index:2;border:0;border-radius:50%;background:transparent;color:var(--text);display:grid;place-content:center;text-align:center;cursor:pointer}.fast-ring-center strong{font-size:clamp(28px,5vw,48px);font-variant-numeric:tabular-nums}.fast-ring-center small{font-size:14px;color:var(--muted)}.fast-ring-center i{margin-top:8px;font-size:10px;color:var(--muted)}.fast-phase-point{--angle:0deg;--phase:#999;position:absolute;z-index:4;left:50%;top:50%;width:54px;height:54px;margin:-27px;border-radius:50%;border:2px solid #fff7;transform:rotate(var(--angle)) translate(calc(min(75vw,365px)/2)) rotate(calc(-1*var(--angle)));display:grid;place-content:center;background:#d5d8dc;color:#566;box-shadow:0 5px 16px #0006;cursor:pointer}.fast-phase-point span{font-size:20px}.fast-phase-point b{font-size:9px}.fast-phase-point.reached{background:var(--phase);color:#07110a;border-color:#fff}.fast-phase-point.current{box-shadow:0 0 0 6px color-mix(in srgb,var(--phase) 24%,transparent),0 0 25px var(--phase);animation:phaseGlow 1.8s ease-in-out infinite alternate}.fast-stage{display:inline-flex;gap:8px;align-items:center;color:var(--phase);font-weight:900}.fast-hero-copy h3{font-size:30px;margin:12px 0}.fast-hero-copy p{color:var(--muted)}.fast-hero-copy button,.fast-current-phase button{margin:8px 8px 0 0;padding:12px 15px;border:1px solid var(--line);border-radius:12px;background:var(--card2);color:var(--text)}.fast-hero-copy .end-fast{background:var(--phase);color:#07110a;border-color:transparent}.fast-current-phase{display:grid;grid-template-columns:minmax(250px,.8fr) minmax(300px,1.2fr);gap:24px;padding:22px;border:1px solid color-mix(in srgb,var(--phase) 45%,var(--line));border-radius:24px;background:linear-gradient(135deg,color-mix(in srgb,var(--phase) 8%,var(--card)),var(--card))}.fast-current-phase h2{font-size:30px;margin:8px 0}.fast-current-phase p{color:var(--muted);line-height:1.65}.fast-phase-art{position:relative;min-height:250px;border-radius:20px;overflow:hidden;background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--phase) 28%,transparent),transparent 42%),linear-gradient(145deg,#071c22,#10182a)}.art-body{position:absolute;left:50%;top:18%;width:72px;height:145px;translate:-50%;border-radius:42% 42% 30% 30%;background:linear-gradient(180deg,#d8f7ffcc,#6ca6dd55);box-shadow:0 0 35px var(--phase)}.art-body:before{content:'';position:absolute;width:56px;height:56px;border-radius:50%;left:8px;top:-42px;background:#d8f7ffcc}.art-orbit{position:absolute;left:50%;top:50%;width:180px;height:95px;border:1px solid color-mix(in srgb,var(--phase) 75%,white);border-radius:50%;translate:-50% -50%;rotate:-18deg}.art-orbit.two{rotate:35deg;width:210px}.art-particle{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--phase);box-shadow:0 0 18px var(--phase)}.p1{left:24%;top:30%}.p2{right:22%;top:45%}.p3{left:32%;bottom:18%}.fast-layer{position:fixed;inset:0;z-index:1200;display:grid;place-items:center;padding:18px}.fast-backdrop{position:absolute;inset:0;border:0;background:#000c}.fast-phase-panel,.fast-drawer{position:relative;z-index:2;width:min(920px,100%);max-height:calc(100dvh - 36px);overflow:auto;background:#08120d;border:1px solid var(--line);border-radius:26px}.fast-phase-panel{display:grid;grid-template-columns:minmax(280px,.8fr) minmax(320px,1.2fr);gap:0}.fast-phase-panel .fast-phase-art{min-height:100%;border-radius:0}.phase-copy{padding:30px}.phase-copy h2{font-size:32px;margin:8px 0}.phase-copy h3{margin:24px 0 8px;color:var(--phase)}.phase-copy p{line-height:1.75;color:#c9d5cf}.phase-lead{font-size:17px}.phase-close,.fast-drawer .close{position:absolute;z-index:4;right:14px;top:14px;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:#07130fdd;color:white}.phase-locked,.phase-caution{margin-top:20px;padding:16px;border-radius:16px;background:color-mix(in srgb,var(--phase) 10%,#07130f);border:1px solid color-mix(in srgb,var(--phase) 40%,var(--line))}.fast-drawer{width:min(560px,100%);padding:28px}.fast-drawer label{display:grid;gap:7px;margin:15px 0;color:var(--muted)}.fast-drawer input,.fast-drawer select{padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--text)}@keyframes phaseGlow{to{filter:brightness(1.15);transform:rotate(var(--angle)) translate(calc(min(75vw,365px)/2)) rotate(calc(-1*var(--angle))) scale(1.05)}}@media(max-width:900px){.fast-hero{grid-template-columns:1fr}.fast-current-phase{grid-template-columns:1fr}.protocols{display:flex;overflow:auto}.protocols button{min-width:145px}.fast-phase-panel{grid-template-columns:1fr}.fast-phase-panel .fast-phase-art{min-height:270px}.fast-journey-wrap{padding-top:38px}}@media(max-width:650px){.fasting-heading{align-items:flex-start}.fasting-heading button{padding:11px}.fast-hero{padding:16px;margin:0 -4px}.fast-protocol-row{position:relative;top:auto;right:auto;justify-self:end;margin-bottom:-28px}.fast-journey-wrap{min-height:350px}.fast-journey-ring{width:290px}.fast-phase-point{transform:rotate(var(--angle)) translate(145px) rotate(calc(-1*var(--angle)));width:46px;height:46px;margin:-23px}.fast-current-phase{padding:15px}.fast-layer{padding:0}.fast-phase-panel,.fast-drawer{width:100%;height:100dvh;max-height:100dvh;border-radius:0}.phase-copy{padding:22px}.phase-copy h2{font-size:27px}}@media(prefers-reduced-motion:reduce){.fast-phase-point.current{animation:none}}
+
+.fast-calendar-card{padding:22px;border:1px solid var(--line);border-radius:24px;background:var(--card)}.fast-calendar-card>header{display:flex;justify-content:space-between;align-items:end}.fast-calendar-card>header button{padding:8px 12px;border:1px solid var(--line);background:transparent;color:var(--text)}.fast-calendar-card>header button.active{background:var(--primary);color:#07110a}.fast-calendar-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}.fast-calendar-stats span{display:grid;padding:13px;border-radius:14px;background:var(--card2);color:var(--muted)}.fast-calendar-stats b{font-size:25px;color:var(--text)}.fast-calendar-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(28px,1fr));gap:6px}.fast-calendar-grid button{display:grid;gap:4px;border:0;background:transparent;color:var(--muted)}.fast-calendar-grid i,.fast-calendar-legend i{height:22px;border-radius:6px;background:#313733}.fast-calendar-grid .partial i,.fast-calendar-legend .partial{background:#a98543}.fast-calendar-grid .complete i,.fast-calendar-legend .complete{background:#2fa46c}.fast-calendar-grid .exceeded i,.fast-calendar-legend .exceeded{background:#5de095}.fast-calendar-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px;font-size:10px}.fast-calendar-legend span{display:flex;gap:5px;align-items:center}.fast-calendar-legend i{width:12px;height:12px}.fast-day-detail{margin-top:16px;padding:16px;border:1px solid var(--line);border-radius:16px;background:var(--card2)}
+
+.fast-analytics-card{padding:22px;border:1px solid var(--line);border-radius:24px;background:var(--card)}.fast-analytics-card>header{display:flex;justify-content:space-between}.fast-analytics-card select{padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--card2);color:var(--text)}.fast-analytics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}.fast-analytics-grid article{display:grid;padding:15px;border-radius:16px;background:var(--card2)}.fast-analytics-grid b{font-size:28px;color:var(--primary)}.fast-comparison{padding:18px;border:1px solid var(--line);border-radius:18px}.fast-comparison p{color:var(--muted)}.fast-analytics-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.fast-analytics-actions button{padding:11px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card2);color:var(--text)}@media(max-width:700px){.fast-analytics-grid{grid-template-columns:1fr 1fr}}
+
+
+/* PATCH 18 CANONICAL FASTING UI */
+.fasting-page{display:grid;grid-template-columns:minmax(390px,.92fr) minmax(500px,1.08fr);gap:18px;align-items:stretch;max-width:1500px;margin:auto;padding:clamp(12px,2vw,26px)}
+.fasting-heading,.fast-metabolic-inputs,.glycemic-foundation,.fast-analytics-card{grid-column:1/-1}.fast-hero,.inactive-fast-hero{grid-column:1;grid-row:2;min-width:0;height:100%;min-height:490px;padding:20px!important}.fast-current-phase.compact-phase-card{grid-column:1;grid-row:3;grid-template-columns:118px 1fr;gap:14px;padding:15px;min-height:180px}.fast-calendar-card.exercises-style-calendar{grid-column:2;grid-row:2/4;height:100%;display:flex;flex-direction:column;padding:14px}.fast-recent-list{flex:1;display:flex;flex-direction:column}.fast-recent-list>button{flex:0 0 42px}.fast-recent-list>button:nth-of-type(n+6){display:none}
+.fast-journey-wrap{min-height:0;padding:38px 8px 4px}.fast-journey-ring{width:280px}.fast-phase-point{width:38px;height:38px;margin:-19px;transform:rotate(var(--angle)) translate(140px) rotate(calc(-1*var(--angle)))}.fast-phase-point.locked,.fast-phase-point.locked *{color:#687076!important;filter:grayscale(1);opacity:.72}.fast-ring-times{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;width:min(100%,344px);margin:14px auto 0}.fast-ring-times>button,.fast-ring-times>span{box-sizing:border-box;display:grid;gap:4px;min-width:0;min-height:62px;margin:0;padding:10px 11px;border:1px solid var(--line);border-radius:12px;background:var(--card2)}.fast-ring-times b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.fast-hero-copy{text-align:center}.fast-hero-copy>p{display:none}.fast-stage{min-height:46px;padding:11px 17px;border:1px solid color-mix(in srgb,var(--phase) 34%,var(--line));border-radius:999px;background:color-mix(in srgb,var(--phase) 10%,var(--card2));justify-content:center}.fast-hero-copy .end-fast{min-width:160px!important;min-height:46px;border-radius:12px!important;background:linear-gradient(135deg,#35d483,#20b968)!important;color:#04120a!important}
+.inactive-fast-hero{display:grid!important;grid-template-columns:1fr!important;align-content:center}.inactive-fast-ring-column{gap:22px}.inactive-fast-copy{display:flex;align-items:center;justify-content:center;gap:14px;padding:0;text-align:center}.inactive-fast-copy>p,.inactive-fast-copy>h3{display:none}.inactive-fast-rules{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin:0}.inactive-start-fast{z-index:2;margin-top:24px}.inactive-journey-ring{margin-bottom:26px}.inactive-ring-center em{display:none}
+.fast-calendar-month-head{grid-template-columns:36px 1fr 36px!important}.fast-calendar-month-head button{width:36px!important;height:36px!important;min-height:36px!important}.fast-month-grid{gap:4px}.fast-month-day{height:42px!important;min-height:42px!important;padding:4px!important}.fast-month-day>small{display:none!important}.fast-streak-badge.trophy{top:2px!important;right:2px!important;width:15px!important;height:15px!important;border-radius:5px!important}.fast-streak-badge.trophy svg{width:8px!important;height:8px!important}.fast-streak-badge.trophy strong{display:none!important}
+.fast-metabolic-inputs{display:grid;gap:14px;padding:18px;border:1px solid var(--line);border-radius:24px;background:var(--card)}.metabolic-calendar-layout{display:grid;grid-template-columns:minmax(390px,.9fr) minmax(420px,1.1fr);gap:14px;align-items:stretch}.metabolic-calendar-card{padding:12px}.metabolic-month-grid{gap:4px}.metabolic-month-grid>button{min-height:45px;padding:5px}.metabolic-month-grid>button small{display:none}.fasting-30d-graph{position:relative;min-height:330px;padding:16px;border:1px solid var(--line);border-radius:20px;background:var(--card2);overflow:hidden}.metric-dot-plot header,.nutrition-30d-bars header{display:flex;justify-content:space-between;gap:10px;margin-bottom:12px}.metric-dot-plot header span,.nutrition-30d-bars header span{color:var(--muted);font-size:9px}.dot-plot-stage{position:relative;height:250px;border-left:1px solid var(--line);border-bottom:1px solid var(--line);background:repeating-linear-gradient(to top,transparent 0,transparent 24%,rgba(255,255,255,.045) 25%)}.dot-plot-stage .dot{position:absolute;width:10px;height:10px;translate:-50% 50%;border:2px solid #eaffef;border-radius:50%;background:var(--primary);box-shadow:0 0 8px color-mix(in srgb,var(--primary) 50%,transparent)}.projection-whisker{position:absolute;width:1px;border-left:1px solid #a78bfa}.projection-whisker i{position:absolute;left:50%;width:11px;height:11px;translate:-50% 50%;border:2px solid #a78bfa;border-radius:50%;background:var(--card2)}.nutrition-30d-bars{position:relative}.nutrition-bar-rows{display:grid;gap:8px}.nutrition-bar-rows button{display:grid;grid-template-columns:40px 1fr 72px;gap:8px;align-items:center;border:0;background:transparent;color:var(--text)}.nutrition-bar-rows button>span{display:flex;height:20px;overflow:hidden;border-radius:5px;background:#263038}.nutrition-bar-rows button>span.partial{opacity:.5}.nutrition-30d-bars .c{background:#38bdf8}.nutrition-30d-bars .f{background:#fbbf24}.nutrition-30d-bars .p{background:#a78bfa}.nutrition-bar-rows small,.nutrition-bar-rows b{font-size:9px;color:var(--muted)}.nutrition-target-lines{position:absolute;inset:42px 72px 0 48px;pointer-events:none}.nutrition-target-lines i{position:absolute;top:0;height:100%;border-left:1px dotted rgba(255,255,255,.32)}.nutrition-target-lines i b{position:absolute;top:-15px;left:3px;color:var(--muted);font-size:7px}.nutrition-target-lines .kcal{border-left-color:var(--primary)}.graph-empty{display:grid;place-items:center;min-height:220px;color:var(--muted)}
+.nutrition-editor .fast-editor-actions{display:flex;justify-content:center}.nutrition-editor .fast-editor-actions>button:not(.save){display:none}.nutrition-editor .fast-editor-actions>.save{flex:0 0 auto;min-width:184px;justify-content:center}.glycemic-weekly-targets{padding:16px;border:1px solid var(--line);border-radius:17px;background:var(--card2)}.glycemic-weekly-targets>div{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.glycemic-weekly-targets span{display:grid;padding:10px;border-radius:12px;background:var(--card);color:var(--muted);font-size:10px}.glycemic-weekly-targets b{color:var(--text);font-size:17px}
+@media(max-width:1050px){.fasting-page{grid-template-columns:1fr}.fasting-heading,.fast-hero,.inactive-fast-hero,.fast-current-phase.compact-phase-card,.fast-calendar-card.exercises-style-calendar,.fast-metabolic-inputs,.glycemic-foundation,.fast-analytics-card{grid-column:1;grid-row:auto;height:auto}.metabolic-calendar-layout{grid-template-columns:1fr}.fast-hero,.inactive-fast-hero{min-height:480px}}
+@media(max-width:650px){.fasting-page{padding:9px}.fast-hero,.inactive-fast-hero{min-height:460px}.fast-ring-times{gap:10px;width:min(100%,310px)}.fast-current-phase.compact-phase-card{grid-template-columns:82px 1fr}.fast-month-day{height:34px!important;min-height:34px!important}.fast-recent-list>button:nth-of-type(n+4){display:none}.metabolic-month-grid>button{min-height:35px}.fasting-30d-graph{min-height:270px;padding:10px}.dot-plot-stage{height:210px}.glycemic-weekly-targets>div{grid-template-columns:1fr 1fr}}
+
+
+/* PATCH 18A VISUAL RECOVERY */
+
+/* Restore predictable component sizing after the Patch 18 consolidation. */
+.fasting-page,
+.fasting-page * {
+  box-sizing: border-box;
+}
+
+.fasting-page button,
+.fasting-page select,
+.fasting-page input,
+.fasting-page textarea {
+  font: inherit;
+}
+
+.fasting-page button {
+  color: var(--text);
+}
+
+/* Heading actions */
+.fasting-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.fasting-heading-actions {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.fasting-heading-actions button,
+.metabolic-section-heading > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 11px 16px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--primary);
+  color: #07110a;
+  font-weight: 900;
+}
+
+/* Fasting type control */
+.fast-protocol-row,
+.inactive-fast-target {
+  position: absolute;
+  z-index: 14;
+  top: 14px;
+  right: 14px;
+}
+
+.fast-protocol-row label,
+.inactive-fast-target label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 42px;
+  padding: 0 36px 0 14px;
+  border: 1px solid rgba(112, 226, 54, .32);
+  border-radius: 999px;
+  background: #0b1915;
+  color: #e8f3ed;
+}
+
+.fast-protocol-row select,
+.inactive-fast-target select,
+.inactive-fast-target input {
+  min-width: 78px;
+  padding: 9px 0;
+  border: 0;
+  outline: 0;
+  appearance: none;
+  background: #0b1915;
+  color: #f8fafc;
+  color-scheme: dark;
+  font-weight: 900;
+}
+
+.fast-protocol-row select option,
+.inactive-fast-target select option {
+  background: #0b1915;
+  color: #f8fafc;
+}
+
+.fast-protocol-row svg,
+.inactive-fast-target svg {
+  position: absolute;
+  right: 11px;
+  width: 15px;
+  pointer-events: none;
+}
+
+/* Inactive hero: keep the ring and narrative inside one stable card. */
+.inactive-fast-hero {
+  position: relative;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  align-content: center;
+  justify-items: center;
+  min-height: 670px !important;
+  overflow: visible;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: var(--card);
+}
+
+.inactive-fast-ring-column {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  gap: 18px !important;
+  padding-top: 20px;
+}
+
+.inactive-journey-wrap {
+  padding: 42px 20px 0 !important;
+}
+
+.inactive-start-fast {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 176px;
+  min-height: 48px;
+  margin-top: 32px !important;
+  padding: 11px 18px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--primary);
+  color: #07110a !important;
+  font-weight: 900;
+}
+
+.inactive-fast-copy {
+  display: grid !important;
+  place-items: center;
+  gap: 10px;
+  width: min(100%, 440px);
+  padding: 10px 16px 0 !important;
+}
+
+.inactive-stage {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #cbd5db !important;
+  font-weight: 900;
+}
+
+.inactive-fast-rules {
+  display: flex !important;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 14px !important;
+  margin: 0 !important;
+}
+
+.inactive-fast-rules span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #a8b3ba;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.inactive-fast-rules i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.rule-grey { background: #cfd4d8; }
+.rule-colour { background: linear-gradient(135deg, #38bdf8, #8b5cf6); }
+.rule-glow {
+  background: #70e236;
+  box-shadow: 0 0 7px rgba(112, 226, 54, .55);
+}
+
+/* Main fasting calendar */
+.fast-calendar-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--card);
+}
+
+.fast-calendar-month-head {
+  display: grid !important;
+  grid-template-columns: 38px minmax(0, 1fr) 38px !important;
+  align-items: center;
+  gap: 10px;
+}
+
+.fast-calendar-month-head h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: 21px;
+  text-align: center;
+}
+
+.fast-calendar-month-head button {
+  display: grid;
+  place-items: center;
+  width: 38px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card2) !important;
+  color: var(--text) !important;
+}
+
+.fast-calendar-weekdays,
+.fast-month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.fast-calendar-weekdays {
+  margin: 14px 0 5px;
+}
+
+.fast-calendar-weekdays span {
+  min-width: 0;
+  color: var(--muted);
+  font-size: 8px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.fast-month-day {
+  position: relative;
+  display: grid !important;
+  place-content: center;
+  min-width: 0;
+  height: 42px !important;
+  min-height: 42px !important;
+  padding: 4px !important;
+  overflow: visible;
+  border: 1px solid #1d3444 !important;
+  border-radius: 8px !important;
+  background: #0b1b29 !important;
+  color: #b4c9dd !important;
+}
+
+.fast-month-day.outside { opacity: .3; }
+.fast-month-day.qualifies {
+  border-color: #2a9b76 !important;
+  background: #1f755b !important;
+  color: white !important;
+}
+
+.fast-month-day.segment-start { border-radius: 13px 0 0 13px !important; }
+.fast-month-day.segment-end { border-radius: 0 13px 13px 0 !important; }
+.fast-month-day.segment-start.segment-end { border-radius: 13px !important; }
+.fast-month-day.today {
+  outline: 2px solid rgba(112, 226, 54, .7);
+  outline-offset: 1px;
+}
+
+.fast-streak-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.fast-streak-summary span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 8px 10px;
+  border-radius: 11px;
+  background: var(--card2);
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.fast-streak-summary b {
+  color: var(--text);
+  font-size: 16px;
+}
+
+.fast-streak-summary small {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-size: 8px;
+  line-height: 1.4;
+}
+
+.fast-recent-list h3 {
+  margin: 6px 0;
+  color: var(--text);
+}
+
+.fast-recent-list > button {
+  display: grid;
+  grid-template-columns: 86px minmax(0, 1fr) 76px 20px;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 10px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent !important;
+  color: var(--text) !important;
+  text-align: left;
+}
+
+.fast-recent-list > button:hover {
+  background: rgba(255, 255, 255, .04) !important;
+}
+
+.fast-recent-list > button b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fast-recent-list > button small {
+  color: var(--muted);
+  text-align: right;
+}
+
+/* Metabolic inputs */
+.metabolic-section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.metabolic-tabs {
+  display: flex;
+  gap: 7px;
+  overflow-x: auto;
+  padding-bottom: 3px;
+}
+
+.metabolic-tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--card2) !important;
+  color: var(--muted) !important;
+  white-space: nowrap;
+}
+
+.metabolic-tabs button.active {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 13%, var(--card2)) !important;
+  color: var(--text) !important;
+}
+
+.metabolic-calendar-card {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--card2);
+}
+
+.metabolic-calendar-card > header {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) 38px;
+  align-items: center;
+  gap: 8px;
+}
+
+.metabolic-calendar-card > header h3 {
+  margin: 0;
+  text-align: center;
+}
+
+.metabolic-calendar-card > header button {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--card) !important;
+  color: var(--text) !important;
+}
+
+.metabolic-weekdays,
+.metabolic-month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.metabolic-weekdays {
+  margin: 12px 0 5px;
+}
+
+.metabolic-weekdays span {
+  color: var(--muted);
+  font-size: 8px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.metabolic-month-grid > button {
+  position: relative;
+  display: grid;
+  place-content: center;
+  min-width: 0;
+  min-height: 38px !important;
+  padding: 4px !important;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #0a1922 !important;
+  color: var(--muted) !important;
+}
+
+.metabolic-month-grid > button.selected {
+  border-color: var(--primary);
+  color: var(--text) !important;
+}
+
+.metabolic-month-grid > button.outside { opacity: .3; }
+.metabolic-month-grid > button.future { opacity: .2; }
+
+/* Graph buttons and text should never revert to browser white controls. */
+.fasting-30d-graph button,
+.nutrition-bar-rows button,
+.dot-plot-stage button {
+  appearance: none;
+}
+
+@media (max-width: 1050px) {
+  .inactive-fast-hero {
+    min-height: 610px !important;
+  }
+}
+
+@media (max-width: 650px) {
+  .fasting-heading,
+  .metabolic-section-heading {
+    display: grid;
+  }
+
+  .fasting-heading-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+
+  .inactive-fast-hero {
+    min-height: 580px !important;
+  }
+
+  .fast-calendar-card {
+    padding: 10px !important;
+  }
+
+  .fast-month-day {
+    height: 34px !important;
+    min-height: 34px !important;
+  }
+
+  .fast-recent-list > button {
+    grid-template-columns: 74px minmax(0, 1fr) 65px 18px;
+    padding-inline: 5px;
+    font-size: 10px;
+  }
+
+  .metabolic-calendar-card {
+    padding: 9px;
+  }
+
+  .metabolic-month-grid > button {
+    min-height: 34px !important;
+  }
+}

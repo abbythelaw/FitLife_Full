@@ -1,0 +1,183 @@
+import { useEffect,useState } from 'react'
+import { Edit3, Plus, Trash2, X } from 'lucide-react'
+import MediaCarousel from '../media/MediaCarousel'
+import SportsEntryForm from './SportsEntryForm'
+import SportsActivityAnalysis from './SportsActivityAnalysis'
+import { deleteSport,listSports,saveSport,subscribeSports } from './sportsStore'
+import {
+  hasRecord,
+  recordsForEntry,
+  sportEmoji
+} from './sportsRecords'
+import './SportsPage.css'
+
+export default function SportsPage(){const[entries,setEntries]=useState([]),[sort,setSort]=useState('newest'),[activityFilter,setActivityFilter]=useState('All'),[drawer,setDrawer]=useState(null),[detail,setDetail]=useState(null),[deleting,setDeleting]=useState(null);async function refresh(){setEntries(await listSports())}useEffect(()=>{refresh();return subscribeSports(setEntries)},[]);async function save(entry,media){await saveSport(entry,media);setDrawer(null);await refresh()}async function remove(){await deleteSport(deleting);setDeleting(null);setDetail(null);await refresh()}
+return <section className="sports-page"><div className="sports-heading"><div><small>SPORTS & WORKOUTS</small><h2>Sports</h2><p>Visual memories with the numbers that explain each session.</p></div><button className="sports-add" onClick={()=>setDrawer({type:'add'})}><Plus/>Add entry</button></div><div className="sports-toolbar"><select value={activityFilter} onChange={e=>setActivityFilter(e.target.value)}><option>All</option>{[...new Set(entries.map(x=>x.category))].map(x=><option key={x}>{x}</option>)}</select><select value={sort} onChange={e=>setSort(e.target.value)}><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="activity">Activity type</option><option value="distance">Distance</option><option value="duration">Duration</option><option value="calories">Calories</option></select></div><div className="sports-feed">{entries.filter(x=>activityFilter==='All'||x.category===activityFilter).sort((a,b)=>sort==='oldest'?a.entry_date.localeCompare(b.entry_date):sort==='activity'?a.category.localeCompare(b.category):sort==='distance'?(b.distance_km||0)-(a.distance_km||0):sort==='duration'?(b.duration_minutes||0)-(a.duration_minutes||0):sort==='calories'?(b.calories||0)-(a.calories||0):b.entry_date.localeCompare(a.entry_date)).map((entry,index) => {
+  const achievements = recordsForEntry(entry, entries)
+  const visibleAchievements = achievements.slice(0, 2)
+  const extraAchievements = Math.max(0, achievements.length - 2)
+
+  const distanceRecord = hasRecord(achievements, 'distance')
+  const durationRecord = hasRecord(achievements, 'duration')
+  const paceRecord = hasRecord(achievements, 'pace')
+  const calorieRecord = hasRecord(achievements, 'calories')
+  const heartRecord = hasRecord(achievements, 'averageHr')
+  const loadRecord = hasRecord(achievements, 'trainingLoad')
+
+  return <article
+  className="sports-card sports-card-compact"
+  key={entry.id}
+  onClick={() => setDetail({...entry, achievements})}
+>
+  <div className="sports-card-cover">
+    <MediaCarousel
+      photos={entry.photos}
+      positionX={entry.position_x}
+      positionY={entry.position_y}
+      featuredIndex={entry.featured_index || 0}
+      fallbackClass={`sports-fallback sports-fallback-${index % 4}`}
+    />
+  </div>
+
+  <div className="sports-card-body">
+    <div className="sports-card-heading">
+      <span className="sports-category">
+        <span className="sports-category-emoji" aria-hidden="true">
+          {sportEmoji(entry.category)}
+        </span>
+        {entry.category}
+      </span>
+
+      <small>
+        {entry.entry_date} · {entry.start_time}
+      </small>
+
+      <h3>{entry.title}</h3>
+    </div>
+
+    <div className="sports-card-stat-grid">
+      <div className={`sports-card-stat ${durationRecord ? `is-record is-${durationRecord.level}` : ''}`}>
+        {durationRecord && <span className="sports-record-corner">{durationRecord.icons || durationRecord.icon}</span>}
+        <strong>{entry.duration_minutes || 0}</strong>
+        <span>min</span>
+        <small>Duration</small>
+      </div>
+
+      <div className={`sports-card-stat ${distanceRecord ? `is-record is-${distanceRecord.level}` : ''}`}>
+        {distanceRecord && <span className="sports-record-corner">{distanceRecord.icons || distanceRecord.icon}</span>}
+        <strong>
+          {Number(entry.distance_km || 0).toLocaleString(undefined, {
+            maximumFractionDigits: 2
+          })}
+        </strong>
+        <span>km</span>
+        <small>Distance</small>
+      </div>
+
+      <div className={`sports-card-stat ${paceRecord ? `is-record is-${paceRecord.level}` : ''}`}>
+        {paceRecord && <span className="sports-record-corner">{paceRecord.icons || paceRecord.icon}</span>}
+        <strong>
+          {entry.pace_min_km
+            ? Number(entry.pace_min_km).toFixed(1)
+            : '—'}
+        </strong>
+        <span>{entry.pace_min_km ? '/km' : ''}</span>
+        <small>Pace</small>
+      </div>
+
+      <div className={`sports-card-stat ${calorieRecord ? `is-record is-${calorieRecord.level}` : ''}`}>
+        {calorieRecord && <span className="sports-record-corner">{calorieRecord.icons || calorieRecord.icon}</span>}
+        <strong>{entry.calories || '—'}</strong>
+        <span>{entry.calories ? 'kcal' : ''}</span>
+        <small>Energy</small>
+      </div>
+
+      <div className={`sports-card-stat ${heartRecord ? `is-record is-${heartRecord.level}` : ''}`}>
+        {heartRecord && <span className="sports-record-corner">{heartRecord.icons || heartRecord.icon}</span>}
+        <strong>{entry.average_hr || '—'}</strong>
+        <span>{entry.average_hr ? 'bpm' : ''}</span>
+        <small>Avg HR</small>
+      </div>
+
+      <div className="sports-card-stat">
+        <strong>{entry.rpe || '—'}</strong>
+        <span>{entry.rpe ? '/10' : ''}</span>
+        <small>RPE</small>
+      </div>
+    </div>
+
+    <div className="sports-achievement-row">
+      {visibleAchievements.length > 0 ? (
+        <>
+          {visibleAchievements.map(achievement => (
+            <span
+              key={achievement.id}
+              className={`sports-achievement is-${achievement.level}`}
+              title={achievement.label}
+            >
+              <span aria-hidden="true">{achievement.icon}</span>
+              <b>{achievement.label}</b>
+            </span>
+          ))}
+          {extraAchievements > 0 && (
+            <span className="sports-achievement-more">
+              +{extraAchievements}
+            </span>
+          )}
+        </>
+      ) : (
+        <span className="sports-achievement-placeholder" aria-hidden="true">
+          &nbsp;
+        </span>
+      )}
+    </div>
+
+    <div className="sports-card-actions">
+      <button
+        type="button"
+        onClick={event => {
+          event.stopPropagation()
+          setDrawer({type: 'edit', entry})
+        }}
+      >
+        <Edit3 />
+        Edit
+      </button>
+
+      <button
+        type="button"
+        className="danger"
+        onClick={event => {
+          event.stopPropagation()
+          setDeleting(entry)
+        }}
+      >
+        <Trash2 />
+        Delete
+      </button>
+    </div>
+  </div>
+</article>
+})}</div>
+{drawer&&<div className="sports-layer"><button className="sports-backdrop" onClick={()=>setDrawer(null)}/><aside className="sports-drawer"><div className="sports-drawer-head"><div><small>{drawer.type==='edit'?'EDIT SPORTS ENTRY':'ADD SPORTS ENTRY'}</small><h2>{drawer.type==='edit'?drawer.entry.title:'Record an activity'}</h2></div><button onClick={()=>setDrawer(null)}><X/></button></div><SportsEntryForm entry={drawer.entry} defaultDate={drawer.defaultDate} onCancel={()=>setDrawer(null)} onSave={save}/></aside></div>}
+{detail&&<div className="sports-layer">
+  <button
+    className="sports-backdrop"
+    onClick={() => setDetail(null)}
+  />
+  <SportsActivityAnalysis
+    entry={detail}
+    entries={entries}
+    onClose={() => setDetail(null)}
+    onEdit={entry => {
+      setDetail(null)
+      setDrawer({type:'edit',entry})
+    }}
+    onDelete={entry => {
+      setDetail(null)
+      setDeleting(entry)
+    }}
+  />
+</div>}
+{deleting&&<div className="sports-layer"><button className="sports-backdrop" onClick={()=>setDeleting(null)}/><section className="sports-delete"><Trash2/><h2>Delete {deleting.title}?</h2><p>The activity will be removed from Sports, My Life, Log History, and training calculations.</p><div><button onClick={()=>setDeleting(null)}>Cancel</button><button className="danger" onClick={remove}>Delete entry</button></div></section></div>}
+</section>}

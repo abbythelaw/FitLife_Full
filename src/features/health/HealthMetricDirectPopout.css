@@ -1,0 +1,273 @@
+.health-layer.metric-popout-layer{
+  position:fixed;
+  inset:0;
+  z-index:16000;
+  display:grid;
+  place-items:center;
+  padding:24px;
+  background:rgba(0,0,0,.76);
+  backdrop-filter:blur(5px);
+}
+.metric-popout-layer .health-backdrop{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  border:0;
+  background:transparent;
+}
+.metric-editor.metric-editor-popout{
+  position:relative;
+  inset:auto;
+  width:min(920px,calc(100vw - 48px));
+  max-width:920px;
+  height:auto;
+  max-height:min(860px,88dvh);
+  display:grid;
+  grid-template-rows:auto minmax(0,1fr) auto;
+  overflow:hidden;
+  padding:0;
+  border:1px solid #29483c;
+  border-radius:18px;
+  background:#07111d;
+  color:var(--text);
+  box-shadow:0 30px 100px rgba(0,0,0,.78);
+  transform:none;
+}
+.metric-editor-popout .metric-popout-header{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  padding:19px 22px 15px;
+  border-bottom:1px solid var(--line);
+  background:#091522;
+}
+.metric-editor-popout .metric-popout-header small{
+  color:var(--primary);
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.12em;
+}
+.metric-editor-popout .metric-popout-header h2{
+  margin:4px 0 0;
+  font-size:24px;
+}
+.metric-editor-popout .metric-popout-header .close{
+  position:static;
+  width:44px;
+  height:44px;
+  display:grid;
+  place-items:center;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--card2);
+  color:var(--text);
+}
+.metric-popout-body{
+  overflow-y:auto;
+  padding:18px 22px 24px;
+}
+.metric-popout-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1.25fr) minmax(275px,.75fr);
+  gap:18px;
+  align-items:start;
+}
+.metric-popout-fields{
+  display:grid;
+  gap:13px;
+}
+.metric-popout-section{
+  display:grid;
+  gap:10px;
+  padding:15px;
+  border:1px solid #244037;
+  border-radius:13px;
+  background:#091710;
+}
+.metric-popout-section>header h3{
+  margin:0;
+  font-size:14px;
+}
+.metric-popout-section>header p{
+  margin:3px 0 0;
+  color:var(--muted);
+  font-size:9px;
+  line-height:1.4;
+}
+.metric-popout-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+}
+.metric-popout-section label{
+  display:grid;
+  gap:6px;
+  color:#adc0b7;
+  font-size:9px;
+}
+.metric-popout-section input,
+.metric-popout-section select{
+  width:100%;
+  min-height:45px;
+  border:1px solid var(--line);
+  border-radius:9px;
+  background:#0d1c25;
+  color:var(--text);
+  padding:8px 10px;
+}
+.metric-goal-toggle{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:5px;
+}
+.metric-goal-toggle button{
+  min-height:43px;
+  border:1px solid var(--line);
+  border-radius:9px;
+  background:var(--card2);
+  color:var(--muted);
+}
+.metric-goal-toggle button.active{
+  border-color:var(--primary);
+  background:#10251a;
+  color:var(--primary);
+}
+.metric-live-preview{
+  position:sticky;
+  top:0;
+  display:grid;
+  gap:9px;
+}
+.metric-live-preview>small{
+  color:var(--primary);
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.1em;
+}
+.metric-preview-card{
+  position:relative;
+  min-height:260px;
+  overflow:hidden;
+  padding:18px;
+  border:1px solid color-mix(in srgb,var(--preview-color) 58%,#29483c);
+  border-radius:15px;
+  background:linear-gradient(145deg,color-mix(in srgb,var(--preview-color) 16%,#091721),#091721 64%);
+  box-shadow:0 14px 42px rgba(0,0,0,.42);
+}
+.metric-preview-card::after{
+  content:'';
+  position:absolute;
+  width:155px;
+  height:155px;
+  right:-62px;
+  top:-68px;
+  border-radius:50%;
+  background:var(--preview-color);
+  opacity:.13;
+  filter:blur(4px);
+}
+.metric-preview-card .preview-icon{
+  width:44px;
+  height:44px;
+  display:grid;
+  place-items:center;
+  border-radius:11px;
+  background:color-mix(in srgb,var(--preview-color) 20%,transparent);
+  color:var(--preview-color);
+  font-size:22px;
+}
+.metric-preview-card small{
+  color:var(--preview-color);
+  font-weight:800;
+}
+.metric-preview-card h3{
+  margin:8px 0 23px;
+  font-size:19px;
+}
+.metric-preview-card .preview-value{
+  font-size:38px;
+  font-weight:900;
+  color:#fff;
+}
+.metric-preview-card .preview-status{
+  margin-top:7px;
+  color:#bcd0c6;
+}
+.metric-preview-card .preview-target{
+  margin-top:18px;
+  padding-top:12px;
+  border-top:1px solid #29483c;
+  color:var(--muted);
+  font-size:10px;
+}
+.metric-popout-footer{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:13px 22px;
+  border-top:1px solid var(--line);
+  background:#091522;
+}
+.metric-popout-footer .unsaved-indicator{
+  color:#f2c94c;
+  font-size:9px;
+}
+.metric-popout-footer>div{
+  display:flex;
+  gap:7px;
+  margin-left:auto;
+}
+.metric-popout-footer button{
+  min-height:46px;
+  border:1px solid var(--line);
+  border-radius:9px;
+  background:var(--card2);
+  color:var(--text);
+  padding:8px 16px;
+}
+.metric-popout-footer .save-metric{
+  border-color:transparent;
+  background:var(--primary);
+  color:#061008;
+  font-weight:900;
+}
+.metric-detail .metric-chart,
+.metric-detail .chart-wrap,
+.metric-detail .metric-chart-wrap{
+  min-height:340px;
+  height:340px;
+}
+.metric-detail .metric-chart svg,
+.metric-detail .chart-wrap svg,
+.metric-detail .metric-chart-wrap svg{
+  width:100%;
+  height:100%;
+}
+.metric-detail .streak-strip,
+.metric-detail .contribution-grid{
+  max-height:150px;
+  overflow-x:auto;
+  overflow-y:hidden;
+}
+@media(max-width:1023px){
+  .metric-editor.metric-editor-popout{width:min(92vw,840px)}
+  .metric-popout-layout{grid-template-columns:1fr}
+  .metric-live-preview{position:static}
+  .metric-preview-card{min-height:190px}
+}
+@media(max-width:700px){
+  .health-layer.metric-popout-layer{padding:0}
+  .metric-editor.metric-editor-popout{width:100vw;height:100dvh;max-height:100dvh;border-radius:0}
+  .metric-popout-header{padding:14px!important}
+  .metric-popout-body{padding:12px 12px 96px}
+  .metric-popout-grid{grid-template-columns:1fr}
+  .metric-goal-toggle{grid-template-columns:repeat(2,1fr)}
+  .metric-preview-card{min-height:180px}
+  .metric-popout-footer{position:fixed;left:0;right:0;bottom:0;z-index:3;padding:11px 12px}
+  .metric-detail .metric-chart,
+  .metric-detail .chart-wrap,
+  .metric-detail .metric-chart-wrap{min-height:270px;height:270px}
+}

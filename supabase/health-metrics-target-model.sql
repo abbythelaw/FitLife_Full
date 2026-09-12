@@ -1,0 +1,10 @@
+alter table public.metric_definitions add column if not exists target_type text not null default 'target' check (target_type in ('minimum','target','range'));
+alter table public.metric_definitions add column if not exists minimum_value numeric;
+alter table public.metric_definitions add column if not exists target_value numeric;
+alter table public.metric_definitions add column if not exists maximum_value numeric;
+alter table public.metric_definitions add column if not exists target_tolerance numeric;
+alter table public.metric_definitions add column if not exists baseline_type text not null default 'manual' check (baseline_type in ('manual','7d','30d','90d'));
+alter table public.metric_definitions add column if not exists baseline_value numeric;
+alter table public.metric_definitions add column if not exists category_name text;
+alter table public.health_readings add column if not exists source_type text not null default 'manual';
+notify pgrst, 'reload schema';

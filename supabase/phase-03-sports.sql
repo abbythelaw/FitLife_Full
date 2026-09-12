@@ -1,0 +1,8 @@
+begin;
+create table if not exists public.sports_entries(id uuid primary key default gen_random_uuid(),user_id uuid not null references auth.users(id) on delete cascade,category text not null,title text not null,entry_date date not null,start_time time,end_time time,duration_minutes integer,distance_km numeric,pace_min_km numeric,calories numeric,average_hr numeric,max_hr numeric,rpe numeric,notes text,featured_index integer default 0,position_x numeric default 50,position_y numeric default 50,created_at timestamptz default now(),updated_at timestamptz default now(),deleted_at timestamptz);
+create table if not exists public.sports_media(id uuid primary key default gen_random_uuid(),user_id uuid not null references auth.users(id) on delete cascade,sports_id uuid not null references public.sports_entries(id) on delete cascade,storage_path text not null,thumbnail_path text,sort_order integer default 0,is_featured boolean default false,position_x numeric default 50,position_y numeric default 50,created_at timestamptz default now());
+alter table public.sports_entries enable row level security;alter table public.sports_media enable row level security;
+drop policy if exists sports_entries_owner on public.sports_entries;create policy sports_entries_owner on public.sports_entries for all to authenticated using(auth.uid()=user_id) with check(auth.uid()=user_id);
+drop policy if exists sports_media_owner on public.sports_media;create policy sports_media_owner on public.sports_media for all to authenticated using(auth.uid()=user_id) with check(auth.uid()=user_id);
+do $$ begin alter publication supabase_realtime add table public.sports_entries; exception when duplicate_object then null; end $$;
+commit;
