@@ -1,0 +1,15 @@
+src/App.jsx
+src/features/settings/SettingsPage.jsx
+src/features/settings/SettingsPage.css
+src/features/nutrition/NutritionPage.jsx
+src/features/nutrition/NutritionPage.css
+src/data/repositories/baseRepository.js
+src/data/repositories/profileRepository.js
+src/data/repositories/nutritionRepository.js
+src/data/repositories/healthRepository.js
+src/data/repositories/habitRepository.js
+src/data/repositories/fastingRepository.js
+src/data/repositories/activityRepository.js
+src/data/repositories/gratitudeRepository.js
+src/data/repositories/index.js
+supabase/migrations/20260914_fitlife_canonical_foundation.sql
