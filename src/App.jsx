@@ -6,15 +6,16 @@ import HabitsPage from './features/habits/HabitsPage'
 import FastingPage from './features/fasting/FastingPage'
 import ExercisesPage from './features/exercises/ExercisesPage'
 import HealthMetricsPage from './features/health/HealthMetricsPage'
+import NutritionPage from './features/nutrition/NutritionPage'
 import SnapshotPage from './features/snapshot/SnapshotPage'
 import MyLifePage from './features/my-life/MyLifePage'
 import NewSettingsPage from './features/settings/SettingsPage'
 import SnapshotPageV1 from './features/snapshot/SnapshotPage'
 import AnalyticsPage from './features/analytics/AnalyticsPage'
 
-const nav=['Snapshot','My Life','Health Metrics','Exercises','Sports','Habits','Fasting','Log History','Grateful','Settings'];
-const navIcons=[LayoutDashboard,BookOpen,HeartPulse,Dumbbell,Bike,CheckCircle2,Timer,History,BookHeart,Settings];
-const keys=['snapshot','life','health','exercises','sports','habits','fasting','history','grateful','settings'];
+const nav=['Snapshot','My Life','Health Metrics','Nutrition','Exercises','Sports','Habits','Fasting','Log History','Grateful','Settings'];
+const navIcons=[LayoutDashboard,BookOpen,HeartPulse,Leaf,Dumbbell,Bike,CheckCircle2,Timer,History,BookHeart,Settings];
+const keys=['snapshot','life','health','nutrition','exercises','sports','habits','fasting','history','grateful','settings'];
 const palette={health:['#5f8fa8','#8b7185','#d45c66','#48a9b0','#7d8f79','#c68162','#35c7a0','#94bf68','#e4b84f'],training:['#d5ceb8','#c79568','#ee873c','#8e83ac','#a56c79','#d2704f','#6765b5','#995596','#c44779'],habits:['#745a4a','#87999b','#4fc7d5','#af765d','#7d858f','#58a1b6','#dd7952','#8d718b','#5c78af']};
 const sector={health:['Passive Recovery','Low Reserve','Systemic Burnout','Active Recovery','Adaptive Balance','Building Fatigue','Peak Prime','Productive Load','Heroic Effort'],training:['Recovery Movement','Technique / Skill','Power Burst','Active Base','Productive Training','HIIT Burst','Aerobic Endurance','Endurance Builder','Peak Overload'],habits:['Disrupted Rhythm','Re-entry Zone','Passive Reset','Habit Strain','Balanced Routine','Gentle Momentum','Running on Fumes','Strong Rhythm','Unstoppable Flow']};
 const id=()=>crypto.randomUUID();const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
@@ -47,5 +48,5 @@ second:'2-digit',
 hour12:false,
 timeZone:tz,
 timeZoneName:'short'
-}).format(time);function go(k){setPage(k);location.hash=k;setMenu(false)}let body={snapshot:<SnapshotPageV1/>,analytics:<AnalyticsPage/>,life:<MyLifePage/>,health:<HealthMetricsPage/>,exercises:<ExercisesPage/>,sports:<SportsPage/>,habits:<HabitsPage/>,fasting:<FastingPage/>,history:<LogHistoryPage/>,grateful:<GratefulPage/>,settings:<NewSettingsPage/>}[page]||<Snapshot/>;return <div className={'app theme-'+theme}><aside className={menu?'open':''}><div className="brand"><Leaf/>fitlife</div><div className="profile">{avatar?<img src={avatar}/>:<b>AS</b>}<div><strong>Abner Serania</strong><small>Synced across devices</small></div></div><nav>{nav.map((n,i)=>{const NavIcon=navIcons[i]||LayoutDashboard;return <button key={n} className={page===keys[i]?'active':''} aria-current={page===keys[i]?'page':undefined} aria-label={n} title={n} onClick={()=>go(keys[i])}><NavIcon aria-hidden="true"/><span className="fl-nav-label">{n}</span></button>})}</nav></aside><main><header><button className="menubtn" onClick={()=>setMenu(!menu)}><Menu/></button><div><h1>{g}, Abner</h1><p>Happy {day}</p><small>{date}</small></div><div className="actions"><button><Cloud/>Synced</button><button onClick={()=>go('grateful')}><BookHeart/>Gratitude note</button><button className="primary"><Plus/>Log day</button></div></header>{body}</main></div>}
+}).format(time);function go(k){setPage(k);location.hash=k;setMenu(false)}let body={snapshot:<SnapshotPageV1/>,analytics:<AnalyticsPage/>,life:<MyLifePage/>,health:<HealthMetricsPage/>,nutrition:<NutritionPage/>,exercises:<ExercisesPage/>,sports:<SportsPage/>,habits:<HabitsPage/>,fasting:<FastingPage/>,history:<LogHistoryPage/>,grateful:<GratefulPage/>,settings:<NewSettingsPage/>}[page]||<Snapshot/>;return <div className={'app theme-'+theme}><aside className={menu?'open':''}><div className="brand"><Leaf/>fitlife</div><div className="profile">{avatar?<img src={avatar}/>:<b>AS</b>}<div><strong>Abner Serania</strong><small>Synced across devices</small></div></div><nav>{nav.map((n,i)=>{const NavIcon=navIcons[i]||LayoutDashboard;return <button key={n} className={page===keys[i]?'active':''} aria-current={page===keys[i]?'page':undefined} aria-label={n} title={n} onClick={()=>go(keys[i])}><NavIcon aria-hidden="true"/><span className="fl-nav-label">{n}</span></button>})}</nav></aside><main><header><button className="menubtn" onClick={()=>setMenu(!menu)}><Menu/></button><div><h1>{g}, Abner</h1><p>Happy {day}</p><small>{date}</small></div><div className="actions"><button><Cloud/>Synced</button><button onClick={()=>go('grateful')}><BookHeart/>Gratitude note</button><button className="primary"><Plus/>Log day</button></div></header>{body}</main></div>}
 
