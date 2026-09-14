@@ -1,0 +1,112 @@
+src/lib/sportsMediaCompletion.js:6:function ask(title,message,action){const l=dialog(),ok=l.querySelector('.danger'),cancel=l.querySelector('.cancel'),back=l.querySelector('.backdrop');l.querySelector('h2').textContent=title;l.querySelector('p').textContent=message;l.hidden=false;const close=()=>{l.hidden=true;ok.onclick=cancel.onclick=back.onclick=null};cancel.onclick=back.onclick=close;ok.onclick=async()=>{ok.disabled=true;ok.textContent='Deleting…';try{await action();close()}catch(e){alert(e.message||'Delete failed');}finally{ok.disabled=false;ok.textContent='Delete'}}}
+src/lib/sportsMediaCompletion.js:8:function interceptDelete(){document.addEventListener('click',e=>{const b=e.target.closest('button,a,[role=button]');if(!b||b.closest('.fl-r-delete-layer')||b.dataset.confirmed)return;const label=`${b.textContent||''} ${b.getAttribute('aria-label')||''}`;if(!/\b(delete|remove)\b/i.test(label))return;e.preventDefault();e.stopImmediatePropagation();const card=b.closest('article,[data-record-id],[role=dialog]'),name=card?.querySelector('h2,h3,b')?.textContent?.trim()||'record';ask(`Delete ${name}?`,`“${name}” and associated media will be removed.`,async()=>{b.dataset.confirmed='1';b.click();setTimeout(()=>delete b.dataset.confirmed,0)})},true)}
+src/lib/fitlifeUserDataSync.js:22:async function upload(userId,key,value){
+src/lib/fitlifeUserDataSync.js:26:export async function hydrateFitLifeUserData(){
+src/lib/fitlifeUserDataSync.js:31: if(error){console.error('FitLife sync download failed',error);return}
+src/lib/fitlifeUserDataSync.js:41: window.dispatchEvent(new CustomEvent('fitlife:user-data-hydrated'))
+src/lib/fitlifeUserDataSync.js:43: window.dispatchEvent(new CustomEvent('fitlife:fasting-synced'))
+src/lib/fitlifeUserDataSync.js:47:export async function queueFitLifeUserDataSync(){
+src/lib/fitlifeUserDataSync.js:49: timer=setTimeout(async()=>{
+src/lib/fitlifeUserDataSync.js:53:  window.dispatchEvent(new CustomEvent('fitlife:cloud-sync-complete'))
+src/lib/fitlifeUserDataSync.js:58: hydrateFitLifeUserData()
+src/lib/fitlifeUserDataSync.js:59: const {data:{subscription}}=supabase.auth.onAuthStateChange((event,session)=>{if(session?.user)hydrateFitLifeUserData()})
+src/lib/fitlifeSync.js.before-p51-20260911-173336:21:function notify(key){window.dispatchEvent(new CustomEvent('fitlife:sync-update',{detail:{key}}))}
+src/lib/fitlifeSync.js.before-p51-20260911-173336:23:async function pushKey(key){
+src/lib/fitlifeSync.js.before-p51-20260911-173336:29:  if(error)console.error('[FitLife sync] push failed',key,error)
+src/lib/fitlifeSync.js.before-p51-20260911-173336:33:async function hydrate(){
+src/lib/fitlifeSync.js.before-p51-20260911-173336:37:  if(error){console.error('[FitLife sync] hydrate failed',error);hydrating=false;return}
+src/lib/fitlifeSync.js.before-p51-20260911-173336:40:  window.dispatchEvent(new Event('fitlife:sync-ready'))
+src/lib/fitlifeSync.js.before-p51-20260911-173336:46:  channel=fitlifeSupabase.channel(`fitlife-state-${userId}`)
+src/lib/fitlifeSync.js.before-p51-20260911-173336:57:async function dataUrlToFile(dataUrl,name){
+src/lib/fitlifeSync.js.before-p51-20260911-173336:61:export async function uploadFitLifeMedia(file,folder='general'){
+src/lib/fitlifeSync.js.before-p51-20260911-173336:73:export async function getFitLifeMediaUrl(path,expiresIn=3600){
+src/lib/fitlifeSync.js.before-p51-20260911-173336:79:async function migrateDataUrls(){
+src/lib/fitlifeSync.js.before-p51-20260911-173336:86:    async function visit(node,trail='media'){
+src/lib/fitlifeSync.js.before-p51-20260911-173336:104:export async function startFitLifeSync(){
+src/lib/fitlifeSync.js.before-p51-20260911-173336:105:  if(!fitlifeSupabase){console.warn('[FitLife sync] missing VITE_SUPABASE_URL/key');return}
+src/lib/fitlifeSync.js.before-p51-20260911-173336:108:  if(userId){await hydrate();subscribe();migrateDataUrls().catch(console.error)}
+src/lib/fitlifeSync.js.before-p51-20260911-173336:109:  fitlifeSupabase.auth.onAuthStateChange(async(_event,next)=>{
+src/lib/fitlifeSync.js.before-p51-20260911-173336:111:    if(userId){await hydrate();subscribe();migrateDataUrls().catch(console.error)}
+src/lib/fastingSync.js.before-p51-20260911-173336:69:    synced_at: row.updated_at,
+src/lib/fastingSync.js.before-p51-20260911-173336:77:  window.dispatchEvent(new CustomEvent('fitlife:fasting-synced', { detail: { rows } }))
+src/lib/fastingSync.js.before-p51-20260911-173336:80:async function push() {
+src/lib/fastingSync.js.before-p51-20260911-173336:93:async function download() {
+src/lib/fastingSync.js.before-p51-20260911-173336:99:async function refresh() {
+src/lib/fastingSync.js.before-p51-20260911-173336:110:  pushTimer = setTimeout(() => push().catch(error => console.error('[Fasting sync] Upload failed', error)), 250)
+src/lib/fastingSync.js.before-p51-20260911-173336:114:  channel = supabase.channel(`fasting-${userId}`).on('postgres_changes', {
+src/lib/fastingSync.js.before-p51-20260911-173336:118:    refresh().catch(error => console.error('[Fasting sync] Realtime refresh failed', error))
+src/lib/fastingSync.js.before-p51-20260911-173336:119:  }).subscribe(status => console.info('[Fasting sync]', status))
+src/lib/fastingSync.js.before-p51-20260911-173336:121:async function connect(session) {
+src/lib/fastingSync.js.before-p51-20260911-173336:127:export async function startFastingSync() {
+src/lib/fastingSync.js.before-p51-20260911-173336:132:    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+src/lib/fastingSync.js.before-p51-20260911-173336:143:startFastingSync().catch(error => console.error('[Fasting sync] Startup failed', error))
+src/lib/workoutSync.js:54:async function pushKey(key) {
+src/lib/workoutSync.js:69:    console.error('[Workout sync] Upload failed', key, error)
+src/lib/workoutSync.js:74:async function flushPending() {
+src/lib/workoutSync.js:84:    flushPending().catch((error) => console.error('[Workout sync] Deferred upload failed', error))
+src/lib/workoutSync.js:88:async function pushAll() {
+src/lib/workoutSync.js:92:async function download() {
+src/lib/workoutSync.js:113:  window.dispatchEvent(new CustomEvent('fitlife:workout-synced', { detail: { rows } }))
+src/lib/workoutSync.js:117:async function refresh() {
+src/lib/workoutSync.js:127:    .channel(`live-workout-${userId}`)
+src/lib/workoutSync.js:138:    .subscribe((status) => console.info('[Workout sync]', status))
+src/lib/workoutSync.js:141:async function connect(session) {
+src/lib/workoutSync.js:156:export async function startWorkoutSync() {
+src/lib/workoutSync.js:158:    console.warn('[Workout sync] Supabase is not configured')
+src/lib/workoutSync.js:164:    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+src/lib/workoutSync.js:165:      setTimeout(() => connect(nextSession).catch((error) => console.error('[Workout sync] Auth refresh failed', error)), 0)
+src/lib/workoutSync.js:190:startWorkoutSync().catch((error) => console.error('[Workout sync] Startup failed', error))
+src/lib/globalUXRepair.js:224:async function optimiseImage(file) {
+src/lib/globalUXRepair.js:247:    api.upload = async (path, body, options = {}) => {
+src/lib/peekRail.js:87:      '[class*="user"], [class*="sync"]'
+src/lib/peekRail.js:99:      text.includes('synced') ||
+src/lib/peekRail.js:132:    (sourceText && sourceText.toLowerCase() !== 'synced'
+src/lib/peekRail.js:133:      ? sourceText.replace(/synced/ig, '').trim()
+src/lib/fastingSync.js:50:    payload:{...row,id,client_session_id:id,sync_status:'synced'},
+src/lib/fastingSync.js:72:    synced_at:row.updated_at,
+src/lib/fastingSync.js:73:    sync_status:'synced'
+src/lib/fastingSync.js:82:  window.dispatchEvent(new CustomEvent('fitlife:fasting-synced',{detail:{rows}}))
+src/lib/fastingSync.js:86:async function upload(rows=localRows()){
+src/lib/fastingSync.js:92:async function download(){
+src/lib/fastingSync.js:100:async function refresh(){
+src/lib/fastingSync.js:104:  const pending=localRows().filter(row=>row.sync_status==='pending'&&!remoteIds.has(idOf(row)))
+src/lib/fastingSync.js:111:async function remove(id){
+src/lib/fastingSync.js:123:function queuePush(){clearTimeout(pushTimer);pushTimer=setTimeout(()=>upload().catch(error=>console.error('[Fasting sync] upload failed',error)),200)}
+src/lib/fastingSync.js:126:  channel=supabase.channel(`fasting-${userId}`).on('postgres_changes',{event:'*',schema:'public',table:'fasting_sessions',filter:`user_id=eq.${userId}`},()=>refresh().catch(console.error)).subscribe()
+src/lib/fastingSync.js:128:async function connect(session){
+src/lib/fastingSync.js:133:export async function startFastingSync(){
+src/lib/fastingSync.js:137:    const {data:{subscription}}=supabase.auth.onAuthStateChange((_event,next)=>setTimeout(()=>connect(next).catch(console.error),0))
+src/lib/fastingSync.js:147:startFastingSync().catch(error=>console.error('[Fasting sync] startup failed',error))
+src/lib/fitlifeUserDataSync.js.before-p51-20260911-173336:22:async function upload(userId,key,value){
+src/lib/fitlifeUserDataSync.js.before-p51-20260911-173336:26:export async function hydrateFitLifeUserData(){
+src/lib/fitlifeUserDataSync.js.before-p51-20260911-173336:31: if(error){console.error('FitLife sync download failed',error);return}
+src/lib/fitlifeUserDataSync.js.before-p51-20260911-173336:41: window.dispatchEvent(new CustomEvent('fitlife:user-data-hydrated'))
+src/lib/fitlifeUserDataSync.js.before-p51-20260911-173336:43: window.dispatchEvent(new CustomEvent('fitlife:fasting-synced'))
+src/lib/fitlifeUserDataSync.js.before-p51-20260911-173336:47:export async function queueFitLifeUserDataSync(){
+src/lib/fitlifeUserDataSync.js.before-p51-20260911-173336:49: timer=setTimeout(async()=>{
+src/lib/fitlifeUserDataSync.js.before-p51-20260911-173336:53:  window.dispatchEvent(new CustomEvent('fitlife:cloud-sync-complete'))
+src/lib/fitlifeUserDataSync.js.before-p51-20260911-173336:58: hydrateFitLifeUserData()
+src/lib/fitlifeUserDataSync.js.before-p51-20260911-173336:59: const {data:{subscription}}=supabase.auth.onAuthStateChange((event,session)=>{if(session?.user)hydrateFitLifeUserData()})
+src/lib/uxOverhaulV3.js:166:  okay.onclick = async () => {
+src/lib/uxOverhaulV3.js:180:    askDelete({ title: `Delete ${title}?`, message: `“${title}” and any associated media will be removed. This action cannot be undone.`, confirm: async () => {
+src/lib/uxOverhaulV3.js:235:  layer.querySelector('footer .danger')?.addEventListener('click', () => askDelete({ title: 'Delete historical classification?', message: 'The stored historical classification will be removed. This action cannot be undone.', confirm: async () => { const rows = read(HISTORY_KEY, []).filter(row => row.id !== record.id); nativeSet(HISTORY_KEY, JSON.stringify(rows)); close(); installBivariateCalendars(true) } }))
+src/lib/imageOptimizer.js:21:async function fingerprint(blob) {
+src/lib/imageOptimizer.js:27:export async function optimiseImage(file, options = {}) {
+src/lib/imageOptimizer.js:65:export async function optimiseAndUploadImage({ file, supabase, bucket = 'fitlife-media', folder = 'general', userId, qualityMode, crop = { x: 50, y: 50, scale: 1 } }) {
+src/lib/fitlifeSync.js:21:function notify(key){window.dispatchEvent(new CustomEvent('fitlife:sync-update',{detail:{key}}))}
+src/lib/fitlifeSync.js:23:async function pushKey(key){
+src/lib/fitlifeSync.js:29:  if(error)console.error('[FitLife sync] push failed',key,error)
+src/lib/fitlifeSync.js:33:async function hydrate(){
+src/lib/fitlifeSync.js:37:  if(error){console.error('[FitLife sync] hydrate failed',error);hydrating=false;return}
+src/lib/fitlifeSync.js:40:  window.dispatchEvent(new Event('fitlife:sync-ready'))
+src/lib/fitlifeSync.js:46:  channel=fitlifeSupabase.channel(`fitlife-state-${userId}`)
+src/lib/fitlifeSync.js:57:async function dataUrlToFile(dataUrl,name){
+src/lib/fitlifeSync.js:61:export async function uploadFitLifeMedia(file,folder='general'){
+src/lib/fitlifeSync.js:73:export async function getFitLifeMediaUrl(path,expiresIn=3600){
+src/lib/fitlifeSync.js:79:async function migrateDataUrls(){
+src/lib/fitlifeSync.js:86:    async function visit(node,trail='media'){
+src/lib/fitlifeSync.js:104:export async function startFitLifeSync(){
+src/lib/fitlifeSync.js:105:  if(!fitlifeSupabase){console.warn('[FitLife sync] missing VITE_SUPABASE_URL/key');return}
+src/lib/fitlifeSync.js:108:  if(userId){await hydrate();subscribe();migrateDataUrls().catch(console.error)}
+src/lib/fitlifeSync.js:109:  fitlifeSupabase.auth.onAuthStateChange(async(_event,next)=>{
+src/lib/fitlifeSync.js:111:    if(userId){await hydrate();subscribe();migrateDataUrls().catch(console.error)}
