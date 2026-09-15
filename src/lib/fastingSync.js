@@ -49,7 +49,6 @@ function dbRow(row){
     status:statusOf(row),
     payload:{...row,id,client_session_id:id,sync_status:'synced'},
     device_id:deviceId,
-    deleted_at:row.deleted_at||null,
     updated_at:row.updated_at||new Date().toISOString()
   }
 }
@@ -68,6 +67,7 @@ function appRow(row){
     target_hours:Number(row.target_hours||16),
     actual_hours:row.actual_hours??payload.actual_hours,
     status:row.status,
+    deleted_at:row.deleted_at||payload.deleted_at||null,
     updated_at:row.updated_at,
     synced_at:row.updated_at,
     sync_status:'synced'
@@ -75,12 +75,36 @@ function appRow(row){
 }
 
 function write(rows){
+  const deleted=tombstones()
+
+  const visibleRows=(rows||[]).filter(row=>{
+    const id=idOf(row)
+
+    return (
+      id &&
+      !deleted.has(id) &&
+      !row.deleted_at &&
+      row.status!=='deleted'
+    )
+  })
+
   applyingRemote=true
-  const content=JSON.stringify(rows)
+  const content=JSON.stringify(visibleRows)
   for(const key of KEYS)nativeSetItem(key,content)
   applyingRemote=false
-  window.dispatchEvent(new CustomEvent('fitlife:fasting-synced',{detail:{rows}}))
-  window.dispatchEvent(new CustomEvent('fitlife:fasting-changed',{detail:rows}))
+  window.dispatchEvent(
+    new CustomEvent(
+      'fitlife:fasting-synced',
+      {detail:{rows:visibleRows}}
+    )
+  )
+
+  window.dispatchEvent(
+    new CustomEvent(
+      'fitlife:fasting-changed',
+      {detail:visibleRows}
+    )
+  )
 }
 
 async function upload(rows=localRows()){
