@@ -1,11 +1,10 @@
 import {useEffect,useMemo,useState} from 'react'
 import {CalendarDays,ChevronDown,Clock3,Edit3,Flame,Pause,Play,Plus,Sparkles,Timer,X} from 'lucide-react'
 import './FastingPage.css'
-import FastingMetabolicInputs from './FastingMetabolicInputs'
-import FastingGlycemicFoundation from './FastingGlycemicFoundation'
 import {deleteFast,listFasts,saveFast,validateFastInterval} from './fastingStore'
 import FastingCalendar from './FastingCalendar'
 import FastingAnalytics from './FastingAnalytics'
+import FastingHealthContext from './FastingHealthContext'
 
 const KEY='fitlife-fasting-sessions'
 const PROTOCOLS=[['12:12',12],['14:10',14],['16:8',16],['18:6',18],['20:4',20],['OMAD',23],['24h',24],['36h',36],['48h',48],['72h',72]]
@@ -348,7 +347,7 @@ export default function FastingPage(){const [sessions,setSessions]=useState(read
 </div><Ring fast={active} now={now} onPhase={setPhase} onEditStart={()=>setStartEditor(active)} onEnd={endFast}/></article><section className="fast-current-phase compact-phase-card" style={{'--phase':current.color}}><FastingVisual type={current.image}/><div><small>CURRENT PHASE</small><h2>{current.icon} {current.title}</h2><p>{current.short}</p><button onClick={()=>setPhase(current)}>Read the detailed explanation</button></div></section></>:<>
   <InactiveFastingRing onStart={start} onPhase={setPhase}/>
   <InactivePhaseCard/>
-</>}<FastingCalendar sessions={sessions} now={now} onDeleteFast={async fast=>{if(!confirm('Delete this fasting session?'))return;await deleteFast(fast);setSessions(listFasts())}} onEditFast={fast=>setEditor({mode:'edit',session:fast})} onChooseDate={date=>setEditor({mode:'previous',prefillDate:date})}/><FastingMetabolicInputs/><FastingGlycemicFoundation sessions={sessions}/><FastingAnalytics sessions={sessions}/>{startEditor&&<QuickStartEditor
+</>}<FastingCalendar sessions={sessions} now={now} onDeleteFast={async fast=>{if(!confirm('Delete this fasting session?'))return;await deleteFast(fast);setSessions(listFasts())}} onEditFast={fast=>setEditor({mode:'edit',session:fast})} onChooseDate={date=>setEditor({mode:'previous',prefillDate:date})}/><FastingHealthContext activeFast={active} sessions={sessions}/><FastingAnalytics sessions={sessions}/>{startEditor&&<QuickStartEditor
   fast={startEditor}
   sessions={sessions}
   onClose={()=>setStartEditor(null)}

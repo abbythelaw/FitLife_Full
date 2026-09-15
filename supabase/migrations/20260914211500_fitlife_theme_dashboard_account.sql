@@ -1,0 +1,10 @@
+begin;
+alter table public.fitlife_profiles add column if not exists theme_mode text not null default 'dark' check(theme_mode in ('dark','light','system'));
+alter table public.fitlife_profiles add column if not exists dashboard_preferences jsonb not null default '{"density":"comfortable","cardStyle":"elevated","device":"desktop"}'::jsonb;
+create table if not exists public.fitlife_account_deletion_requests(id uuid primary key default gen_random_uuid(),user_id uuid not null references auth.users(id) on delete cascade,requested_email text,requested_at timestamptz not null default now(),status text not null default 'requested',completed_at timestamptz,unique(user_id,status));
+alter table public.fitlife_account_deletion_requests enable row level security;
+drop policy if exists fitlife_deletion_request_owner on public.fitlife_account_deletion_requests;
+create policy fitlife_deletion_request_owner on public.fitlife_account_deletion_requests for insert with check(user_id=auth.uid());
+create policy fitlife_deletion_request_read on public.fitlife_account_deletion_requests for select using(user_id=auth.uid());
+notify pgrst,'reload schema';
+commit;

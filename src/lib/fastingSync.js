@@ -49,7 +49,7 @@ function dbRow(row){
     status:statusOf(row),
     payload:{...row,id,client_session_id:id,sync_status:'synced'},
     device_id:deviceId,
-    deleted_at:null,
+    deleted_at:row.deleted_at||null,
     updated_at:row.updated_at||new Date().toISOString()
   }
 }
@@ -84,8 +84,32 @@ function write(rows){
 }
 
 async function upload(rows=localRows()){
-  if(!supabase||!userId||applyingRemote||!rows.length)return
-  const {error}=await supabase.from('fasting_sessions').upsert(rows.map(dbRow),{onConflict:'user_id,client_session_id'})
+  if(!supabase||!userId||applyingRemote)return
+
+  const deleted=tombstones()
+
+  const activeRows=rows.filter(row=>{
+    const id=idOf(row)
+
+    return (
+      id &&
+      !deleted.has(id) &&
+      !row.deleted_at &&
+      row.status!=='deleted'
+    )
+  })
+
+  if(!activeRows.length)return
+
+  const {error}=await supabase
+    .from('fasting_sessions')
+    .upsert(
+      activeRows.map(dbRow),
+      {
+        onConflict:'user_id,client_session_id'
+      }
+    )
+
   if(error)throw error
 }
 
@@ -101,7 +125,20 @@ async function refresh(){
   if(!userId)return[]
   const remote=await download()
   const remoteIds=new Set(remote.map(idOf))
-  const pending=localRows().filter(row=>row.sync_status==='pending'&&!remoteIds.has(idOf(row)))
+  const deleted=tombstones()
+
+  const pending=localRows().filter(row=>{
+    const id=idOf(row)
+
+    return (
+      id &&
+      !deleted.has(id) &&
+      !row.deleted_at &&
+      row.status!=='deleted' &&
+      row.sync_status==='pending' &&
+      !remoteIds.has(id)
+    )
+  })
   if(pending.length)await upload(pending)
   const latest=pending.length?await download():remote
   write(latest)
