@@ -1,0 +1,35 @@
+/* Health Metric historical periods and dates */
+.health-period-strip{display:grid;gap:10px;margin:14px 0;padding:14px;border:1px solid #29483c;border-radius:12px;background:#09150f;overflow:hidden}
+.health-period-strip>header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.health-period-strip>header h3{margin:0;font-size:15px}
+.health-period-strip>header p{margin:3px 0 0;color:var(--muted);font-size:8px}
+.health-period-tabs{display:flex;gap:5px;flex-wrap:wrap}
+.health-period-tabs button{min-height:34px;border:1px solid var(--line);border-radius:999px;background:var(--card2);color:var(--muted);padding:5px 10px;font-size:9px}
+.health-period-tabs button.active{border-color:var(--metric-color);background:color-mix(in srgb,var(--metric-color) 14%,#102019);color:var(--metric-color)}
+.health-period-scroll{overflow-x:auto;overflow-y:hidden;padding:4px 2px 9px;scrollbar-width:thin;scrollbar-color:#68736e #132019}
+.health-period-grid{display:grid;gap:4px;min-width:max-content}
+.health-period-grid.period-30D{grid-template-columns:repeat(30,18px)}
+.health-period-grid.period-90D{grid-template-columns:repeat(90,12px)}
+.health-period-grid.period-1Y{grid-template-columns:repeat(365,8px)}
+.health-period-day{display:grid;grid-template-rows:auto 18px auto;gap:5px;align-items:center;justify-items:center;min-width:0}
+.period-90D .health-period-day{grid-template-rows:auto 14px auto}
+.period-1Y .health-period-day{grid-template-rows:auto 10px auto}
+.health-period-cell{width:18px;height:18px;border-radius:3px;background:var(--health-no-data,#414845);box-shadow:inset 0 0 0 1px #59615d}
+.period-90D .health-period-cell{width:12px;height:14px}
+.period-1Y .health-period-cell{width:8px;height:10px;border-radius:2px}
+.health-period-cell.no-data{background:var(--health-no-data,#414845)}
+.health-period-cell.below-range,.health-period-cell.partial{background:linear-gradient(135deg,var(--metric-color) 0 48%,var(--health-no-data,#414845) 48% 100%)}
+.health-period-cell.met,.health-period-cell.in-range,.health-period-cell.reached{background:var(--metric-color);box-shadow:0 0 6px color-mix(in srgb,var(--metric-color) 32%,transparent)}
+.health-period-cell.above-range{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--metric-color) 85%,#111) 0 3px,color-mix(in srgb,var(--metric-color) 30%,#303935) 3px 6px);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--metric-color) 88%,#fff)}
+.health-period-date{height:23px;color:#91a79c;font-size:7px;line-height:1.15;text-align:center;white-space:nowrap;writing-mode:vertical-rl;transform:rotate(180deg)}
+.period-90D .health-period-date{font-size:6px}
+.period-1Y .health-period-date{display:none}
+.health-period-month{height:14px;color:var(--metric-color);font-size:7px;white-space:nowrap}
+.health-period-labels{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--muted);font-size:8px;border-top:1px solid #29483c;padding-top:8px}
+.health-period-legend{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:8px}
+.health-period-legend span{display:flex;align-items:center;gap:5px}
+.health-period-legend i{width:10px;height:10px;border-radius:2px;background:#414845;box-shadow:inset 0 0 0 1px #59615d}
+.health-period-legend .partial i{background:linear-gradient(135deg,var(--metric-color) 0 48%,#414845 48%)}
+.health-period-legend .met i{background:var(--metric-color)}
+.health-period-legend .above i{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--metric-color) 85%,#111) 0 3px,color-mix(in srgb,var(--metric-color) 30%,#303935) 3px 6px)}
+@media(max-width:700px){.health-period-strip>header{display:grid}.health-period-grid.period-30D{grid-template-columns:repeat(30,20px)}.health-period-cell{width:20px}.health-period-date{font-size:7px}}

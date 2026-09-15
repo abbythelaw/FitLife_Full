@@ -1,0 +1,2 @@
+export function scheduledHabitsFor(date,habits=[]){const day=date.getDay();return habits.filter(h=>!h.archived&&!h.deleted&&!h.paused&&(!Array.isArray(h.schedule)||h.schedule.includes(day)))}
+export function contributionDates(period='30D'){const count=period==='30D'?30:period==='90D'?90:365;return Array.from({length:count},(_,i)=>{const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-(count-1-i));return d})}

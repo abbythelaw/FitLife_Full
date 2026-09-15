@@ -1,0 +1,38 @@
+
+import {Link2,Save,X} from 'lucide-react'
+import {useMemo,useState} from 'react'
+import {compatibleHealthMetricCards,listMetricMappings,saveFastingOnlyReading,saveMappedMetricReading,saveMetricMapping} from './fastingNutritionStore'
+
+const META={
+ glucose:{label:'Glucose',unit:'mg/dL',suggest:['glucose','blood glucose','metabolic']},
+ rhr:{label:'Resting heart rate',unit:'bpm',suggest:['rhr','resting','cardiovascular','heart']},
+ weight:{label:'Weight',unit:'kg',suggest:['weight','body','composition','metabolic']},
+ hba1c:{label:'HbA1c',unit:'%',suggest:['hba1c','a1c','cardiovascular','metabolic']}
+}
+function allCards(){
+ const keys=['fitlife-health-cards','fitlife-health-metrics','health-metric-cards'];const map=new Map()
+ for(const key of keys){try{const rows=JSON.parse(localStorage.getItem(key)||'[]');if(!Array.isArray(rows))continue;for(const row of rows){const id=String(row.id||row.card_id||row.metric_id||row.name||row.label);map.set(id,{...row,card_id:id,label:row.name||row.label||row.metric||row.type||'Health Metric'})}}catch{}}
+ return [...map.values()]
+}
+export default function FastingMetricRecorder({metric,date,onClose,onSaved,existing}){
+ const meta=META[metric],cards=useMemo(allCards,[]),mapping=listMetricMappings()[metric]
+ const suggested=cards.find(card=>meta.suggest.some(word=>String(card.label).toLowerCase().includes(word)))
+ const [destination,setDestination]=useState(cards.length?'health_metrics':'fasting')
+ const [cardId,setCardId]=useState(mapping?.metric_card_id||suggested?.card_id||cards[0]?.card_id||'')
+ const [value,setValue]=useState(existing?.normalized_value??'');const [time,setTime]=useState(existing?.normalized_time||'12:00');const [context,setContext]=useState(existing?.context||'');const [notes,setNotes]=useState(existing?.notes||'');const [error,setError]=useState('')
+ function submit(){const numeric=Number(value);if(!Number.isFinite(numeric)){setError('Enter a valid value.');return}const input={id:existing?.id||existing?.attachment_id,value:numeric,unit:meta.unit,date,time,context,notes}
+  let row
+  if(destination==='health_metrics'&&cardId){saveMetricMapping(metric,{destination:'health_metrics',metric_card_id:cardId});row=saveMappedMetricReading(metric,input)}
+  else{saveMetricMapping(metric,{destination:'fasting'});row=saveFastingOnlyReading({...input,metric_type:metric})}
+  onSaved?.(row)
+ }
+ return <div className="fast-layer"><button className="fast-backdrop" onClick={onClose}/><aside className="fast-drawer metric-recorder"><button className="close" onClick={onClose}><X/></button><small>ADD READING</small><h2>{meta.label}</h2>
+  {error&&<div className="fast-validation-error"><b>Cannot save</b><span>{error}</span></div>}
+  <label>Recording destination<select value={destination} onChange={e=>setDestination(e.target.value)}><option value="health_metrics" disabled={!cards.length}>Link to Health Metrics</option><option value="fasting">No Health Metric equivalent, save manually</option></select></label>
+  {destination==='health_metrics'&&cards.length>0&&<label>Available Health Metric<select value={cardId} onChange={e=>setCardId(e.target.value)}>{cards.map(card=><option key={card.card_id} value={card.card_id}>{card.label}{card.card_id===suggested?.card_id?' · Suggested':''}</option>)}</select></label>}
+  {destination==='health_metrics'&&!cards.length&&<div className="metric-no-equivalent"><b>No Health Metrics are available.</b><button onClick={()=>setDestination('fasting')}>Save manually</button></div>}
+  <div className="metric-recorder-grid"><label>Value<input type="number" step="any" value={value} onChange={e=>setValue(e.target.value)}/></label><label>Unit<input value={meta.unit} readOnly/></label><label>Date<input type="date" value={date} readOnly/></label><label>Time<input type="time" value={time} onChange={e=>setTime(e.target.value)}/></label></div>
+  <label>Context<input value={context} onChange={e=>setContext(e.target.value)}/></label><label>Notes<textarea value={notes} onChange={e=>setNotes(e.target.value)}/></label>
+  <div className="fast-editor-actions"><button onClick={onClose}>Cancel</button><button className="save" onClick={submit}>{destination==='health_metrics'?<Link2/>:<Save/>}Save reading</button></div>
+ </aside></div>
+}

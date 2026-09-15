@@ -1,0 +1,358 @@
+localStorage.getItem('fitlife-glance-max') || 6))
+localStorage.getItem('fitlife-glance-max') || 6))
+localStorage.getItem('fitlife-glance-max') || 6))
+localStorage.getItem('fitlife-glance-max') || 6))
+localStorage.getItem('fitlife-glance-selected') || '[]'
+localStorage.getItem('fitlife-glance-selected') || '[]'
+localStorage.getItem('fitlife-habits') || '[]') } catch { return [] }
+localStorage.getItem('fitlife-health-defs-v2') || '[]'
+localStorage.getItem('fitlife-health-defs-v2') || '[]'
+localStorage.getItem('fitlife-health-defs-v2') || '[]'
+localStorage.getItem('fitlife-health-defs-v2') || '[]'
+localStorage.getItem('fitlife-health-defs-v2') || '[]'
+localStorage.getItem('fitlife-health-defs-v2') || '[]'
+localStorage.getItem('fitlife-health-defs-v2') || '[]'
+localStorage.getItem('fitlife-health-defs-v2') || '[]'
+localStorage.getItem('fitlife-health-defs-v2') || '[]'
+localStorage.getItem('fitlife-health-defs-v2')) || METRICS } catch { return METRICS }
+localStorage.getItem('fitlife-health-defs-v2')) || METRICS } catch { return METRICS }
+localStorage.getItem('fitlife-health-defs-v2')) || METRICS } catch { return METRICS }
+localStorage.getItem('fitlife-health-defs-v2'),[])
+localStorage.getItem('fitlife-health-defs-v2'),[])
+localStorage.getItem('fitlife-health-defs-v2'),[])
+localStorage.getItem('fitlife-health-defs-v2'),[])
+localStorage.getItem('fitlife-health-readings'),[])
+localStorage.getItem('fitlife-health-readings'),[])
+localStorage.getItem('fitlife-health-readings'),[])
+localStorage.getItem('fitlife-health-readings'),[])
+localStorage.getItem('fitlife-log-history') || '[]'
+localStorage.getItem('fitlife-log-history') || '[]'
+localStorage.getItem('fitlife-log-history') || '[]'
+localStorage.getItem('fitlife-log-history'))||starterEntries}catch{return starterEntries}}),[filter,setFilter]=useState('All'),[search,setSearch]=useState(''),[editing,setEditing]=useState(null),[deleting,setDeleting]=useState(null),[collapsed,setCollapsed]=useState({}),[addingDate,setAddingDate]=useState(null)
+localStorage.getItem('fitlife-mode')||'dark'),[accent,setAccent]=useState(localStorage.getItem('fitlife-accent')||'FitLife Classic'),[density,setDensity]=useState('compact'),[timezone,setTimezone]=useState('Europe/London'),[hour12,setHour12]=useState(false),[weekStart,setWeekStart]=useState('Monday'),[avatar,setAvatar]=useState(null),[reduceMotion,setReduceMotion]=useState(false);useEffect(()=>{localStorage.setItem('fitlife-mode',mode);localStorage.setItem('fitlife-accent',accent);document.documentElement.dataset.mode=mode},[mode,accent]);function image(file){const reader=new FileReader();reader.onload=()=>setAvatar(reader.result);reader.readAsDataURL(file)}function clearLocalDemoData(){
+localStorage.getItem('fitlife-mode')||'dark'),[accent,setAccent]=useState(localStorage.getItem('fitlife-accent')||'FitLife Classic'),[density,setDensity]=useState('compact'),[timezone,setTimezone]=useState('Europe/London'),[hour12,setHour12]=useState(false),[weekStart,setWeekStart]=useState('Monday'),[avatar,setAvatar]=useState(null),[reduceMotion,setReduceMotion]=useState(false);useEffect(()=>{localStorage.setItem('fitlife-mode',mode);localStorage.setItem('fitlife-accent',accent);document.documentElement.dataset.mode=mode},[mode,accent]);function image(file){const reader=new FileReader();reader.onload=()=>setAvatar(reader.result);reader.readAsDataURL(file)}return <section className="settings-page"><header><div><small>PERSONALISE FITLIFE</small><h2>Settings</h2><p>Appearance, profile, time, devices, and synchronisation.</p></div></header><div className="settings-layout"><nav><a href="#appearance">Appearance</a><a href="#profile">Profile</a><a href="#time">Time & calendar</a><a href="#sync">Sync & devices</a><a href="#data">Data</a></nav><main><section id="appearance" className="settings-card"><header><Monitor/><div><h3>Appearance</h3><p>Choose the neutral surface mode and accent colours independently.</p></div></header><label>Display mode<div className="segmented"><button className={mode==='dark'?'selected':''} onClick={()=>setMode('dark')}><Moon/>Dark</button><button className={mode==='light'?'selected':''} onClick={()=>setMode('light')}><Sun/>Light</button><button className={mode==='system'?'selected':''} onClick={()=>setMode('system')}><Monitor/>System</button></div></label><label>Accent theme<div className="accent-grid">{accents.map(([name,color])=><button className={accent===name?'selected':''} onClick={()=>setAccent(name)} key={name}><i style={{background:color}}/>{name}{accent===name&&<Check/>}</button>)}</div></label><label>Card density<select value={density} onChange={e=>setDensity(e.target.value)}><option>compact</option><option>comfortable</option></select></label><label className="toggle"><input type="checkbox" checked={reduceMotion} onChange={e=>setReduceMotion(e.target.checked)}/><span/>Reduce motion</label></section><section id="profile" className="settings-card"><header><Image/><div><h3>Profile</h3><p>Update the visual identity used across devices.</p></div></header><div className="profile-edit">{avatar?<img src={avatar}/>:<b>AS</b>}<label><Upload/>Upload photo<input type="file" accept="image/*" onChange={e=>e.target.files[0]&&image(e.target.files[0])}/></label><button onClick={()=>setAvatar(null)}>Use initials</button></div><label>Display name<input value="Abner Serania" readOnly/></label></section><section id="time" className="settings-card"><header><Globe2/><div><h3>Time & calendar</h3><p>Controls greetings, clocks, day boundaries, and calendar layouts.</p></div></header><label>Timezone<select value={timezone} onChange={e=>setTimezone(e.target.value)}><option>Europe/London</option><option>Asia/Manila</option><option>America/New_York</option><option>Australia/Sydney</option></select></label><label>Clock format<div className="segmented"><button className={!hour12?'selected':''} onClick={()=>setHour12(false)}>24 hour</button><button className={hour12?'selected':''} onClick={()=>setHour12(true)}>12 hour</button></div></label><label>Week starts<select value={weekStart} onChange={e=>setWeekStart(e.target.value)}><option>Monday</option><option>Sunday</option></select></label></section><section id="sync" className="settings-card"><header><Cloud/><div><h3>Sync & devices</h3><p>Review local changes and connected device classes.</p></div></header><div className="sync-status"><i/><div><b>Synced</b><span>No changes waiting</span></div><button><RefreshCw/>Sync now</button></div><div className="device-grid"><article><Smartphone/><b>Phone</b><span>Last active today</span></article><article><Tablet/><b>iPad</b><span>Layout profile ready</span></article><article><Monitor/><b>Desktop</b><span>Current device</span></article></div></section><section id="data" className="settings-card"><header><Database/><div><h3>Data</h3><p>Export, clear local previews, or review database configuration.</p></div></header><button className="data-action">Export FitLife data</button><button className="data-action">Clear local demonstration data</button></section></main></div></section>}
+localStorage.getItem('fitlife-photo-quality') || 'balanced'
+localStorage.getItem('fitlife-photo-quality') || 'balanced'] || QUALITY_PRESETS.balanced
+localStorage.getItem(DEVICE_ID_KEY)||crypto.randomUUID()
+localStorage.getItem(DEVICE_ID_KEY)||crypto.randomUUID()
+localStorage.getItem(DEVICE_KEY) || crypto.randomUUID()
+localStorage.getItem(DEVICE_KEY) || crypto.randomUUID()
+localStorage.getItem(DEVICE_KEY)||crypto.randomUUID()
+localStorage.getItem(FASTING_LOCAL_READINGS_KEY),[])
+localStorage.getItem(FASTING_LOCAL_READINGS_KEY),[])
+localStorage.getItem(FASTING_LOCAL_READINGS_KEY),[])
+localStorage.getItem(FASTING_LOCAL_READINGS_KEY),[])
+localStorage.getItem(FASTING_LOCAL_READINGS_KEY),[])
+localStorage.getItem(FASTING_LOCAL_READINGS_KEY),[])
+localStorage.getItem(FASTING_LOCAL_READINGS_KEY),[])
+localStorage.getItem(HEALTH_KEY),
+localStorage.getItem(HEALTH_KEY),
+localStorage.getItem(HEALTH_KEY),
+localStorage.getItem(HEALTH_KEY),
+localStorage.getItem(HEALTH_KEY),
+localStorage.getItem(HEALTH_KEY),
+localStorage.getItem(HEALTH_KEY),
+localStorage.getItem(HEALTH_READING_KEY) || '[]') } catch { return [] } }
+localStorage.getItem(HEALTH_READING_KEY) || '[]') } catch { return [] } }
+localStorage.getItem(HEALTH_READING_KEY) || '[]') } catch { return [] } }
+localStorage.getItem(HISTORY),[]);const id=`fasting:${row.id}`;rows=rows.filter(x=>x.id!==id);if(!remove){const h=duration(row),done=row.status==='completed';rows.unshift({id,source_id:row.id,type:'Fasting',title:done?`${row.protocol||'Custom'} fast completed`:`${row.protocol||'Custom'} fast started`,date:String(row.started_at).slice(0,10),time:String(row.started_at).slice(11,16),displayDate:String(row.started_at).slice(0,10),summary:done?`${h.toFixed(1)}h · ${h>=Number(row.target_hours||0)?'Target met':'Ended early'}`:`Target ${Number(row.target_hours||0).toFixed(1)}h`,status:row.sync_status||'pending'})}localStorage.setItem(HISTORY,JSON.stringify(rows));window.dispatchEvent(new CustomEvent('fitlife:history-changed',{detail:rows}));window.dispatchEvent(new CustomEvent('fitlife:log-history-changed'))}
+localStorage.getItem(HISTORY),[]);const id=`fasting:${row.id}`;rows=rows.filter(x=>x.id!==id);if(!remove){const h=duration(row),done=row.status==='completed';rows.unshift({id,source_id:row.id,type:'Fasting',title:done?`${row.protocol||'Custom'} fast completed`:`${row.protocol||'Custom'} fast started`,date:String(row.started_at).slice(0,10),time:String(row.started_at).slice(11,16),displayDate:String(row.started_at).slice(0,10),summary:done?`${h.toFixed(1)}h · ${h>=Number(row.target_hours||0)?'Target met':'Ended early'}`:`Target ${Number(row.target_hours||0).toFixed(1)}h`,status:row.sync_status||'pending'})}localStorage.setItem(HISTORY,JSON.stringify(rows));window.dispatchEvent(new CustomEvent('fitlife:history-changed',{detail:rows}));window.dispatchEvent(new CustomEvent('fitlife:log-history-changed'))}
+localStorage.getItem(HISTORY)||'[]')}catch{}const id=`sports:${row.id}`;rows=rows.filter(x=>x.id!==id);if(!remove)rows.unshift({id,source_id:row.id,type:'Sports',title:row.title,date:row.entry_date,time:row.start_time,displayDate:row.entry_date,summary:`${row.duration_minutes||0} min · ${row.distance_km||0} km · ${row.calories||0} kcal`,status:row.sync_status||'pending'});localStorage.setItem(HISTORY,JSON.stringify(rows));window.dispatchEvent(new CustomEvent('fitlife:history-changed',{detail:rows}))}
+localStorage.getItem(HISTORY)||'[]')}catch{}const id=`sports:${row.id}`;rows=rows.filter(x=>x.id!==id);if(!remove)rows.unshift({id,source_id:row.id,type:'Sports',title:row.title,date:row.entry_date,time:row.start_time,displayDate:row.entry_date,summary:`${row.duration_minutes||0} min · ${row.distance_km||0} km · ${row.calories||0} kcal`,status:row.sync_status||'pending'});localStorage.setItem(HISTORY,JSON.stringify(rows));window.dispatchEvent(new CustomEvent('fitlife:history-changed',{detail:rows}))}
+localStorage.getItem(HISTORY)||'[]')}catch{}const id=`sports:${row.id}`;rows=rows.filter(x=>x.id!==id);if(!remove)rows.unshift({id,source_id:row.id,type:'Sports',title:row.title,date:row.entry_date,time:row.start_time,displayDate:row.entry_date,summary:`${row.duration_minutes||0} min · ${row.distance_km||0} km · ${row.calories||0} kcal`,status:row.sync_status||'pending'});localStorage.setItem(HISTORY,JSON.stringify(rows));window.dispatchEvent(new CustomEvent('fitlife:history-changed',{detail:rows}))}
+localStorage.getItem(HISTORY)||'[]')}catch{}const id=`sports:${row.id}`;rows=rows.filter(x=>x.id!==id);if(!remove)rows.unshift({id,source_id:row.id,type:'Sports',title:row.title,date:row.entry_date,time:row.start_time,displayDate:row.entry_date,summary:`${row.duration_minutes||0} min · ${row.distance_km||0} km · ${row.calories||0} kcal`,status:row.sync_status||'pending'});localStorage.setItem(HISTORY,JSON.stringify(rows));window.dispatchEvent(new CustomEvent('fitlife:history-changed',{detail:rows}))}
+localStorage.getItem(HISTORY)||'[]')}catch{}const id=`sports:${row.id}`;rows=rows.filter(x=>x.id!==id);if(!remove)rows.unshift({id,source_id:row.id,type:'Sports',title:row.title,date:row.entry_date,time:row.start_time,displayDate:row.entry_date,summary:`${row.duration_minutes||0} min · ${row.distance_km||0} km · ${row.calories||0} kcal`,status:row.sync_status||'pending'});localStorage.setItem(HISTORY,JSON.stringify(rows));window.dispatchEvent(new CustomEvent('fitlife:history-changed',{detail:rows}))}
+localStorage.getItem(HISTORY)||'[]')}catch{}const id=`sports:${row.id}`;rows=rows.filter(x=>x.id!==id);if(!remove)rows.unshift({id,source_id:row.id,type:'Sports',title:row.title,date:row.entry_date,time:row.start_time,displayDate:row.entry_date,summary:`${row.duration_minutes||0} min · ${row.distance_km||0} km · ${row.calories||0} kcal`,status:row.sync_status||'pending'});localStorage.setItem(HISTORY,JSON.stringify(rows));window.dispatchEvent(new CustomEvent('fitlife:history-changed',{detail:rows}))}
+localStorage.getItem(HISTORY_KEY)||'[]')}catch{}
+localStorage.getItem(KEY));return safeRows(raw||seed)}catch{return seed}}
+localStorage.getItem(KEY));return safeRows(raw||seed)}catch{return seed}}
+localStorage.getItem(KEY));return safeRows(raw||seed)}catch{return seed}}
+localStorage.getItem(KEY));return safeRows(raw||seed)}catch{return seed}}
+localStorage.getItem(KEY));return safeRows(raw||seed)}catch{return seed}}
+localStorage.getItem(KEY));return safeRows(raw||seed)}catch{return seed}}
+localStorage.getItem(KEY))||[]}catch{return[]}};const write=rows=>{localStorage.setItem(KEY,JSON.stringify(rows));window.dispatchEvent(new CustomEvent('fitlife:analytics-history-changed',{detail:rows}))}
+localStorage.getItem(KEY),[]),...parse(localStorage.getItem(LEGACY),[])]){const id=String(row.id||row.client_session_id||row.started_at);if(!map.has(id)||String(row.updated_at||'')>String(map.get(id)?.updated_at||''))map.set(id,{...row,id})}return [...map.values()].sort((a,b)=>String(b.started_at).localeCompare(String(a.started_at)))}
+localStorage.getItem(KEY),[]),...parse(localStorage.getItem(LEGACY),[])]){const id=String(row.id||row.client_session_id||row.started_at);if(!map.has(id)||String(row.updated_at||'')>String(map.get(id)?.updated_at||''))map.set(id,{...row,id})}return [...map.values()].sort((a,b)=>String(b.started_at).localeCompare(String(a.started_at)))}
+localStorage.getItem(METRIC_MAPPING_KEY),{})
+localStorage.getItem(METRIC_MAPPING_KEY),{})
+localStorage.getItem(METRIC_MAPPING_KEY),{})
+localStorage.getItem(METRIC_MAPPING_KEY),{})
+localStorage.getItem(METRIC_MAPPING_KEY),{})
+localStorage.getItem(METRIC_MAPPING_KEY),{})
+localStorage.getItem(METRIC_MAPPING_KEY),{})
+localStorage.getItem(NUTRITION_KEY),
+localStorage.getItem(NUTRITION_KEY),
+localStorage.getItem(NUTRITION_KEY),
+localStorage.getItem(NUTRITION_KEY),
+localStorage.getItem(NUTRITION_KEY),
+localStorage.getItem(NUTRITION_KEY),
+localStorage.getItem(NUTRITION_KEY),
+localStorage.getItem(ORDER_KEY) || '[]')
+localStorage.getItem(ORDER_KEY) }))
+localStorage.getItem(STORAGE_KEY);return raw?JSON.parse(raw):seed}catch{return seed}}
+localStorage.getItem(TOMBSTONE_KEY),[]).map(String))
+localStorage.getItem(`fitlife-trend-period-${index}`) || '30D'
+localStorage.getItem(`fitlife-trend-period-${matrix.id}`)||'30D')
+localStorage.getItem(`fitlife-trend-period-${matrix.id}`)||'30D')
+localStorage.getItem(`fitlife-trend-period-${matrix.id}`)||'30D')
+localStorage.getItem(`fitlife-trend-period-${matrix.id}`)||'30D')
+localStorage.getItem(`fitlife-trend-period-${matrix}`) || '30D'
+localStorage.getItem(deviceLayoutKey(mode)))||fallback}catch{return fallback}}
+localStorage.getItem(duplicateKey)
+localStorage.getItem(k))??d}catch{return d}};
+localStorage.getItem(k))??d}catch{return d}};const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+localStorage.getItem(k))??d}catch{return d}};const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+localStorage.getItem(key)
+localStorage.getItem(key)
+localStorage.getItem(key)
+localStorage.getItem(key) || '[]') } catch {}
+localStorage.getItem(key) || '[]') } catch {}
+localStorage.getItem(key) || '[]') } catch {}
+localStorage.getItem(key) || '[]') } catch {}
+localStorage.getItem(key) || '[]') } catch {}
+localStorage.getItem(key) || '[]') } catch {}
+localStorage.getItem(key)) ?? fallback } catch { return fallback }
+localStorage.getItem(key)) ?? fallback } catch { return fallback }
+localStorage.getItem(key)) ?? fallback } catch { return fallback }
+localStorage.getItem(key)) ?? fallback } catch { return fallback } }
+localStorage.getItem(key)); if (Array.isArray(saved)) return saved } catch {}
+localStorage.getItem(key))??fallback}catch{return fallback}}
+localStorage.getItem(key))??fallback}catch{return fallback}}
+localStorage.getItem(key))??fallback}catch{return fallback}}
+localStorage.getItem(key))??fallback}catch{return fallback}}
+localStorage.getItem(key))??fallback}catch{return fallback}}
+localStorage.getItem(key))??fallback}catch{return fallback}}
+localStorage.getItem(key))||fallback}catch{return fallback}}
+localStorage.getItem(key))||fallback}catch{return fallback}}
+localStorage.getItem(key), [])
+localStorage.getItem(key), [])
+localStorage.getItem(key), [])
+localStorage.getItem(key), [])
+localStorage.getItem(key), [])
+localStorage.getItem(key), [])
+localStorage.getItem(key), [])
+localStorage.getItem(key), [])
+localStorage.getItem(key),[])
+localStorage.getItem(key),[])
+localStorage.getItem(key),[])
+localStorage.getItem(key),[])
+localStorage.getItem(key),[])
+localStorage.getItem(key),[])
+localStorage.getItem(key),[])
+localStorage.getItem(key),[])
+localStorage.getItem(key),[])
+localStorage.getItem(key),[])
+localStorage.getItem(key),[])
+localStorage.getItem(key),[])
+localStorage.getItem(key),[])){
+localStorage.getItem(key),fallback)
+localStorage.getItem(key),fallback)
+localStorage.getItem(key);if(!raw||!raw.includes('data:image/'))continue
+localStorage.getItem(key);if(!raw||!raw.includes('data:image/'))continue
+localStorage.getItem(key);if(raw!=null)await upload(user.id,key,parse(raw,[]))}
+localStorage.getItem(key);if(raw!=null)await upload(user.id,key,parse(raw,[]))}
+localStorage.getItem(key)||'[]');if(!Array.isArray(rows))continue;for(const row of rows){const id=String(row.id||row.card_id||row.metric_id||row.name||row.label);map.set(id,{...row,card_id:id,label:row.name||row.label||row.metric||row.type||'Health Metric'})}}catch{}}
+localStorage.removeItem(`${DRAFT_PREFIX}${tab}-${dateKey(currentDate)}`)
+localStorage.removeItem(deviceLayoutKey(mode))}
+localStorage.removeItem(key)
+localStorage.removeItem(key))
+localStorage.setItem(
+localStorage.setItem(
+localStorage.setItem(
+localStorage.setItem(
+localStorage.setItem(
+localStorage.setItem(
+localStorage.setItem(
+localStorage.setItem(
+localStorage.setItem(
+localStorage.setItem(
+localStorage.setItem(
+localStorage.setItem(
+localStorage.setItem(
+localStorage.setItem(
+localStorage.setItem(
+localStorage.setItem(
+localStorage.setItem(
+localStorage.setItem(
+localStorage.setItem(
+localStorage.setItem(
+localStorage.setItem('fitlife-glance-max',String(value));if(selected.length>value){const next=selected.slice(0,value);setSelected(next);localStorage.setItem('fitlife-glance-selected',JSON.stringify(next))}}
+localStorage.setItem('fitlife-glance-max',String(value));if(selected.length>value){const next=selected.slice(0,value);setSelected(next);localStorage.setItem('fitlife-glance-selected',JSON.stringify(next))}}
+localStorage.setItem('fitlife-glance-max',String(value));if(selected.length>value){const next=selected.slice(0,value);setSelected(next);localStorage.setItem('fitlife-glance-selected',JSON.stringify(next))}}
+localStorage.setItem('fitlife-glance-max',String(value));if(selected.length>value){const next=selected.slice(0,value);setSelected(next);localStorage.setItem('fitlife-glance-selected',JSON.stringify(next))}}
+localStorage.setItem('fitlife-glance-selected',JSON.stringify(next))}
+localStorage.setItem('fitlife-glance-selected',JSON.stringify(next))}
+localStorage.setItem('fitlife-glance-selected',JSON.stringify(next))}
+localStorage.setItem('fitlife-grateful-entries', JSON.stringify(rows))
+localStorage.setItem('fitlife-habit-logs', JSON.stringify(next))
+localStorage.setItem('fitlife-habit-logs',JSON.stringify(next));setEditing(null);window.dispatchEvent(new Event('fitlife:habit-changed'))}return <section className="su-card"><header><div><h3>Today’s habits</h3><span>{done} / {habits.length} completed</span></div><button onClick={()=>navigate('habits')}>View all <ChevronRight/></button></header><div className="su-checklist-v6">{today.map(({habit,log})=><button className="su-checklist-row-v6" key={habit.id} onClick={()=>setEditing({habit,log})}><span className={log?.completed?'done':''}>{log?.completed?'✓':'○'}</span><div><b>{habit.name}</b><p>{habit.target_value?`${log?.value||0} / ${habit.target_value} ${habit.unit||''}`:log?.completed?'Completed':'Tap to record'}</p></div><small>{log?.completed?'Done today':log?'Partial':'Not done'}</small></button>)}</div>{editing&&<HabitQuickRecord state={editing} onClose={()=>setEditing(null)} onSave={save}/>}</section>}
+localStorage.setItem('fitlife-habit-logs',JSON.stringify(next));setEditing(null);window.dispatchEvent(new Event('fitlife:habit-changed'))}return <section className="su-card"><header><div><h3>Today’s habits</h3><span>{done} / {habits.length} completed</span></div><button onClick={()=>navigate('habits')}>View all <ChevronRight/></button></header><div className="su-checklist-v6">{today.map(({habit,log})=><button className="su-checklist-row-v6" key={habit.id} onClick={()=>setEditing({habit,log})}><span className={log?.completed?'done':''}>{log?.completed?'✓':'○'}</span><div><b>{habit.name}</b><p>{habit.target_value?`${log?.value||0} / ${habit.target_value} ${habit.unit||''}`:log?.completed?'Completed':'Tap to record'}</p></div><small>{log?.completed?'Done today':log?'Partial':'Not done'}</small></button>)}</div>{editing&&<HabitQuickRecord state={editing} onClose={()=>setEditing(null)} onSave={save}/>}</section>}
+localStorage.setItem('fitlife-habit-logs',JSON.stringify(next));setEditing(null);window.dispatchEvent(new Event('fitlife:habit-changed'))}return <section className="su-card"><header><div><h3>Today’s habits</h3><span>{done} / {habits.length} completed</span></div><button onClick={()=>navigate('habits')}>View all <ChevronRight/></button></header><div className="su-checklist-v6">{today.map(({habit,log})=><button className="su-checklist-row-v6" key={habit.id} onClick={()=>setEditing({habit,log})}><span className={log?.completed?'done':''}>{log?.completed?'✓':'○'}</span><div><b>{habit.name}</b><p>{habit.target_value?`${log?.value||0} / ${habit.target_value} ${habit.unit||''}`:log?.completed?'Completed':'Tap to record'}</p></div><small>{log?.completed?'Done today':log?'Partial':'Not done'}</small></button>)}</div>{editing&&<HabitQuickRecord state={editing} onClose={()=>setEditing(null)} onSave={save}/>}</section>}
+localStorage.setItem('fitlife-habit-logs',JSON.stringify(next));setEditing(null);window.dispatchEvent(new Event('fitlife:habit-changed'))}return <section className="su-card"><header><div><h3>Today’s habits</h3><span>{done} / {habits.length} completed</span></div><button onClick={()=>navigate('habits')}>View all <ChevronRight/></button></header><div className="su-checklist-v6">{today.map(({habit,log})=><button className="su-checklist-row-v6" key={habit.id} onClick={()=>setEditing({habit,log})}><span className={log?.completed?'done':''}>{log?.completed?'✓':'○'}</span><div><b>{habit.name}</b><p>{habit.target_value?`${log?.value||0} / ${habit.target_value} ${habit.unit||''}`:log?.completed?'Completed':'Tap to record'}</p></div><small>{log?.completed?'Done today':log?'Partial':'Not done'}</small></button>)}</div>{editing&&<HabitQuickRecord state={editing} onClose={()=>setEditing(null)} onSave={save}/>}</section>}
+localStorage.setItem('fitlife-health-defs-v2', JSON.stringify(next))
+localStorage.setItem('fitlife-health-defs-v2', JSON.stringify(next))
+localStorage.setItem('fitlife-health-defs-v2', JSON.stringify(next))
+localStorage.setItem('fitlife-health-defs-v2', JSON.stringify(nextMetrics))
+localStorage.setItem('fitlife-health-readings', JSON.stringify(next))
+localStorage.setItem('fitlife-health-readings',JSON.stringify(next))
+localStorage.setItem('fitlife-health-readings',JSON.stringify(next))
+localStorage.setItem('fitlife-health-readings',JSON.stringify(next))
+localStorage.setItem('fitlife-health-readings',JSON.stringify(next))
+localStorage.setItem('fitlife-log-history', JSON.stringify([...healthEvents, ...otherHistory]))
+localStorage.setItem('fitlife-log-history',JSON.stringify(next))}
+localStorage.setItem('fitlife-log-history',JSON.stringify(normalized))}
+localStorage.setItem('fitlife-my-life-events', JSON.stringify([...generated, ...milestones]))
+localStorage.setItem('fitlife-open-health-metric', metric)
+localStorage.setItem('fitlife-open-health-metric',String(metric));window.location.hash=tab;window.location.reload()}
+localStorage.setItem('fitlife-open-health-metric',String(metric));window.location.hash=tab;window.location.reload()}
+localStorage.setItem('fitlife-open-health-metric',String(metric));window.location.hash=tab;window.location.reload()}
+localStorage.setItem('fitlife-open-health-metric',String(metric));window.location.hash=tab;window.location.reload()}
+localStorage.setItem('fitlife-snapshot-order',JSON.stringify(order));localStorage.setItem('fitlife-snapshot-visible',JSON.stringify(visible))},[order,visible])
+localStorage.setItem('fitlife-snapshot-order',JSON.stringify(order));localStorage.setItem('fitlife-snapshot-visible',JSON.stringify(visible))},[order,visible])
+localStorage.setItem('fitlife-snapshot-order',JSON.stringify(order));localStorage.setItem('fitlife-snapshot-visible',JSON.stringify(visible))},[order,visible])
+localStorage.setItem('fitlife-snapshot-order',JSON.stringify(order));localStorage.setItem('fitlife-snapshot-visible',JSON.stringify(visible))},[order,visible])
+localStorage.setItem(CUSTOM_KEY,JSON.stringify(next));setType('Custom');setCustomOpen(false)}}/>}</div>}
+localStorage.setItem(DEVICE_ID_KEY,deviceId)
+localStorage.setItem(DEVICE_ID_KEY,deviceId)
+localStorage.setItem(DEVICE_KEY, deviceId)
+localStorage.setItem(DEVICE_KEY, deviceId)
+localStorage.setItem(DEVICE_KEY,deviceId)
+localStorage.setItem(FASTING_LOCAL_READINGS_KEY,JSON.stringify(next))
+localStorage.setItem(FASTING_LOCAL_READINGS_KEY,JSON.stringify(next))
+localStorage.setItem(FASTING_LOCAL_READINGS_KEY,JSON.stringify(next))
+localStorage.setItem(FASTING_LOCAL_READINGS_KEY,JSON.stringify(next))
+localStorage.setItem(FASTING_LOCAL_READINGS_KEY,JSON.stringify(next))
+localStorage.setItem(FASTING_LOCAL_READINGS_KEY,JSON.stringify(next))
+localStorage.setItem(FASTING_LOCAL_READINGS_KEY,JSON.stringify(next))
+localStorage.setItem(HEALTH_READING_KEY, JSON.stringify(rows)); syncHealthReadingSummaries(rows); window.dispatchEvent(new CustomEvent('fitlife:health-readings-changed', { detail: rows })) }
+localStorage.setItem(HEALTH_READING_KEY, JSON.stringify(rows)); syncHealthReadingSummaries(rows); window.dispatchEvent(new CustomEvent('fitlife:health-readings-changed', { detail: rows })) }
+localStorage.setItem(HEALTH_READING_KEY, JSON.stringify(rows)); syncHealthReadingSummaries(rows); window.dispatchEvent(new CustomEvent('fitlife:health-readings-changed', { detail: rows })) }
+localStorage.setItem(HISTORY_KEY,JSON.stringify(history))
+localStorage.setItem(KEY, JSON.stringify(safe))
+localStorage.setItem(KEY, JSON.stringify(safe))
+localStorage.setItem(KEY, JSON.stringify(safe))
+localStorage.setItem(KEY, JSON.stringify(safe))
+localStorage.setItem(KEY, JSON.stringify(safe))
+localStorage.setItem(KEY, JSON.stringify(safe))
+localStorage.setItem(KEY, JSON.stringify(safe))
+localStorage.setItem(KEY, JSON.stringify(safe))
+localStorage.setItem(KEY,JSON.stringify(safe));window.dispatchEvent(new CustomEvent('fitlife:sports-changed',{detail:safe}))}
+localStorage.setItem(KEY,JSON.stringify(safe));window.dispatchEvent(new CustomEvent('fitlife:sports-changed',{detail:safe}))}
+localStorage.setItem(METRIC_MAPPING_KEY,JSON.stringify(next))
+localStorage.setItem(METRIC_MAPPING_KEY,JSON.stringify(next))
+localStorage.setItem(METRIC_MAPPING_KEY,JSON.stringify(next))
+localStorage.setItem(METRIC_MAPPING_KEY,JSON.stringify(next))
+localStorage.setItem(METRIC_MAPPING_KEY,JSON.stringify(next))
+localStorage.setItem(METRIC_MAPPING_KEY,JSON.stringify(next))
+localStorage.setItem(METRIC_MAPPING_KEY,JSON.stringify(next))
+localStorage.setItem(ORDER_KEY, JSON.stringify(order))
+localStorage.setItem(ROUTINE_KEY,JSON.stringify(next))}
+localStorage.setItem(STORAGE_KEY,JSON.stringify(entries));window.dispatchEvent(new CustomEvent('fitlife:gratitude-changed',{detail:entries}))}
+localStorage.setItem(WORKOUT_KEY,JSON.stringify(next));setDetail(null)}
+localStorage.setItem(WORKOUT_KEY,JSON.stringify(next));setPlayer(null);setDetail(record)}
+localStorage.setItem(`${DRAFT_PREFIX}${tab}-${dateKey(currentDate)}`, JSON.stringify(value))
+localStorage.setItem(`fitlife-cloud-migrated:${user.id}`,'true')
+localStorage.setItem(`fitlife-cloud-migrated:${user.id}`,'true')
+localStorage.setItem(`fitlife-quick-log-${key}-${day}`,JSON.stringify(value))});window.dispatchEvent(new CustomEvent('fitlife:quick-log-saved',{detail:{date:day,draft}}));dirty.saved({});setDraft({});setOpen(false)}if(!open)return null;return <div className="fl-quick-layer"><button className="fl-quick-backdrop" onClick={close}/><aside className="fl-quick-drawer"><header><div><small>QUICK LOG</small><h2>Log Day</h2></div><button onClick={close}><X/></button></header><div className="fl-quick-date"><button onClick={()=>setDate(new Date(date.getTime()-86400000))}><ChevronLeft/></button><time>{date.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</time><button disabled={dateKey(date)>=dateKey(new Date())} onClick={()=>setDate(new Date(date.getTime()+86400000))}><ChevronRight/></button></div><nav>{tabs.map(([id,label,Icon])=><button className={tab===id?'active':''} onClick={()=>guard?.confirmDiscard(()=>setTab(id),`${tabs.find(x=>x[0]===tab)?.[1]} tab`)} key={id}><Icon/><span>{label}</span></button>)}</nav><main><TabContent tab={tab} date={date} draft={draft[tab]||{}} setDraft={value=>setDraft(current=>({...current,[tab]:value}))}/></main><footer><button onClick={close}>Cancel</button><button className="save" onClick={save}>Save</button></footer></aside></div>}
+localStorage.setItem(`fitlife-trend-period-${index}`, period) }
+localStorage.setItem(`fitlife-trend-period-${index}`,period);card.dispatchEvent(new CustomEvent('fitlife:trend-period',{detail:{period},bubbles:true}))};toggle.appendChild(button)});card.querySelector('header')?.appendChild(toggle)})}
+localStorage.setItem(`fitlife-trend-period-${matrix.id}`,next)}
+localStorage.setItem(`fitlife-trend-period-${matrix.id}`,next)}
+localStorage.setItem(`fitlife-trend-period-${matrix.id}`,next)}
+localStorage.setItem(`fitlife-trend-period-${matrix.id}`,next)}
+localStorage.setItem(`fitlife-trend-period-${matrix}`,period);toggle.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===button));render()})
+localStorage.setItem(deviceLayoutKey(mode),JSON.stringify(layout));window.dispatchEvent(new CustomEvent('fitlife:dashboard-layout-changed',{detail:{mode,layout}}))}
+localStorage.setItem(duplicateKey, path)
+localStorage.setItem(k,'[]'));['fitlife-snapshot-order','fitlife-snapshot-visible','fitlife-snapshot-glance'].forEach(k=>localStorage.removeItem(k));location.reload()}return <div className="su-layer"><button className="su-backdrop" onClick={onClose}/><aside className="su-settings"><button onClick={onClose}><X/></button><small>SNAPSHOT SETTINGS</small><h2>Choose what appears</h2>{Object.entries(WIDGET_NAMES).map(([id,name])=><label key={id}><span>{visible[id]?<Eye/>:<EyeOff/>}{name}</span><input type="checkbox" checked={visible[id]} onChange={e=>setVisible({...visible,[id]:e.target.checked})}/></label>)}<section><h3>Blank profile</h3><p>Deletes local demonstration records and resets Snapshot preferences.</p><button onClick={clear}>Delete all dummy data</button></section></aside></div>}
+localStorage.setItem(k,'[]'));['fitlife-snapshot-order','fitlife-snapshot-visible','fitlife-snapshot-glance'].forEach(k=>localStorage.removeItem(k));location.reload()}return <div className="su-layer"><button className="su-backdrop" onClick={onClose}/><aside className="su-settings"><button onClick={onClose}><X/></button><small>SNAPSHOT SETTINGS</small><h2>Choose what appears</h2>{Object.entries(WIDGET_NAMES).map(([id,name])=><label key={id}><span>{visible[id]?<Eye/>:<EyeOff/>}{name}</span><input type="checkbox" checked={visible[id]} onChange={e=>setVisible({...visible,[id]:e.target.checked})}/></label>)}<section><h3>Blank profile</h3><p>Deletes local demonstration records and resets Snapshot preferences.</p><button onClick={clear}>Delete all dummy data</button></section></aside></div>}
+localStorage.setItem(k,'[]'));['fitlife-snapshot-order','fitlife-snapshot-visible','fitlife-snapshot-glance'].forEach(k=>localStorage.removeItem(k));location.reload()}return <div className="su-layer"><button className="su-backdrop" onClick={onClose}/><aside className="su-settings"><button onClick={onClose}><X/></button><small>SNAPSHOT SETTINGS</small><h2>Choose what appears</h2>{Object.entries(WIDGET_NAMES).map(([id,name])=><label key={id}><span>{visible[id]?<Eye/>:<EyeOff/>}{name}</span><input type="checkbox" checked={visible[id]} onChange={e=>setVisible({...visible,[id]:e.target.checked})}/></label>)}<section><h3>Blank profile</h3><p>Deletes local demonstration records and resets Snapshot preferences.</p><button onClick={clear}>Delete all dummy data</button></section></aside></div>}
+localStorage.setItem(k,'[]'));['fitlife-snapshot-order','fitlife-snapshot-visible','fitlife-snapshot-glance'].forEach(k=>localStorage.removeItem(k));location.reload()}return <div className="su-layer"><button className="su-backdrop" onClick={onClose}/><aside className="su-settings"><button onClick={onClose}><X/></button><small>SNAPSHOT SETTINGS</small><h2>Choose what appears</h2>{Object.entries(WIDGET_NAMES).map(([id,name])=><label key={id}><span>{visible[id]?<Eye/>:<EyeOff/>}{name}</span><input type="checkbox" checked={visible[id]} onChange={e=>setVisible({...visible,[id]:e.target.checked})}/></label>)}<section><h3>Blank profile</h3><p>Deletes local demonstration records and resets Snapshot preferences.</p><button onClick={clear}>Delete all dummy data</button></section></aside></div>}
+localStorage.setItem(key, JSON.stringify(remaining))
+localStorage.setItem(key, JSON.stringify(remaining))
+localStorage.setItem(key, JSON.stringify(remaining))
+localStorage.setItem(key, JSON.stringify(rows.filter(row => String(row.metric_id || row.source_id) !== metricId)))
+localStorage.setItem(key, JSON.stringify(rows.filter(row => String(row.metric_id || row.source_id) !== metricId)))
+localStorage.setItem(key, JSON.stringify(rows.filter(row => String(row.metric_id || row.source_id) !== metricId)))
+localStorage.setItem(key,'[]')
+localStorage.setItem(key,JSON.stringify(merged))
+localStorage.setItem(key,JSON.stringify(merged))
+localStorage.setItem(key,JSON.stringify(next))
+localStorage.setItem(key,JSON.stringify(next))
+localStorage.setItem(key,JSON.stringify(next))
+localStorage.setItem(key,JSON.stringify(next))
+localStorage.setItem(key,JSON.stringify(next));history(item);window.dispatchEvent(new CustomEvent('fitlife:fasting-changed',{detail:next}));return item}
+localStorage.setItem(key,JSON.stringify(next));history(item);window.dispatchEvent(new CustomEvent('fitlife:fasting-changed',{detail:next}));return item}
+localStorage.setItem(key,JSON.stringify(next));history(row,true);window.dispatchEvent(new CustomEvent('fitlife:fasting-changed',{detail:next}));return next}
+localStorage.setItem(key,JSON.stringify(value));window.dispatchEvent(new CustomEvent(event,{detail:value}))}
+localStorage.setItem(storageKey, JSON.stringify(next))
+fitlife-
+fitlife-accent
+fitlife-active-workout
+fitlife-active-workout-v2
+fitlife-active-workout-v3
+fitlife-analytics-history
+fitlife-avatar
+fitlife-bivariate-history
+fitlife-classic
+fitlife-cloud-migrated
+fitlife-current-workout
+fitlife-custom-exercises
+fitlife-custom-exercises-v3
+fitlife-dashboard-layout-
+fitlife-device-id
+fitlife-dirty
+fitlife-draft-
+fitlife-exercises
+fitlife-exercises-v2
+fitlife-exercises-v3
+fitlife-fasting-deleted-ids
+fitlife-fasting-local-readings
+fitlife-fasting-metric-mapping
+fitlife-fasting-nutrition
+fitlife-fasting-sessions
+fitlife-fasting-sessions-v4
+fitlife-glance-max
+fitlife-glance-selected
+fitlife-grateful-entries
+fitlife-gratitude-entries
+fitlife-habit-logs
+fitlife-habits
+fitlife-health-cards
+fitlife-health-defs
+fitlife-health-defs-v2
+fitlife-health-metrics
+fitlife-health-metrics-changed
+fitlife-health-metrics-readings
+fitlife-health-prefill
+fitlife-health-readings
+fitlife-health-readings-v2
+fitlife-insight
+fitlife-live-workout
+fitlife-log-history
+fitlife-media
+fitlife-media-fingerprint-
+fitlife-mode
+fitlife-my-life-events
+fitlife-nutrition-daily
+fitlife-open-health-metric
+fitlife-photo
+fitlife-photo-quality
+fitlife-profile
+fitlife-quick-log-
+fitlife-routine-exercises
+fitlife-routines
+fitlife-routines-v2
+fitlife-routines-v3
+fitlife-settings
+fitlife-snapshot-glance
+fitlife-snapshot-order
+fitlife-snapshot-visible
+fitlife-sports
+fitlife-sports-entries
+fitlife-state-
+fitlife-trend-period-
+fitlife-workout-draft
+fitlife-workout-history
+fitlife-workout-history-v2
+fitlife-workout-history-v3
+fitlife-workout-session

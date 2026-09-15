@@ -1,0 +1,13 @@
+begin;
+alter table public.fitlife_profiles add column if not exists locale_auto boolean not null default true;
+alter table public.fitlife_profiles add column if not exists allergies_enabled boolean not null default false;
+alter table public.fitlife_profiles add column if not exists allergy_items text[] not null default '{}';
+alter table public.fitlife_profiles add column if not exists theme_id text not null default 'forest';
+alter table public.fitlife_profiles add column if not exists theme_preferences jsonb not null default '{"cardStyle":"elevated","cornerRadius":"rounded","reducedMotion":false}'::jsonb;
+alter table public.fitlife_profiles add column if not exists calorie_target numeric;
+alter table public.fitlife_profiles add column if not exists protein_target_g numeric;
+alter table public.fitlife_profiles add column if not exists carbohydrate_target_g numeric;
+alter table public.fitlife_profiles add column if not exists fat_target_g numeric;
+alter table public.fitlife_profiles add column if not exists fibre_target_g numeric;
+alter table public.fitlife_profiles add column if not exists water_target_ml numeric;
+commit;

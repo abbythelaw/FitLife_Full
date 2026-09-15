@@ -1,0 +1,1 @@
+.habit-calendar-grid button.future{opacity:.24;cursor:not-allowed;filter:grayscale(1);pointer-events:none}.habit-calendar-grid button.future:hover{outline:none;box-shadow:none}.habit-calendar-grid button:not(.future):hover{outline:1px solid var(--primary);outline-offset:-2px}

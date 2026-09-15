@@ -1,0 +1,210 @@
+/* Contextual metric status */
+
+.metric-card .metric-context-status {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 8px 12px !important;
+  margin: 10px 0 7px !important;
+}
+
+.metric-card .metric-comparison-context {
+  color: #9fb5aa !important;
+  font-size: 9px !important;
+  line-height: 1.35 !important;
+  text-align: right !important;
+}
+
+/* Remove the redundant rotated chart title. */
+
+.metric-card .axis-label,
+.metric-card .y-axis-label,
+.metric-card text.axis-title {
+  display: none !important;
+}
+
+/* Give numeric Y-axis ticks additional breathing room. */
+
+.metric-card .metric-chart,
+.metric-card .chart-wrap {
+  overflow: visible !important;
+}
+
+/* LAST 30 DAYS remains outside the rectangle. */
+
+.health-card-history-section {
+  display: grid;
+  gap: 8px;
+  margin-top: 9px;
+}
+
+.health-card-history-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--metric-color);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.health-card-history-label span:last-child {
+  color: var(--muted);
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* Larger outlined rectangle for the 30 small boxes. */
+
+.health-card-history-compact {
+  display: grid;
+  gap: 13px;
+  min-height: 94px;
+  padding: 17px 16px 13px;
+  overflow: hidden;
+  border: 2px solid
+    color-mix(
+      in srgb,
+      var(--metric-color) 46%,
+      #29483c
+    );
+  border-radius: 14px;
+  background:
+    linear-gradient(
+      145deg,
+      color-mix(
+        in srgb,
+        var(--metric-color) 9%,
+        #0a1713
+      ),
+      #09150f 68%
+    );
+  box-shadow:
+    inset 0 1px 0
+      color-mix(
+        in srgb,
+        var(--metric-color) 16%,
+        transparent
+      ),
+    0 8px 24px rgba(0, 0, 0, 0.16);
+}
+
+.health-card-history-cells {
+  display: grid;
+  grid-template-columns:
+    repeat(30, minmax(5px, 1fr));
+  gap: 3px;
+  align-items: center;
+  min-width: 0;
+}
+
+.health-card-history-cell {
+  width: 100%;
+  min-width: 5px;
+  height: 15px;
+  border-radius: 3px;
+  background: #414845;
+  box-shadow: inset 0 0 0 1px #59615d;
+}
+
+.health-card-history-cell.partial,
+.health-card-history-cell.below-range {
+  background:
+    linear-gradient(
+      135deg,
+      var(--metric-color) 0 48%,
+      #414845 48% 100%
+    );
+}
+
+.health-card-history-cell.met,
+.health-card-history-cell.in-range,
+.health-card-history-cell.reached {
+  background: var(--metric-color);
+  box-shadow:
+    0 0 6px
+      color-mix(
+        in srgb,
+        var(--metric-color) 30%,
+        transparent
+      );
+}
+
+.health-card-history-cell.above-range {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      color-mix(
+        in srgb,
+        var(--metric-color) 84%,
+        #111
+      ) 0 3px,
+      color-mix(
+        in srgb,
+        var(--metric-color) 30%,
+        #303935
+      ) 3px 6px
+    );
+}
+
+.health-card-history-range {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 10px;
+  color: #91a79c;
+  font-size: 8px;
+}
+
+.health-card-history-range::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      color-mix(
+        in srgb,
+        var(--metric-color) 30%,
+        #29483c
+      ),
+      transparent
+    );
+}
+
+.health-card-history-range time {
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  .metric-card .metric-context-status {
+    grid-template-columns: 1fr !important;
+  }
+
+  .metric-card .metric-comparison-context {
+    text-align: left !important;
+  }
+
+  .health-card-history-compact {
+    overflow-x: auto;
+  }
+
+  .health-card-history-cells {
+    grid-template-columns: repeat(30, 9px);
+    min-width: max-content;
+  }
+
+  .health-card-history-range {
+    min-width: 344px;
+  }
+}

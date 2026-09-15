@@ -1,0 +1,596 @@
+/* FitLife Peek Navigation Rail */
+:root {
+  --fl-peek-width: 64px;
+  --fl-peek-mobile-width: 54px;
+  --fl-peek-expanded-width: 232px;
+  --fl-peek-speed: 220ms cubic-bezier(.2,.8,.2,1);
+  --fl-peek-surface: rgba(3,15,22,.985);
+  --fl-peek-border: rgba(148,163,184,.16);
+  --fl-peek-shadow: 14px 0 36px rgba(0,0,0,.38);
+}
+
+.app {
+  position: relative !important;
+  display: block !important;
+  min-height: 100dvh !important;
+  padding-left: var(--fl-peek-width) !important;
+  overflow-x: clip !important;
+  transition: padding-left var(--fl-peek-speed) !important;
+}
+
+.app > aside {
+  position: fixed !important;
+  z-index: 1200 !important;
+  inset: 0 auto 0 0 !important;
+  width: var(--fl-peek-width) !important;
+  min-width: var(--fl-peek-width) !important;
+  max-width: var(--fl-peek-expanded-width) !important;
+  height: 100dvh !important;
+  padding: 0 !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+  border-right: 1px solid var(--fl-peek-border) !important;
+  background: var(--fl-peek-surface) !important;
+  box-shadow: none !important;
+  scrollbar-width: none !important;
+  transition: width var(--fl-peek-speed), min-width var(--fl-peek-speed), box-shadow var(--fl-peek-speed) !important;
+}
+
+.app > aside::-webkit-scrollbar { display: none !important; }
+
+.app > aside:hover,
+.app > aside:focus-within,
+.app > aside.open,
+.app > aside[data-peek-open="true"] {
+  width: var(--fl-peek-expanded-width) !important;
+  min-width: var(--fl-peek-expanded-width) !important;
+  box-shadow: var(--fl-peek-shadow) !important;
+}
+
+.app > aside .brand {
+  display: flex !important;
+  align-items: center !important;
+  gap: 13px !important;
+  width: var(--fl-peek-expanded-width) !important;
+  min-width: var(--fl-peek-expanded-width) !important;
+  min-height: 68px !important;
+  padding: 12px 18px !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  color: var(--primary) !important;
+  font-size: 20px !important;
+  font-weight: 900 !important;
+  cursor: pointer !important;
+}
+
+.app > aside .brand svg {
+  flex: 0 0 auto !important;
+  width: 27px !important;
+  height: 27px !important;
+}
+
+.app > aside:not(:hover):not(:focus-within):not(.open):not([data-peek-open="true"]) .brand {
+  width: var(--fl-peek-width) !important;
+  min-width: var(--fl-peek-width) !important;
+  font-size: 0 !important;
+}
+
+.app > aside nav,
+.app > aside .nav,
+.app > aside .sidebar-nav {
+  display: grid !important;
+  gap: 5px !important;
+  width: var(--fl-peek-expanded-width) !important;
+  min-width: var(--fl-peek-expanded-width) !important;
+  padding: 8px 9px 20px !important;
+}
+
+.app > aside :is(nav,.nav,.sidebar-nav) > :is(button,a),
+.app > aside > button:not(.nav-peek-backdrop) {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 13px !important;
+  width: calc(var(--fl-peek-expanded-width) - 18px) !important;
+  min-height: 48px !important;
+  padding: 2px 12px !important;
+  overflow: hidden !important;
+  border: 1px solid transparent !important;
+  border-radius: 13px !important;
+  background: transparent !important;
+  color: var(--muted) !important;
+  font-size: 13px !important;
+  font-weight: 760 !important;
+  text-align: left !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  touch-action: manipulation !important;
+  transition: color 160ms ease, background 160ms ease, border-color 160ms ease !important;
+}
+
+.app > aside :is(nav,.nav,.sidebar-nav) > :is(button,a) svg,
+.app > aside > button:not(.nav-peek-backdrop) svg {
+  flex: 0 0 38px !important;
+  width: 21px !important;
+  min-width: 21px !important;
+  height: 21px !important;
+  margin-inline: 0 !important;
+}
+
+.app > aside :is(nav,.nav,.sidebar-nav) > :is(button,a) .fl-nav-label,
+.app > aside > button:not(.nav-peek-backdrop) .fl-nav-label {
+  display: block !important;
+  overflow: hidden !important;
+  opacity: 1 !important;
+  font: inherit !important;
+  text-overflow: ellipsis !important;
+  transition: opacity 130ms ease, translate var(--fl-peek-speed) !important;
+}
+
+.app > aside:not(:hover):not(:focus-within):not(.open):not([data-peek-open="true"])
+  :is(nav,.nav,.sidebar-nav) > :is(button,a),
+.app > aside:not(:hover):not(:focus-within):not(.open):not([data-peek-open="true"])
+  > button:not(.nav-peek-backdrop) {
+  width: 46px !important;
+  min-width: 46px !important;
+  padding: 2px 3px !important;
+  justify-content: center !important;
+  font-size: 0 !important;
+}
+
+.app > aside:not(:hover):not(:focus-within):not(.open):not([data-peek-open="true"])
+  .fl-nav-label {
+  width: 0 !important;
+  opacity: 0 !important;
+  translate: -7px 0 !important;
+  pointer-events: none !important;
+}
+
+.app > aside :is(nav,.nav,.sidebar-nav) > :is(button,a):hover,
+.app > aside > button:not(.nav-peek-backdrop):hover {
+  border-color: rgba(148,163,184,.15) !important;
+  background: rgba(148,163,184,.08) !important;
+  color: var(--text) !important;
+}
+
+.app > aside :is(nav,.nav,.sidebar-nav) > :is(button,a).active,
+.app > aside :is(nav,.nav,.sidebar-nav) > :is(button,a)[aria-current="page"],
+.app > aside > button.active {
+  border-color: color-mix(in srgb,var(--primary) 34%,transparent) !important;
+  background: linear-gradient(135deg,color-mix(in srgb,var(--primary) 20%,transparent),color-mix(in srgb,var(--primary) 7%,transparent)) !important;
+  color: var(--primary) !important;
+  box-shadow: inset 3px 0 0 var(--primary),0 0 18px color-mix(in srgb,var(--primary) 10%,transparent) !important;
+}
+
+.app > :is(main,.main,.content,.app-content) {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+  overflow-x: clip !important;
+}
+
+.fl-peek-backdrop {
+  position: fixed !important;
+  z-index: 1190 !important;
+  inset: 0 !important;
+  display: none !important;
+  border: 0 !important;
+  background: rgba(0,0,0,.52) !important;
+  backdrop-filter: blur(2px) !important;
+}
+
+body.fl-peek-open .fl-peek-backdrop { display: block !important; }
+
+.fl-nav-tooltip {
+  position: fixed !important;
+  z-index: 1400 !important;
+  left: calc(var(--fl-peek-width) + 8px) !important;
+  display: none !important;
+  max-width: 190px !important;
+  padding: 8px 10px !important;
+  border: 1px solid var(--fl-peek-border) !important;
+  border-radius: 9px !important;
+  background: #07131a !important;
+  color: var(--text) !important;
+  box-shadow: 0 9px 24px rgba(0,0,0,.35) !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  pointer-events: none !important;
+  white-space: nowrap !important;
+}
+
+@media (hover:none), (pointer:coarse) {
+  .app > aside:hover,
+  .app > aside:focus-within {
+    width: var(--fl-peek-width) !important;
+    min-width: var(--fl-peek-width) !important;
+    box-shadow: none !important;
+  }
+
+  .app > aside.open,
+  .app > aside[data-peek-open="true"] {
+    width: var(--fl-peek-expanded-width) !important;
+    min-width: var(--fl-peek-expanded-width) !important;
+    box-shadow: var(--fl-peek-shadow) !important;
+  }
+}
+
+@media (max-width:700px) {
+  :root {
+    --fl-peek-width: var(--fl-peek-mobile-width);
+    --fl-peek-expanded-width: min(82vw,280px);
+  }
+
+  .app { padding-left: var(--fl-peek-mobile-width) !important; }
+  .app > aside { width: var(--fl-peek-mobile-width) !important; min-width: var(--fl-peek-mobile-width) !important; }
+  .app > aside .brand { min-height: 58px !important; padding-inline: 15px !important; }
+  .app > aside .brand svg { width: 24px !important; height: 24px !important; }
+  .app > aside nav,.app > aside .nav,.app > aside .sidebar-nav { padding-inline: 5px !important; }
+  .app > aside :is(nav,.nav,.sidebar-nav) > :is(button,a) { min-height: 47px !important; border-radius: 11px !important; }
+}
+
+@media (max-width:390px) {
+  :root { --fl-peek-mobile-width: 52px; }
+  .app { padding-left: 52px !important; }
+  .app > aside { width: 52px !important; min-width: 52px !important; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .app,.app > aside,.app > aside * { transition-duration: 0ms !important; animation-duration: 0ms !important; }
+}
+
+
+/* ==========================================================
+   PEEK RAIL CLEAN ICON VISIBILITY FIX
+   ========================================================== */
+
+.app > aside {
+  background: #071018 !important;
+}
+
+/* Keep the collapsed navigation centred in one narrow column. */
+.app > aside:not(:hover):not(:focus-within):not(.open):not(
+  [data-peek-open="true"]
+) :is(nav, .nav, .sidebar-nav) {
+  width: var(--fl-peek-width) !important;
+  min-width: var(--fl-peek-width) !important;
+  padding-inline: 5px !important;
+}
+
+/* Centre every collapsed navigation item. */
+.app > aside:not(:hover):not(:focus-within):not(.open):not(
+  [data-peek-open="true"]
+) :is(nav, .nav, .sidebar-nav) > :is(button, a) {
+  width: 46px !important;
+  min-width: 46px !important;
+  max-width: 46px !important;
+  padding: 0 !important;
+  margin: 0 auto !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  overflow: hidden !important;
+  background: transparent !important;
+}
+
+/* Make collapsed icons bright and clearly visible. */
+.app > aside:not(:hover):not(:focus-within):not(.open):not(
+  [data-peek-open="true"]
+) :is(nav, .nav, .sidebar-nav) > :is(button, a) svg {
+  flex: 0 0 auto !important;
+
+  width: 34px !important;
+  min-width: 34px !important;
+  height: 34px !important;
+
+  margin: 0 !important;
+  padding: 7px !important;
+
+  border: 1px solid rgba(255, 255, 255, .11) !important;
+  border-radius: 11px !important;
+
+  background: rgba(255, 255, 255, .10) !important;
+  color: #f1f5f9 !important;
+  opacity: 1 !important;
+
+  box-shadow:
+    0 2px 7px rgba(0, 0, 0, .30),
+    inset 0 0 0 1px rgba(255, 255, 255, .03) !important;
+
+  transform: none !important;
+}
+
+/* Brighten inactive icons while the rail is expanded too. */
+.app > aside :is(nav, .nav, .sidebar-nav) > :is(button, a) {
+  color: #dbe5ec !important;
+}
+
+.app > aside :is(nav, .nav, .sidebar-nav) > :is(button, a) svg {
+  color: #e8eef3 !important;
+  opacity: 1 !important;
+}
+
+/* Hovered icon. */
+.app > aside
+  :is(nav, .nav, .sidebar-nav)
+  > :is(button, a):hover svg {
+  border-color: rgba(255, 255, 255, .20) !important;
+  background: rgba(255, 255, 255, .16) !important;
+  color: #ffffff !important;
+}
+
+/* Selected module icon. */
+.app > aside
+  :is(nav, .nav, .sidebar-nav)
+  > :is(button, a).active svg,
+.app > aside
+  :is(nav, .nav, .sidebar-nav)
+  > :is(button, a)[aria-current="page"] svg {
+  border-color: rgba(134, 239, 172, .55) !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      #4ade80,
+      #22c55e
+    ) !important;
+
+  color: #04120a !important;
+
+  box-shadow:
+    0 0 11px rgba(34, 197, 94, .34),
+    inset 0 0 0 1px rgba(255, 255, 255, .18) !important;
+}
+
+/* Keep the FitLife leaf centred inside the same rail. */
+.app > aside:not(:hover):not(:focus-within):not(.open):not(
+  [data-peek-open="true"]
+) .brand {
+  width: var(--fl-peek-width) !important;
+  min-width: var(--fl-peek-width) !important;
+  padding: 0 !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  font-size: 0 !important;
+}
+
+.app > aside:not(:hover):not(:focus-within):not(.open):not(
+  [data-peek-open="true"]
+) .brand svg {
+  flex: 0 0 auto !important;
+  width: 31px !important;
+  height: 31px !important;
+  margin: 0 !important;
+  color: var(--primary) !important;
+}
+
+/* Prevent old sidebar rules from leaving a second empty gutter. */
+.app {
+  grid-template-columns: none !important;
+  padding-left: var(--fl-peek-width) !important;
+}
+
+.app > main {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  overflow-x: clip !important;
+}
+
+@media (max-width: 700px) {
+  .app {
+    padding-left: var(--fl-peek-mobile-width) !important;
+  }
+
+  .app > aside:not(:hover):not(:focus-within):not(.open):not(
+    [data-peek-open="true"]
+  ) :is(nav, .nav, .sidebar-nav) {
+    width: var(--fl-peek-mobile-width) !important;
+    min-width: var(--fl-peek-mobile-width) !important;
+    padding-inline: 4px !important;
+  }
+
+  .app > aside:not(:hover):not(:focus-within):not(.open):not(
+    [data-peek-open="true"]
+  ) :is(nav, .nav, .sidebar-nav) > :is(button, a) {
+    width: 44px !important;
+    min-width: 44px !important;
+    max-width: 44px !important;
+  }
+
+  .app > aside:not(:hover):not(:focus-within):not(.open):not(
+    [data-peek-open="true"]
+  ) :is(nav, .nav, .sidebar-nav) > :is(button, a) svg {
+    width: 33px !important;
+    min-width: 33px !important;
+    height: 33px !important;
+    padding: 7px !important;
+
+    background: rgba(255, 255, 255, .13) !important;
+    color: #ffffff !important;
+  }
+}
+
+
+/* FitLife Peek Rail Profile Avatar Fix */
+.fl-original-profile-source {
+  display: none !important;
+}
+
+.fl-rail-profile {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  width: calc(var(--fl-peek-expanded-width) - 18px) !important;
+  min-height: 58px !important;
+  margin: 2px 9px 10px !important;
+  padding: 8px !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(112,226,54,.22) !important;
+  border-radius: 15px !important;
+  background: rgba(10,27,23,.82) !important;
+  color: var(--text) !important;
+  text-align: left !important;
+  cursor: pointer !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.018) !important;
+  transition:
+    width var(--fl-peek-speed),
+    margin var(--fl-peek-speed),
+    padding var(--fl-peek-speed),
+    background 160ms ease,
+    border-color 160ms ease !important;
+}
+
+.fl-rail-profile:hover {
+  border-color: rgba(112,226,54,.45) !important;
+  background: rgba(16,45,33,.94) !important;
+}
+
+.fl-rail-avatar {
+  flex: 0 0 40px !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 40px !important;
+  height: 40px !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(255,255,255,.16) !important;
+  border-radius: 12px !important;
+  background:
+    linear-gradient(
+      135deg,
+      #4ade80,
+      #22c55e
+    ) !important;
+  color: #04120a !important;
+  font-size: 13px !important;
+  font-weight: 950 !important;
+  letter-spacing: -.02em !important;
+  box-shadow:
+    0 3px 10px rgba(0,0,0,.34),
+    0 0 13px rgba(34,197,94,.13) !important;
+}
+
+.fl-rail-avatar-image {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+.fl-rail-profile-details {
+  display: grid !important;
+  min-width: 0 !important;
+  opacity: 1 !important;
+  white-space: nowrap !important;
+  transition:
+    opacity 130ms ease,
+    translate var(--fl-peek-speed) !important;
+}
+
+.fl-rail-profile-details b {
+  overflow: hidden !important;
+  color: var(--text) !important;
+  font-size: 12px !important;
+  text-overflow: ellipsis !important;
+}
+
+.fl-rail-profile-details small {
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  margin-top: 3px !important;
+  color: var(--muted) !important;
+  font-size: 9px !important;
+}
+
+.fl-rail-profile-details small i {
+  width: 7px !important;
+  height: 7px !important;
+  border-radius: 50% !important;
+  background: #4ade80 !important;
+  box-shadow: 0 0 7px rgba(74,222,128,.6) !important;
+}
+
+/* Collapsed state: avatar-only profile box. */
+.app > aside:not(:hover):not(:focus-within):not(.open):not(
+  [data-peek-open="true"]
+) .fl-rail-profile {
+  width: 46px !important;
+  min-width: 46px !important;
+  max-width: 46px !important;
+  min-height: 50px !important;
+  margin: 2px auto 10px !important;
+  padding: 4px !important;
+  justify-content: center !important;
+  border-radius: 13px !important;
+}
+
+.app > aside:not(:hover):not(:focus-within):not(.open):not(
+  [data-peek-open="true"]
+) .fl-rail-avatar {
+  flex-basis: 38px !important;
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 11px !important;
+}
+
+.app > aside:not(:hover):not(:focus-within):not(.open):not(
+  [data-peek-open="true"]
+) .fl-rail-profile-details {
+  width: 0 !important;
+  opacity: 0 !important;
+  translate: -7px 0 !important;
+  pointer-events: none !important;
+}
+
+/* Ensure brand, avatar and navigation share one rail column. */
+.app > aside:not(:hover):not(:focus-within):not(.open):not(
+  [data-peek-open="true"]
+) .fl-rail-profile,
+.app > aside:not(:hover):not(:focus-within):not(.open):not(
+  [data-peek-open="true"]
+) .brand,
+.app > aside:not(:hover):not(:focus-within):not(.open):not(
+  [data-peek-open="true"]
+) :is(nav,.nav,.sidebar-nav) {
+  margin-inline: auto !important;
+}
+
+@media (max-width:700px) {
+  .fl-rail-profile {
+    min-height: 54px !important;
+  }
+
+  .app > aside:not(:hover):not(:focus-within):not(.open):not(
+    [data-peek-open="true"]
+  ) .fl-rail-profile {
+    width: 44px !important;
+    min-width: 44px !important;
+    max-width: 44px !important;
+    min-height: 48px !important;
+  }
+
+  .app > aside:not(:hover):not(:focus-within):not(.open):not(
+    [data-peek-open="true"]
+  ) .fl-rail-avatar {
+    flex-basis: 36px !important;
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 12px !important;
+  }
+}
+
+
+/* Final Bundle Visible Peek Rail */
+.app>aside{background:#06111a!important}.app>aside :is(nav,.nav,.sidebar-nav)>:is(button,a) svg{width:34px!important;min-width:34px!important;height:34px!important;padding:7px!important;border:1px solid rgba(255,255,255,.16)!important;border-radius:11px!important;background:#182630!important;color:#f8fafc!important;opacity:1!important}.app>aside :is(nav,.nav,.sidebar-nav)>:is(button,a).active svg,.app>aside :is(nav,.nav,.sidebar-nav)>:is(button,a)[aria-current="page"] svg{background:linear-gradient(135deg,#4ade80,#22c55e)!important;color:#04120a!important;box-shadow:0 0 12px rgba(34,197,94,.4)!important}.app>aside:not(:hover):not(:focus-within):not(.open):not([data-peek-open="true"]) :is(nav,.nav,.sidebar-nav){width:var(--fl-peek-width)!important;min-width:var(--fl-peek-width)!important;padding-inline:5px!important}.app>aside:not(:hover):not(:focus-within):not(.open):not([data-peek-open="true"]) :is(nav,.nav,.sidebar-nav)>:is(button,a){width:46px!important;min-width:46px!important;max-width:46px!important;padding:0!important;margin:0 auto!important;justify-content:center!important}.app{grid-template-columns:none!important;padding-left:var(--fl-peek-width)!important}

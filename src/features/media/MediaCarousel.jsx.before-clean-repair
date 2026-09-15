@@ -1,0 +1,131 @@
+import {
+  ChevronLeft,
+  ChevronRight,
+  Image as ImageIcon
+} from 'lucide-react'
+import {useEffect, useMemo, useState} from 'react'
+import {isDisplayablePhotoSource} from './imagePersistence'
+
+const sourceFor = photo =>
+  photo?.signed_url ||
+  photo?.url ||
+  photo?.data_url ||
+  photo?.preview
+
+export default function MediaCarousel({
+  photos = [],
+  fallbackClass = 'media-fallback',
+  positionX = 50,
+  positionY = 50,
+  featuredIndex = 0
+}) {
+  const valid = useMemo(
+    () =>
+      photos.filter(photo =>
+        isDisplayablePhotoSource(sourceFor(photo))
+      ),
+    [photos]
+  )
+
+  const safeFeatured = Math.min(
+    Math.max(0, Number(featuredIndex || 0)),
+    Math.max(0, valid.length - 1)
+  )
+
+  const [index, setIndex] = useState(safeFeatured)
+
+  useEffect(() => {
+    setIndex(safeFeatured)
+  }, [safeFeatured, valid.length])
+
+  const safeIndex = Math.min(
+    Math.max(0, index),
+    Math.max(0, valid.length - 1)
+  )
+
+  const photo = valid[safeIndex]
+  const source = sourceFor(photo)
+
+  if (!source) {
+    return (
+      <div className={`media-carousel ${fallbackClass}`}>
+        <ImageIcon size={34} />
+      </div>
+    )
+  }
+
+  const x = Number(photo?.position_x ?? positionX ?? 50)
+  const y = Number(photo?.position_y ?? positionY ?? 50)
+
+  return (
+    <div className={`media-carousel ${fallbackClass}`}>
+      <img
+        src={source}
+        alt=""
+        draggable="false"
+        style={{
+          width: '100%',
+          height: '100%',
+          display: 'block',
+          objectFit: 'cover',
+          objectPosition: `${x}% ${y}%`
+        }}
+        onError={event => {
+          console.error(
+            '[MediaCarousel] Photo failed to display:',
+            source
+          )
+
+                 type="button"
+            className="media-prev"
+            aria-label="Previous photograph"
+            onClick={event => {
+              event.stopPropagation()
+              setIndex(
+                (safeIndex - 1 + valid.length) %
+                valid.length
+              )
+            }}
+          >
+            <ChevronLeft />
+          </button>
+
+          <button
+            type="button"
+            className="media-next"
+            aria-label="Next photograph"
+            onClick={event => {
+              event.stopPropagation()
+              setIndex(
+                (safeIndex + 1) % valid.length
+              )
+            }}
+          >
+            <ChevronRight />
+          </button>
+
+          <span className="media-count">
+            {safeIndex + 1}/{valid.length}
+          </span>
+
+          <div className="media-dots">
+            {valid.map((item, photoIndex) => (
+              <i
+                key={
+                  item.id ||
+                  item.storage_path ||
+                  photoIndex
+                }
+                className={
+                  photoIndex === safeIndex
+                    ? 'active'
+                    : ''
+                }
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  )
+}

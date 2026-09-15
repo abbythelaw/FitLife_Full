@@ -1,0 +1,3 @@
+/* Reference theme from the approved Nutrition UI */
+.theme-fitlife-full{--bg:#071019;--card:#101a26;--card2:#172231;--line:#263647;--text:#f5f8fb;--muted:#8f9dac;--primary:#59db79;--accent:#54aaf5;--empty:#283442;--chart-1:#59db79;--chart-2:#54aaf5;--chart-3:#2ec4b6;--chart-4:#b767d8;--chart-5:#ffb138}
+.theme-fitlife-full.mode-light{--bg:#f3f7f5;--card:#ffffff;--card2:#edf3f0;--line:#ccdad3;--text:#142019;--muted:#64756c;--primary:#249c4a;--accent:#287fc8;--empty:#dce6e1}

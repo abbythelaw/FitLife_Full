@@ -1,0 +1,18 @@
+begin;
+alter table public.fitlife_nutrition_days add column if not exists saturated_fat_g numeric;
+alter table public.fitlife_nutrition_days add column if not exists monounsaturated_fat_g numeric;
+alter table public.fitlife_nutrition_days add column if not exists polyunsaturated_fat_g numeric;
+alter table public.fitlife_nutrition_days add column if not exists trans_fat_g numeric;
+alter table public.fitlife_nutrition_days add column if not exists cholesterol_mg numeric;
+alter table public.fitlife_nutrition_days add column if not exists potassium_mg numeric;
+alter table public.fitlife_nutrition_days add column if not exists calcium_mg numeric;
+alter table public.fitlife_nutrition_days add column if not exists iron_mg numeric;
+alter table public.fitlife_nutrition_days add column if not exists legacy_source_id text;
+create table if not exists public.fitlife_nutrition_meals(id uuid primary key default gen_random_uuid(),user_id uuid not null references auth.users(id) on delete cascade,nutrition_day_id uuid not null references public.fitlife_nutrition_days(id) on delete cascade,meal_type text not null,name text,sort_order integer not null default 0,created_at timestamptz not null default now(),updated_at timestamptz not null default now(),deleted_at timestamptz);
+create table if not exists public.fitlife_nutrition_entries(id uuid primary key default gen_random_uuid(),user_id uuid not null references auth.users(id) on delete cascade,meal_id uuid not null references public.fitlife_nutrition_meals(id) on delete cascade,food_name text not null,quantity numeric,serving_unit text,calories numeric,protein_g numeric,carbohydrates_g numeric,fat_g numeric,fibre_g numeric,sugar_g numeric,sodium_mg numeric,nutrient_snapshot jsonb not null default '{}'::jsonb,source_type text not null default 'manual',source_record_id text,sort_order integer not null default 0,created_at timestamptz not null default now(),updated_at timestamptz not null default now(),deleted_at timestamptz,unique(user_id,source_type,source_record_id));
+create index if not exists fitlife_nutrition_meals_day on public.fitlife_nutrition_meals(user_id,nutrition_day_id) where deleted_at is null;
+create index if not exists fitlife_nutrition_entries_meal on public.fitlife_nutrition_entries(user_id,meal_id) where deleted_at is null;
+alter table public.fitlife_nutrition_meals enable row level security;alter table public.fitlife_nutrition_entries enable row level security;
+drop policy if exists fitlife_nutrition_meals_owner on public.fitlife_nutrition_meals;create policy fitlife_nutrition_meals_owner on public.fitlife_nutrition_meals for all using(user_id=auth.uid()) with check(user_id=auth.uid());
+drop policy if exists fitlife_nutrition_entries_owner on public.fitlife_nutrition_entries;create policy fitlife_nutrition_entries_owner on public.fitlife_nutrition_entries for all using(user_id=auth.uid()) with check(user_id=auth.uid());
+notify pgrst,'reload schema';commit;

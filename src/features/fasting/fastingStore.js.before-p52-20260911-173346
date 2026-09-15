@@ -1,0 +1,77 @@
+const KEY='fitlife-fasting-sessions',LEGACY='fitlife-fasting-sessions-v4',HISTORY='fitlife-log-history'
+const parse=(raw,fallback=[])=>{try{return JSON.parse(raw)??fallback}catch{return fallback}}
+export function listFasts(){const map=new Map;for(const row of [...parse(localStorage.getItem(KEY),[]),...parse(localStorage.getItem(LEGACY),[])]){const id=String(row.id||row.client_session_id||row.started_at);if(!map.has(id)||String(row.updated_at||'')>String(map.get(id)?.updated_at||''))map.set(id,{...row,id})}return [...map.values()].sort((a,b)=>String(b.started_at).localeCompare(String(a.started_at)))}
+const duration=row=>Math.max(0,(new Date(row.ended_at||row.expected_end_at||Date.now())-new Date(row.started_at))/36e5)
+function history(row,remove=false){let rows=parse(localStorage.getItem(HISTORY),[]);const id=`fasting:${row.id}`;rows=rows.filter(x=>x.id!==id);if(!remove){const h=duration(row),done=row.status==='completed';rows.unshift({id,source_id:row.id,type:'Fasting',title:done?`${row.protocol||'Custom'} fast completed`:`${row.protocol||'Custom'} fast started`,date:String(row.started_at).slice(0,10),time:String(row.started_at).slice(11,16),displayDate:String(row.started_at).slice(0,10),summary:done?`${h.toFixed(1)}h · ${h>=Number(row.target_hours||0)?'Target met':'Ended early'}`:`Target ${Number(row.target_hours||0).toFixed(1)}h`,status:row.sync_status||'pending'})}localStorage.setItem(HISTORY,JSON.stringify(rows));window.dispatchEvent(new CustomEvent('fitlife:history-changed',{detail:rows}));window.dispatchEvent(new CustomEvent('fitlife:log-history-changed'))}
+export function saveFast(row){const id=row.id||row.client_session_id||crypto.randomUUID();const item={...row,id,client_session_id:row.client_session_id||id,updated_at:new Date().toISOString()};let next=[item,...listFasts().filter(x=>x.id!==id)];if(item.status==='active')next=next.map(x=>x.id!==id&&x.status==='active'?{...x,status:'completed',ended_at:x.ended_at||item.started_at}:x);for(const key of [KEY,LEGACY])localStorage.setItem(key,JSON.stringify(next));history(item);window.dispatchEvent(new CustomEvent('fitlife:fasting-changed',{detail:next}));return item}
+export function deleteFast(row){const next=listFasts().filter(x=>x.id!==row.id);for(const key of [KEY,LEGACY])localStorage.setItem(key,JSON.stringify(next));history(row,true);window.dispatchEvent(new CustomEvent('fitlife:fasting-changed',{detail:next}));return next}
+
+
+export function validateFastInterval(candidate, sessions = listFasts()) {
+  const now = Date.now()
+  const start = new Date(candidate.started_at).getTime()
+  const active = candidate.status === 'active'
+  const end = active
+    ? Number.POSITIVE_INFINITY
+    : new Date(candidate.ended_at).getTime()
+
+  if (!Number.isFinite(start)) {
+    return {valid:false,message:'Enter a valid start date and time.'}
+  }
+
+  if (start > now) {
+    return {valid:false,message:'The start date and time cannot be in the future.'}
+  }
+
+  if (!active) {
+    if (!Number.isFinite(end)) {
+      return {valid:false,message:'Enter a valid end date and time.'}
+    }
+    if (end > now) {
+      return {valid:false,message:'A previous fast cannot end in the future.'}
+    }
+    if (end < start) {
+      return {valid:false,message:'The end must be equal to or later than the start.'}
+    }
+  }
+
+  const candidateId = String(candidate.id || candidate.client_session_id || candidate.started_at)
+  const candidateIds = new Set([
+    candidate.id,
+    candidate.client_session_id,
+    candidate.session_id
+  ].filter(Boolean).map(String))
+
+  const others = sessions.filter(row => {
+    const rowIds = [
+      row.id,
+      row.client_session_id,
+      row.session_id
+    ].filter(Boolean).map(String)
+
+    const isSameRecord = rowIds.some(id => candidateIds.has(id))
+    return !isSameRecord && !row.deleted_at
+  })
+
+  for (const row of others) {
+    const otherStart = new Date(row.started_at).getTime()
+    const otherEnd = row.status === 'active' || !row.ended_at
+      ? Number.POSITIVE_INFINITY
+      : new Date(row.ended_at).getTime()
+
+    if (start < otherEnd && end > otherStart) {
+      const label = `${row.protocol || 'Existing fast'} (${new Date(otherStart).toLocaleString()}${Number.isFinite(otherEnd)?` to ${new Date(otherEnd).toLocaleString()}`:' onward'})`
+      return {
+        valid:false,
+        conflict:row,
+        message:`Start time overlaps ${row.protocol || 'a completed fast'}. The conflicting fast ends ${Number.isFinite(otherEnd) ? new Date(otherEnd).toLocaleString() : 'after the selected start'}. Set the start at or after that time. Touching boundaries are allowed.`
+      }
+    }
+  }
+
+  if (active && others.some(row => row.status === 'active')) {
+    return {valid:false,message:'Only one ongoing fast can exist at a time.'}
+  }
+
+  return {valid:true}
+}

@@ -1,0 +1,73 @@
+src/features/sports/sportsStore.js:61:      .from('activity-media')
+src/features/sports/sportsStore.js:85:export async function listSports(){const u=await user();if(u){const{data,error}=await supabase.from('sports_entries').select('*, sports_media(*)').is('deleted_at',null).order('entry_date',{ascending:false});if (!error && data) {
+src/features/sports/sportsStore.js:233:    .from('sports_entries')
+src/features/sports/sportsStore.js:270:      .from('sports_media')
+src/features/sports/sportsStore.js:292:          .from('activity-media')
+src/features/sports/sportsStore.js:309:            .from('activity-media')
+src/features/sports/sportsStore.js:352:          .from('sports_media')
+src/features/sports/sportsStore.js:373:            .from('sports_media')
+src/features/sports/sportsStore.js:421:export async function deleteSport(row){write(read().filter(x=>x.id!==row.id));history(row,true);const u=await user();if(u)await supabase.from('sports_entries').update({deleted_at:new Date().toISOString()}).eq('id',row.id)}
+src/features/sports/sportsStore.js.before-photo-position-fix:48:async function signedMedia(media){if(!supabase)return[];const output=[];for(const item of media||[]){const{data,error}=await supabase.storage.from('activity-media').createSignedUrl(item.storage_path,60*60*12);if(!error&&data?.signedUrl)output.push({id:item.id,path:item.storage_path,signed_url:data.signedUrl,is_featured:item.is_featured})}return output}
+src/features/sports/sportsStore.js.before-photo-position-fix:49:export async function listSports(){const u=await user();if(u){const{data,error}=await supabase.from('sports_entries').select('*, sports_media(*)').is('deleted_at',null).order('entry_date',{ascending:false});if(!error&&data){const rows=[];for(const row of data)rows.push({...row,photos:await signedMedia(row.sports_media)});write(rows);return rows}}return read()}
+src/features/sports/sportsStore.js.before-photo-position-fix:158:    .from('sports_entries')
+src/features/sports/sportsStore.js.before-photo-position-fix:191:      .from('sports_media')
+src/features/sports/sportsStore.js.before-photo-position-fix:213:          .from('activity-media')
+src/features/sports/sportsStore.js.before-photo-position-fix:230:            .from('activity-media')
+src/features/sports/sportsStore.js.before-photo-position-fix:273:          .from('sports_media')
+src/features/sports/sportsStore.js.before-photo-position-fix:293:            .from('sports_media')
+src/features/sports/sportsStore.js.before-photo-position-fix:341:export async function deleteSport(row){write(read().filter(x=>x.id!==row.id));history(row,true);const u=await user();if(u)await supabase.from('sports_entries').update({deleted_at:new Date().toISOString()}).eq('id',row.id)}
+src/features/sports/sportsStore.js.before-storage-quota-fix:10:async function signedMedia(media){if(!supabase)return[];const output=[];for(const item of media||[]){const{data,error}=await supabase.storage.from('activity-media').createSignedUrl(item.storage_path,60*60*12);if(!error&&data?.signedUrl)output.push({id:item.id,path:item.storage_path,signed_url:data.signedUrl,is_featured:item.is_featured})}return output}
+src/features/sports/sportsStore.js.before-storage-quota-fix:11:export async function listSports(){const u=await user();if(u){const{data,error}=await supabase.from('sports_entries').select('*, sports_media(*)').is('deleted_at',null).order('entry_date',{ascending:false});if(!error&&data){const rows=[];for(const row of data)rows.push({...row,photos:await signedMedia(row.sports_media)});write(rows);return rows}}return read()}
+src/features/sports/sportsStore.js.before-storage-quota-fix:100:    .from('sports_entries')
+src/features/sports/sportsStore.js.before-storage-quota-fix:133:      .from('sports_media')
+src/features/sports/sportsStore.js.before-storage-quota-fix:155:          .from('activity-media')
+src/features/sports/sportsStore.js.before-storage-quota-fix:171:          .from('sports_media')
+src/features/sports/sportsStore.js.before-storage-quota-fix:194:          .from('activity-media')
+src/features/sports/sportsStore.js.before-storage-quota-fix:235:export async function deleteSport(row){write(read().filter(x=>x.id!==row.id));history(row,true);const u=await user();if(u)await supabase.from('sports_entries').update({deleted_at:new Date().toISOString()}).eq('id',row.id)}
+src/features/sports/sportsStore.js.before-multiple-photo-retention:48:async function signedMedia(media){if(!supabase)return[];const output=[];for(const item of media||[]){const{data,error}=await supabase.storage.from('activity-media').createSignedUrl(item.storage_path,60*60*12);if(!error&&data?.signedUrl)output.push({id:item.id,path:item.storage_path,signed_url:data.signedUrl,is_featured:item.is_featured})}return output}
+src/features/sports/sportsStore.js.before-multiple-photo-retention:49:export async function listSports(){const u=await user();if(u){const{data,error}=await supabase.from('sports_entries').select('*, sports_media(*)').is('deleted_at',null).order('entry_date',{ascending:false});if(!error&&data){const rows=[];for(const row of data)rows.push({...row,photos:await signedMedia(row.sports_media)});write(rows);return rows}}return read()}
+src/features/sports/sportsStore.js.before-multiple-photo-retention:157:    .from('sports_entries')
+src/features/sports/sportsStore.js.before-multiple-photo-retention:190:      .from('sports_media')
+src/features/sports/sportsStore.js.before-multiple-photo-retention:212:          .from('activity-media')
+src/features/sports/sportsStore.js.before-multiple-photo-retention:228:          .from('sports_media')
+src/features/sports/sportsStore.js.before-multiple-photo-retention:251:          .from('activity-media')
+src/features/sports/sportsStore.js.before-multiple-photo-retention:292:export async function deleteSport(row){write(read().filter(x=>x.id!==row.id));history(row,true);const u=await user();if(u)await supabase.from('sports_entries').update({deleted_at:new Date().toISOString()}).eq('id',row.id)}
+src/features/sports/sportsStore.js.before-photo-save-fix:10:async function signedMedia(media){if(!supabase)return[];const output=[];for(const item of media||[]){const{data,error}=await supabase.storage.from('activity-media').createSignedUrl(item.storage_path,60*60*12);if(!error&&data?.signedUrl)output.push({id:item.id,path:item.storage_path,signed_url:data.signedUrl,is_featured:item.is_featured})}return output}
+src/features/sports/sportsStore.js.before-photo-save-fix:11:export async function listSports(){const u=await user();if(u){const{data,error}=await supabase.from('sports_entries').select('*, sports_media(*)').is('deleted_at',null).order('entry_date',{ascending:false});if(!error&&data){const rows=[];for(const row of data)rows.push({...row,photos:await signedMedia(row.sports_media)});write(rows);return rows}}return read()}
+src/features/sports/sportsStore.js.before-photo-save-fix:100:    .from('sports_entries')
+src/features/sports/sportsStore.js.before-photo-save-fix:133:      .from('sports_media')
+src/features/sports/sportsStore.js.before-photo-save-fix:155:          .from('activity-media')
+src/features/sports/sportsStore.js.before-photo-save-fix:171:          .from('sports_media')
+src/features/sports/sportsStore.js.before-photo-save-fix:194:          .from('activity-media')
+src/features/sports/sportsStore.js.before-photo-save-fix:235:export async function deleteSport(row){write(read().filter(x=>x.id!==row.id));history(row,true);const u=await user();if(u)await supabase.from('sports_entries').update({deleted_at:new Date().toISOString()}).eq('id',row.id)}
+src/features/sports/sportsStore.js.before-crop-scale-save-fix:61:      .from('activity-media')
+src/features/sports/sportsStore.js.before-crop-scale-save-fix:85:export async function listSports(){const u=await user();if(u){const{data,error}=await supabase.from('sports_entries').select('*, sports_media(*)').is('deleted_at',null).order('entry_date',{ascending:false});if (!error && data) {
+src/features/sports/sportsStore.js.before-crop-scale-save-fix:230:    .from('sports_entries')
+src/features/sports/sportsStore.js.before-crop-scale-save-fix:263:      .from('sports_media')
+src/features/sports/sportsStore.js.before-crop-scale-save-fix:285:          .from('activity-media')
+src/features/sports/sportsStore.js.before-crop-scale-save-fix:302:            .from('activity-media')
+src/features/sports/sportsStore.js.before-crop-scale-save-fix:345:          .from('sports_media')
+src/features/sports/sportsStore.js.before-crop-scale-save-fix:365:            .from('sports_media')
+src/features/sports/sportsStore.js.before-crop-scale-save-fix:413:export async function deleteSport(row){write(read().filter(x=>x.id!==row.id));history(row,true);const u=await user();if(u)await supabase.from('sports_entries').update({deleted_at:new Date().toISOString()}).eq('id',row.id)}
+src/features/analytics/analyticsHistoryStore.js:3:export async function listAnalyticsHistory(metricType){if(supabase){const{data,error}=await supabase.from('analytics_history').select('*').eq('metric_type',metricType).order('record_date',{ascending:false});if(!error&&data){const rows=data.map(x=>({...x,date:x.record_date,matrix:x.metric_type}));const other=read().filter(x=>(x.metric_type||x.matrix)!==metricType);write([...rows,...other]);return rows}}return read().filter(x=>(x.metric_type||x.matrix)===metricType)}
+src/features/analytics/analyticsHistoryStore.js:4:export async function saveAnalyticsHistory(row){const next={...row,id:row.id||crypto.randomUUID(),record_date:row.record_date||row.date,date:row.record_date||row.date,updated_at:new Date().toISOString()};write([next,...read().filter(x=>x.id!==next.id)]);if(supabase){const{data:{user}}=await supabase.auth.getUser();if(user)await supabase.from('analytics_history').upsert({...next,user_id:user.id,date:undefined,matrix:undefined},{onConflict:'user_id,record_date,metric_type'})}return next}
+src/features/analytics/analyticsHistoryStore.js:5:export async function deleteAnalyticsHistory(row){write(read().filter(x=>x.id!==row.id));if(supabase)await supabase.from('analytics_history').delete().eq('id',row.id)}
+src/features/grateful/gratitudeStore.js:29:  if(user){const{data,error}=await supabase.from('gratitude_entries').select('*, gratitude_media(*)').is('deleted_at',null).order('entry_date',{ascending:false}).order('entry_time',{ascending:false});if(!error&&data){const rows=data.map(row=>({...row,photos:(row.gratitude_media||[]).map(media=>({id:media.id,path:media.storage_path,preview:null}))}));writeLocal(rows);return rows}}
+src/features/grateful/gratitudeStore.js:38:  const{error}=await supabase.from('gratitude_entries').upsert(payload,{onConflict:'id'});if(error){row.sync_status='failed';writeLocal([row,...local.filter(item=>item.id!==row.id)]);return row}
+src/features/grateful/gratitudeStore.js:39:  for(const file of files){const ext='webp';const path=`${user.id}/gratitude/${row.id}/${crypto.randomUUID()}.${ext}`;const{error:uploadError}=await supabase.storage.from('activity-media').upload(path,file,{contentType:file.type||'image/webp'});if(!uploadError)await supabase.from('gratitude_media').insert({user_id:user.id,gratitude_id:row.id,storage_path:path,sort_order:0})}
+src/features/grateful/gratitudeStore.js:45:  const user=await currentUser();if(user)await supabase.from('gratitude_entries').update({deleted_at:new Date().toISOString(),updated_at:new Date().toISOString()}).eq('id',entry.id)
+src/lib/fitlifeSync.js.before-p51-20260911-173336:26:  const {error}=await fitlifeSupabase.from('fitlife_user_state').upsert({
+src/lib/fitlifeSync.js.before-p51-20260911-173336:36:  const {data,error}=await fitlifeSupabase.from('fitlife_user_state').select('state_key,state_value,updated_at').eq('user_id',userId)
+src/lib/fitlifeSync.js.before-p51-20260911-173336:69:  const {error}=await fitlifeSupabase.storage.from('fitlife-media').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type})
+src/lib/fitlifeSync.js.before-p51-20260911-173336:74:  const {data,error}=await fitlifeSupabase.storage.from('fitlife-media').createSignedUrl(path,expiresIn)
+src/lib/fastingSync.js.before-p51-20260911-173336:90:  const { error } = await supabase.from('fasting_sessions').upsert(records, { onConflict: 'user_id,client_session_id' })
+src/lib/fastingSync.js.before-p51-20260911-173336:95:  const { data, error } = await supabase.from('fasting_sessions').select('*').eq('user_id', userId).order('started_at', { ascending: false })
+src/lib/workoutSync.js:66:    .from('live_workout_state')
+src/lib/workoutSync.js:95:    .from('live_workout_state')
+src/lib/fastingSync.js:88:  const {error}=await supabase.from('fasting_sessions').upsert(rows.map(dbRow),{onConflict:'user_id,client_session_id'})
+src/lib/fastingSync.js:94:  const {data,error}=await supabase.from('fasting_sessions').select('*').eq('user_id',userId).is('deleted_at',null).order('started_at',{ascending:false})
+src/lib/fastingSync.js:116:    const {error}=await supabase.from('fasting_sessions').update({deleted_at:new Date().toISOString(),status:'deleted',device_id:deviceId,updated_at:new Date().toISOString()}).eq('user_id',userId).eq('client_session_id',id)
+src/lib/fitlifeSync.js:26:  const {error}=await fitlifeSupabase.from('fitlife_user_state').upsert({
+src/lib/fitlifeSync.js:36:  const {data,error}=await fitlifeSupabase.from('fitlife_user_state').select('state_key,state_value,updated_at').eq('user_id',userId)
+src/lib/fitlifeSync.js:69:  const {error}=await fitlifeSupabase.storage.from('fitlife-media').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type})
+src/lib/fitlifeSync.js:74:  const {data,error}=await fitlifeSupabase.storage.from('fitlife-media').createSignedUrl(path,expiresIn)

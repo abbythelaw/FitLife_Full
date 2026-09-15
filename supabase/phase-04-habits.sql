@@ -1,0 +1,9 @@
+begin;
+create table if not exists public.habits(id uuid primary key default gen_random_uuid(),user_id uuid not null references auth.users(id) on delete cascade,name text not null,category text not null,tracking_type text not null,target_mode text not null,target_value numeric,target_min numeric,target_max numeric,unit text,schedule smallint[] not null default '{1,2,3,4,5,6,0}',color text not null default '#46c985',archived boolean not null default false,created_at timestamptz not null default now(),updated_at timestamptz not null default now(),deleted_at timestamptz);
+create table if not exists public.habit_logs(id uuid primary key default gen_random_uuid(),user_id uuid not null references auth.users(id) on delete cascade,habit_id uuid not null references public.habits(id) on delete cascade,log_date date not null,value numeric,completed boolean not null default false,achievement_ratio numeric,is_personal_best boolean not null default false,note text,sync_status text default 'synced',created_at timestamptz not null default now(),updated_at timestamptz not null default now(),deleted_at timestamptz,unique(habit_id,log_date));
+alter table public.habits enable row level security;alter table public.habit_logs enable row level security;
+drop policy if exists habits_owner on public.habits;create policy habits_owner on public.habits for all to authenticated using(auth.uid()=user_id) with check(auth.uid()=user_id);
+drop policy if exists habit_logs_owner on public.habit_logs;create policy habit_logs_owner on public.habit_logs for all to authenticated using(auth.uid()=user_id) with check(auth.uid()=user_id);
+do $$begin alter publication supabase_realtime add table public.habits;exception when duplicate_object then null;end$$;
+do $$begin alter publication supabase_realtime add table public.habit_logs;exception when duplicate_object then null;end$$;
+commit;

@@ -1,0 +1,15 @@
+begin;
+alter table public.habits add column if not exists description text;
+alter table public.habits add column if not exists icon text not null default '✨';
+alter table public.habits add column if not exists display_order integer not null default 100;
+alter table public.habits add column if not exists is_visible boolean not null default true;
+alter table public.habits add column if not exists archived_at timestamptz;
+alter table public.habits add column if not exists reminder_times jsonb not null default '[]'::jsonb;
+alter table public.habits add column if not exists source_type text not null default 'manual';
+alter table public.habit_logs add column if not exists source_type text not null default 'manual';
+alter table public.habit_logs add column if not exists client_updated_at timestamptz;
+create unique index if not exists habit_logs_user_habit_date_active on public.habit_logs(user_id,habit_id,log_date) where deleted_at is null;
+do $$ begin alter publication supabase_realtime add table public.habits; exception when duplicate_object then null; end $$;
+do $$ begin alter publication supabase_realtime add table public.habit_logs; exception when duplicate_object then null; end $$;
+notify pgrst,'reload schema';
+commit;

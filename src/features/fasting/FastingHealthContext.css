@@ -1,0 +1,204 @@
+.fast-health-context{grid-column:1/-1;display:grid;gap:13px;padding:18px;border:1px solid var(--line);border-radius:22px;background:var(--card)}.fast-health-context>header{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:start}.fast-health-context>header small{color:var(--primary);font-weight:900;letter-spacing:.09em}.fast-health-context>header h2{margin:4px 0}.fast-health-context>header p{margin:0;color:var(--muted);font-size:10px}.fast-health-context>header nav{display:grid;grid-template-columns:repeat(4,54px);gap:6px}.fast-health-context>header nav button{display:grid;place-items:center;min-width:0;min-height:38px;padding:7px;border:1px solid var(--line);border-radius:9px;background:var(--card2);color:var(--text);font-size:9px;font-weight:900}.fast-health-context>header nav button.active{border-color:transparent;background:var(--primary);color:var(--bg)}.fast-health-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.fast-health-graph{display:grid;grid-template-rows:auto auto minmax(180px,1fr) auto;min-width:0;overflow:hidden;padding:13px;border:1px solid var(--line);border-radius:14px;background:var(--card2)}.fast-health-graph>header{display:flex;justify-content:space-between;gap:9px;align-items:center;min-width:0}.fast-health-graph>header>div{display:flex;align-items:center;gap:7px;min-width:0}.fast-health-graph>header svg{flex:0 0 auto;width:18px;color:var(--metric)}.fast-health-graph>header span{overflow:hidden;color:var(--text);font-size:12px;font-weight:800;text-overflow:ellipsis;white-space:nowrap}.fast-health-graph>header>div:last-child{display:grid;grid-template-columns:auto auto;align-items:end;justify-content:end}.fast-health-graph>header small{color:var(--muted);font-size:7px;font-weight:900;letter-spacing:.08em}.fast-health-graph>header b{color:var(--metric);font-size:18px;font-variant-numeric:tabular-nums;white-space:nowrap}.fast-health-graph>header em{color:var(--muted);font-size:8px;font-style:normal}.fast-health-statline{display:flex;gap:12px;flex-wrap:wrap;margin-top:9px;color:var(--muted);font-size:8px}.fast-health-statline b{color:var(--text)}.fast-health-chart{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:145px 22px;width:100%;min-width:0;height:167px;margin-top:6px;overflow:hidden}.fast-health-chart svg{grid-column:1/-1;display:block;width:100%;height:145px;overflow:hidden}.fast-health-chart line{stroke:var(--line);stroke-width:1}.fast-health-chart polyline{fill:none;stroke:var(--metric);stroke-width:3;vector-effect:non-scaling-stroke}.fast-health-chart circle{fill:var(--metric);stroke:var(--card2);stroke-width:2;vector-effect:non-scaling-stroke}.fast-health-chart>span{position:static;overflow:hidden;padding-top:5px;color:var(--muted);font-size:8px;text-overflow:ellipsis;white-space:nowrap}.fast-health-chart>span:last-child{text-align:right}.fast-health-empty{display:grid;place-content:center;min-height:190px;text-align:center;color:var(--muted)}.fast-health-empty b{color:var(--text);font-size:12px}.fast-health-empty span{margin-top:5px;font-size:10px}.fast-health-graph>footer{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0}.fast-health-graph>footer>span{overflow:hidden;color:var(--muted);font-size:8px;text-overflow:ellipsis;white-space:nowrap}.fast-health-graph>footer button{display:inline-flex;align-items:center;gap:3px;min-height:36px;padding:5px 2px;border:0;background:transparent;color:var(--primary);font-size:8px;font-weight:800;white-space:nowrap}.fast-health-graph>footer svg{width:13px}@media(max-width:760px){.fast-health-context>header{grid-template-columns:1fr}.fast-health-context>header nav{grid-template-columns:repeat(4,minmax(0,1fr));width:100%}.fast-health-grid{grid-template-columns:1fr}}
+
+/* Compact Health Context layout */
+
+.fast-health-context {
+  gap: 10px !important;
+  padding: 16px !important;
+}
+
+.fast-health-grid {
+  align-items: start !important;
+  gap: 10px !important;
+}
+
+/* Remove forced vertical expansion */
+.fast-health-graph {
+  grid-template-rows: auto auto auto auto !important;
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 12px !important;
+}
+
+/* Compact graph cards with data */
+.fast-health-chart {
+  grid-template-rows: 118px 20px !important;
+  height: 138px !important;
+  margin-top: 3px !important;
+}
+
+.fast-health-chart svg {
+  height: 118px !important;
+}
+
+.fast-health-statline {
+  min-height: 18px !important;
+  margin: 7px 0 0 !important;
+  gap: 10px !important;
+}
+
+/* Compact empty cards */
+.fast-health-empty {
+  min-height: 128px !important;
+  padding: 18px 10px !important;
+}
+
+.fast-health-empty b {
+  margin: 0 !important;
+}
+
+.fast-health-empty span {
+  margin-top: 4px !important;
+}
+
+/* Keep actions immediately below chart */
+.fast-health-graph > footer {
+  min-height: 34px !important;
+  margin-top: 3px !important;
+  padding-top: 3px !important;
+}
+
+.fast-health-graph > footer button {
+  min-height: 32px !important;
+  padding: 4px 2px !important;
+}
+
+/* Slightly reduce heading space */
+.fast-health-context > header {
+  margin-bottom: 3px !important;
+}
+
+.fast-health-context > header h2 {
+  margin: 3px 0 !important;
+}
+
+.fast-health-context > header p {
+  line-height: 1.35 !important;
+}
+
+/* Tablet */
+@media (max-width: 1100px) {
+  .fast-health-graph {
+    padding: 11px !important;
+  }
+
+  .fast-health-chart {
+    grid-template-rows: 108px 20px !important;
+    height: 128px !important;
+  }
+
+  .fast-health-chart svg {
+    height: 108px !important;
+  }
+
+  .fast-health-empty {
+    min-height: 118px !important;
+  }
+}
+
+/* Phone cards remain stacked and readable */
+@media (max-width: 760px) {
+  .fast-health-context {
+    padding: 12px !important;
+  }
+
+  .fast-health-chart {
+    grid-template-rows: 125px 20px !important;
+    height: 145px !important;
+  }
+
+  .fast-health-chart svg {
+    height: 125px !important;
+  }
+
+  .fast-health-empty {
+    min-height: 125px !important;
+  }
+}
+
+/* Equal metric-card heights within each row */
+
+.fast-health-grid {
+  *lign-items: stretch !important;
+  *rid-auto-rows: 1fr !important;
+}
+
+.fast-health-graph {
+  height: 100% !important;
+  min-height: 255px !important;
+  align-self: stretch !important;
+
+  /*
+   * Every card reserves identical areas for:
+   * 1. metric heading
+   * 2. statistics
+   * 3. graph or empty state
+   * 4. footer action
+   */
+  grid-template-rows:
+    38px
+    28px
+    minmax(145px, 1fr)
+    36px !important;
+}
+
+/* The statistics row must exist even when there are no readings. */
+.fast-health-statline {
+  min-height: 28px !important;
+  margin: 0 !important;
+  align-content: center !important;
+}
+
+/* Empty state occupies the same space as a populated graph. */
+.fast-health-empty {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-height: 145px !important;
+  height: 100% !important;
+  padding: 16px 10px !important;
+}
+
+/* Populated graph uses exactly the same middle-row height. */
+.fast-health-chart {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-height: 145px !important;
+  height: 145px !important;
+  margin: 0 !important;
+}
+
+/* Keep all footers aligned along the bottom edge. */
+.fast-health-graph > footer {
+  align-self: end !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-height: 36px !important;
+  height: 36px !important;
+  margin: 0 !important;
+}
+
+/* Desktop and iPad: two equal cards per row. */
+@media (min-width: 761px) {
+  .fast-health-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .fast-health-graph {
+    min-height: 255px !important;
+  }
+}
+
+/* Phone: stacked cards remain consistently sized. */
+@media (max-width: 760px) {
+  .fast-health-grid {
+    grid-template-columns: 1fr !important;
+    grid-auto-rows: auto !important;
+  }
+
+  .fast-health-graph {
+    min-height: 250px !important;
+  }
+}
+/* Dynamic Y axis for FitLife health charts */
+.fast-health-chart svg .axis-gridline{stroke:var(--line);stroke-width:1;vector-effect:non-scaling-stroke}.fast-health-chart svg .axis-label{fill:var(--muted);font-size:9px;font-weight:700}.fast-health-chart svg .average-line{stroke:var(--metric);stroke-width:1.3;stroke-dasharray:5 4;opacity:.72;vector-effect:non-scaling-stroke}.fast-health-chart svg .average-label{fill:var(--metric);font-size:8px;font-weight:900}.fast-health-chart svg polyline{fill:none;stroke:var(--metric);stroke-width:3;vector-effect:non-scaling-stroke}.fast-health-chart svg circle{fill:var(--metric);stroke:var(--card2);stroke-width:2;vector-effect:non-scaling-stroke}.fast-health-chart svg{overflow:hidden!important}.fast-health-chart{grid-template-rows:150px 20px!important;height:170px!important}.fast-health-chart svg{height:150px!important}@media(max-width:760px){.fast-health-chart{grid-template-rows:145px 20px!important;height:165px!important}.fast-health-chart svg{height:145px!important}.fast-health-chart svg .axis-label{font-size:8px}}

@@ -1,0 +1,5231 @@
+.fasting-page{display:grid;gap:22px;max-width:1500px;margin:auto;padding:clamp(14px,2vw,28px)}.fasting-heading{display:flex;justify-content:space-between;align-items:center;gap:18px}.fasting-heading small,.fast-current-phase small,.phase-copy>small{color:var(--primary);font-weight:900;letter-spacing:.08em}.fasting-heading h2{font-size:clamp(32px,5vw,52px);margin:5px 0}.fasting-heading p{margin:0;color:var(--muted)}button,select,input{font:inherit}.fasting-heading button,.fast-drawer .save{background:var(--primary);color:#07110a;border:0;border-radius:14px;padding:13px 18px;font-weight:900;display:flex;gap:8px;align-items:center}.protocols{display:grid;grid-template-columns:repeat(5,minmax(130px,1fr));gap:12px}.protocols button{min-height:130px;background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:18px;display:grid;place-items:center}.protocols b{font-size:22px}.protocols span{color:var(--muted);font-size:11px}.fast-hero{position:relative;display:grid;grid-template-columns:minmax(360px,1fr) minmax(280px,.8fr);gap:38px;align-items:center;padding:28px;border:1px solid color-mix(in srgb,var(--phase) 58%,var(--line));border-radius:28px;background:radial-gradient(circle at 25% 45%,color-mix(in srgb,var(--phase) 12%,transparent),transparent 40%),var(--card);overflow:hidden}.fast-protocol-row{position:absolute;top:20px;right:22px}.fast-protocol-row label{position:relative;display:flex;align-items:center;border:1px solid color-mix(in srgb,var(--phase) 55%,var(--line));border-radius:999px;background:#07130fdd;padding:0 34px 0 14px}.fast-protocol-row select{appearance:none;border:0;background:transparent;color:var(--text);font-weight:900;padding:10px 0;outline:0}.fast-protocol-row svg{position:absolute;right:10px;width:16px;pointer-events:none}.fast-journey-wrap{display:grid;place-items:center;min-height:420px}.fast-journey-ring{--progress:0deg;position:relative;width:min(75vw,365px);aspect-ratio:1;border-radius:50%;background:conic-gradient(from 0deg,#43d6b5 0deg,#4aa8f5 calc(var(--progress)*.38),#8b63ed calc(var(--progress)*.65),#ef6c77 calc(var(--progress)*.84),#f4c84a var(--progress),#d5d8dc var(--progress) 360deg);box-shadow:0 0 36px color-mix(in srgb,var(--phase) 30%,transparent)}.fast-journey-ring:before{content:'';position:absolute;inset:25px;border-radius:50%;background:#07130f;box-shadow:inset 0 0 35px #0008}.fast-ring-center{position:absolute;inset:22%;z-index:2;border:0;border-radius:50%;background:transparent;color:var(--text);display:grid;place-content:center;text-align:center;cursor:pointer}.fast-ring-center strong{font-size:clamp(28px,5vw,48px);font-variant-numeric:tabular-nums}.fast-ring-center small{font-size:14px;color:var(--muted)}.fast-ring-center i{margin-top:8px;font-size:10px;color:var(--muted)}.fast-phase-point{--angle:0deg;--phase:#999;position:absolute;z-index:4;left:50%;top:50%;width:54px;height:54px;margin:-27px;border-radius:50%;border:2px solid #fff7;transform:rotate(var(--angle)) translate(calc(min(75vw,365px)/2)) rotate(calc(-1*var(--angle)));display:grid;place-content:center;background:#d5d8dc;color:#566;box-shadow:0 5px 16px #0006;cursor:pointer}.fast-phase-point span{font-size:20px}.fast-phase-point b{font-size:9px}.fast-phase-point.reached{background:var(--phase);color:#07110a;border-color:#fff}.fast-phase-point.current{box-shadow:0 0 0 6px color-mix(in srgb,var(--phase) 24%,transparent),0 0 25px var(--phase);animation:phaseGlow 1.8s ease-in-out infinite alternate}.fast-stage{display:inline-flex;gap:8px;align-items:center;color:var(--phase);font-weight:900}.fast-hero-copy h3{font-size:30px;margin:12px 0}.fast-hero-copy p{color:var(--muted)}.fast-hero-copy button,.fast-current-phase button{margin:8px 8px 0 0;padding:12px 15px;border:1px solid var(--line);border-radius:12px;background:var(--card2);color:var(--text)}.fast-hero-copy .end-fast{background:var(--phase);color:#07110a;border-color:transparent}.fast-current-phase{display:grid;grid-template-columns:minmax(250px,.8fr) minmax(300px,1.2fr);gap:24px;padding:22px;border:1px solid color-mix(in srgb,var(--phase) 45%,var(--line));border-radius:24px;background:linear-gradient(135deg,color-mix(in srgb,var(--phase) 8%,var(--card)),var(--card))}.fast-current-phase h2{font-size:30px;margin:8px 0}.fast-current-phase p{color:var(--muted);line-height:1.65}.fast-phase-art{position:relative;min-height:250px;border-radius:20px;overflow:hidden;background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--phase) 28%,transparent),transparent 42%),linear-gradient(145deg,#071c22,#10182a)}.art-body{position:absolute;left:50%;top:18%;width:72px;height:145px;translate:-50%;border-radius:42% 42% 30% 30%;background:linear-gradient(180deg,#d8f7ffcc,#6ca6dd55);box-shadow:0 0 35px var(--phase)}.art-body:before{content:'';position:absolute;width:56px;height:56px;border-radius:50%;left:8px;top:-42px;background:#d8f7ffcc}.art-orbit{position:absolute;left:50%;top:50%;width:180px;height:95px;border:1px solid color-mix(in srgb,var(--phase) 75%,white);border-radius:50%;translate:-50% -50%;rotate:-18deg}.art-orbit.two{rotate:35deg;width:210px}.art-particle{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--phase);box-shadow:0 0 18px var(--phase)}.p1{left:24%;top:30%}.p2{right:22%;top:45%}.p3{left:32%;bottom:18%}.fast-layer{position:fixed;inset:0;z-index:1200;display:grid;place-items:center;padding:18px}.fast-backdrop{position:absolute;inset:0;border:0;background:#000c}.fast-phase-panel,.fast-drawer{position:relative;z-index:2;width:min(920px,100%);max-height:calc(100dvh - 36px);overflow:auto;background:#08120d;border:1px solid var(--line);border-radius:26px}.fast-phase-panel{display:grid;grid-template-columns:minmax(280px,.8fr) minmax(320px,1.2fr);gap:0}.fast-phase-panel .fast-phase-art{min-height:100%;border-radius:0}.phase-copy{padding:30px}.phase-copy h2{font-size:32px;margin:8px 0}.phase-copy h3{margin:24px 0 8px;color:var(--phase)}.phase-copy p{line-height:1.75;color:#c9d5cf}.phase-lead{font-size:17px}.phase-close,.fast-drawer .close{position:absolute;z-index:4;right:14px;top:14px;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:#07130fdd;color:white}.phase-locked,.phase-caution{margin-top:20px;padding:16px;border-radius:16px;background:color-mix(in srgb,var(--phase) 10%,#07130f);border:1px solid color-mix(in srgb,var(--phase) 40%,var(--line))}.fast-drawer{width:min(560px,100%);padding:28px}.fast-drawer label{display:grid;gap:7px;margin:15px 0;color:var(--muted)}.fast-drawer input,.fast-drawer select{padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--text)}@keyframes phaseGlow{to{filter:brightness(1.15);transform:rotate(var(--angle)) translate(calc(min(75vw,365px)/2)) rotate(calc(-1*var(--angle))) scale(1.05)}}@media(max-width:900px){.fast-hero{grid-template-columns:1fr}.fast-current-phase{grid-template-columns:1fr}.protocols{display:flex;overflow:auto}.protocols button{min-width:145px}.fast-phase-panel{grid-template-columns:1fr}.fast-phase-panel .fast-phase-art{min-height:270px}.fast-journey-wrap{padding-top:38px}}@media(max-width:650px){.fasting-heading{align-items:flex-start}.fasting-heading button{padding:11px}.fast-hero{padding:16px;margin:0 -4px}.fast-protocol-row{position:relative;top:auto;right:auto;justify-self:end;margin-bottom:-28px}.fast-journey-wrap{min-height:350px}.fast-journey-ring{width:290px}.fast-phase-point{transform:rotate(var(--angle)) translate(145px) rotate(calc(-1*var(--angle)));width:46px;height:46px;margin:-23px}.fast-current-phase{padding:15px}.fast-layer{padding:0}.fast-phase-panel,.fast-drawer{width:100%;height:100dvh;max-height:100dvh;border-radius:0}.phase-copy{padding:22px}.phase-copy h2{font-size:27px}}@media(prefers-reduced-motion:reduce){.fast-phase-point.current{animation:none}}
+
+.fast-calendar-card{padding:22px;border:1px solid var(--line);border-radius:24px;background:var(--card)}.fast-calendar-card>header{display:flex;justify-content:space-between;align-items:end}.fast-calendar-card>header button{padding:8px 12px;border:1px solid var(--line);background:transparent;color:var(--text)}.fast-calendar-card>header button.active{background:var(--primary);color:#07110a}.fast-calendar-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}.fast-calendar-stats span{display:grid;padding:13px;border-radius:14px;background:var(--card2);color:var(--muted)}.fast-calendar-stats b{font-size:25px;color:var(--text)}.fast-calendar-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(28px,1fr));gap:6px}.fast-calendar-grid button{display:grid;gap:4px;border:0;background:transparent;color:var(--muted)}.fast-calendar-grid i,.fast-calendar-legend i{height:22px;border-radius:6px;background:#313733}.fast-calendar-grid .partial i,.fast-calendar-legend .partial{background:#a98543}.fast-calendar-grid .complete i,.fast-calendar-legend .complete{background:#2fa46c}.fast-calendar-grid .exceeded i,.fast-calendar-legend .exceeded{background:#5de095}.fast-calendar-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px;font-size:10px}.fast-calendar-legend span{display:flex;gap:5px;align-items:center}.fast-calendar-legend i{width:12px;height:12px}.fast-day-detail{margin-top:16px;padding:16px;border:1px solid var(--line);border-radius:16px;background:var(--card2)}
+
+.fast-analytics-card{padding:22px;border:1px solid var(--line);border-radius:24px;background:var(--card)}.fast-analytics-card>header{display:flex;justify-content:space-between}.fast-analytics-card select{padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--card2);color:var(--text)}.fast-analytics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}.fast-analytics-grid article{display:grid;padding:15px;border-radius:16px;background:var(--card2)}.fast-analytics-grid b{font-size:28px;color:var(--primary)}.fast-comparison{padding:18px;border:1px solid var(--line);border-radius:18px}.fast-comparison p{color:var(--muted)}.fast-analytics-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.fast-analytics-actions button{padding:11px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card2);color:var(--text)}@media(max-width:700px){.fast-analytics-grid{grid-template-columns:1fr 1fr}}
+
+
+/* Fasting Patch 5 compact hero and streak calendar */
+.fasting-page{grid-template-columns:minmax(360px,.9fr) minmax(480px,1.1fr)!important;align-items:start}
+.fasting-heading,.fast-current-phase,.fast-analytics-card{grid-column:1/-1}
+.fast-hero{grid-column:1;display:block!important;padding:20px!important;min-width:0}
+.fast-calendar-card{grid-column:2;grid-row:2;min-width:0}
+.fast-journey-wrap{min-height:0!important;padding:34px 8px 4px!important}
+.fast-journey-ring{width:280px!important;box-shadow:0 0 18px color-mix(in srgb,var(--phase) 18%,transparent)!important}
+.fast-journey-ring:before{inset:17px!important}
+.fast-phase-point{width:38px!important;height:38px!important;margin:-19px!important;transform:rotate(var(--angle)) translate(140px) rotate(calc(-1*var(--angle)))!important}
+.fast-phase-point span{font-size:14px!important;line-height:1}.fast-phase-point b{font-size:8px!important}
+.fast-phase-point.locked{background:#d3d7da!important;color:#687076!important;border-color:#eceff1!important;box-shadow:0 3px 9px #0004!important}
+.fast-phase-point.locked span{filter:grayscale(1);opacity:.42}
+.fast-phase-point.current{width:42px!important;height:42px!important;margin:-21px!important;box-shadow:0 0 0 4px color-mix(in srgb,var(--phase) 18%,transparent),0 0 14px var(--phase)!important}
+.fast-ring-center strong{font-size:31px!important}.fast-ring-center em{font-style:normal;font-size:12px;font-weight:900;color:var(--primary);margin-top:8px}.fast-ring-center i{font-size:9px!important}
+.fast-journey-ring[data-complete=true]{background:conic-gradient(from 0deg,#2ccf7a,#76e5a5 34%,#35d483 68%,#9af0bb 100%)!important;box-shadow:0 0 16px rgba(53,212,131,.26),0 0 34px rgba(53,212,131,.12),inset 0 0 7px rgba(255,255,255,.11)!important}
+.fast-journey-ring[data-complete=true]:after{content:'';position:absolute;inset:-3px;border-radius:50%;border:2px solid rgba(193,255,218,.34);filter:blur(.3px)}
+.fast-ring-times{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:min(100%,340px);margin:13px auto 0}.fast-ring-times span{display:grid;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--card2)}.fast-ring-times small{font-size:8px;color:var(--muted);letter-spacing:.08em}.fast-ring-times b{font-size:11px;margin-top:3px}
+.fast-hero-copy{margin-top:14px;text-align:center}.fast-hero-copy h3{font-size:21px!important;margin:7px 0!important}.fast-hero-copy>p{display:none}.fast-protocol-row{top:14px!important;right:14px!important}
+.exercises-style-calendar{position:relative;padding:20px!important;border-radius:24px!important;background:#05111a!important}.fast-calendar-month-head{display:grid!important;grid-template-columns:48px 1fr 48px;align-items:center!important;gap:10px}.fast-calendar-month-head h2{text-align:center;font-size:22px}.fast-calendar-month-head button{height:48px;border-radius:8px!important;background:#f2f3f4!important;color:#07110a!important}.fast-calendar-weekdays,.fast-month-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.fast-calendar-weekdays{margin:16px 0 6px}.fast-calendar-weekdays span{text-align:center;color:var(--muted);font-size:9px}.fast-month-day{position:relative;min-height:62px!important;display:grid!important;place-content:center;border:1px solid #1d3444!important;border-radius:9px!important;background:#0b1b29!important;color:#9ebbd9!important;overflow:visible!important}.fast-month-day.outside{opacity:.28}.fast-month-day small{font-size:8px}.fast-month-day.qualifies{background:#1f755b!important;color:white!important;border-color:#2a9b76!important;border-radius:0!important}.fast-month-day.qualifies:not(.segment-start){border-left-color:transparent!important}.fast-month-day.qualifies:not(.segment-end){border-right-color:transparent!important}.fast-month-day.segment-start{border-radius:16px 0 0 16px!important}.fast-month-day.segment-end{border-radius:0 16px 16px 0!important}.fast-month-day.segment-start.segment-end{border-radius:16px!important}.fast-month-day.best-streak{box-shadow:inset 0 0 0 1px rgba(255,211,77,.75)}.fast-month-day.today{outline:2px solid rgba(116,229,162,.7);outline-offset:1px}.fast-streak-badge{position:absolute;z-index:8;right:-18px;top:50%;translate:50% -50%;width:40px;height:48px;display:grid;place-items:center;border-radius:18px;background:linear-gradient(160deg,#2fd37c,#177d56);color:white;box-shadow:0 0 16px rgba(47,211,124,.34)}.fast-streak-badge svg{width:21px;height:21px;fill:currentColor}.fast-streak-badge strong{position:absolute;bottom:3px;font-size:10px}.fast-streak-badge.trophy{background:linear-gradient(160deg,#ffd45a,#c99016);color:#352500;box-shadow:0 0 16px rgba(255,212,90,.3)}.fast-streak-badge.historical{opacity:.82}.fast-streak-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:18px 0}.fast-streak-summary span{display:grid;grid-template-columns:auto auto 1fr;align-items:center;gap:7px;padding:10px;border-radius:12px;background:#0b1b29}.fast-streak-summary svg{width:18px}.fast-streak-summary small{grid-column:1/-1;color:var(--muted);line-height:1.4}.fast-recent-list{margin-top:12px}.fast-recent-list>button{width:100%;display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;text-align:left;align-items:center;padding:12px 0;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--text)}.fast-recent-list>button small{color:var(--muted)}
+@media(max-width:1050px){.fasting-page{grid-template-columns:1fr!important}.fasting-heading,.fast-hero,.fast-calendar-card,.fast-current-phase,.fast-analytics-card{grid-column:1!important}.fast-calendar-card{grid-row:auto}}
+@media(max-width:650px){.fast-journey-ring{width:240px!important}.fast-phase-point{transform:rotate(var(--angle)) translate(120px) rotate(calc(-1*var(--angle)))!important}.fast-ring-times{grid-template-columns:1fr 1fr}.fast-month-day{min-height:48px!important}.fast-streak-badge{right:-10px;width:34px;height:42px}.fast-calendar-card{padding:14px!important}}
+@media(prefers-reduced-motion:reduce){.fast-journey-ring[data-complete=true]{transition:none!important}}
+
+
+/* Fasting Patch 6 backdated and overlap validation */
+.fasting-heading-actions{display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end}.fast-validation-error{display:grid;gap:5px;margin:16px 0;padding:14px;border:1px solid rgba(251,113,133,.5);border-radius:14px;background:rgba(127,29,29,.23);color:#fecdd3}.fast-validation-error span{font-size:12px;line-height:1.5}.fast-editor-actions{position:sticky;bottom:-28px;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px -28px -28px;padding:14px 28px max(18px,env(safe-area-inset-bottom));border-top:1px solid var(--line);background:#08120df5}.fast-editor-actions>button{min-height:46px;border:1px solid var(--line);border-radius:12px;background:var(--card2);color:var(--text)}.fast-editor-actions>.save{background:var(--primary);color:#07110a;border-color:transparent}.fast-drawer{overflow-y:auto!important;overscroll-behavior:contain}.fast-drawer input:invalid{border-color:#fb7185}@media(max-width:650px){.fasting-heading-actions{width:100%;display:grid;grid-template-columns:1fr 1fr}.fasting-heading-actions button{justify-content:center;font-size:12px}.fast-editor-actions{bottom:0}}
+
+
+/* Fasting Patch 7 nutrition and readings calendar */
+.fast-metabolic-inputs{
+  grid-column:1/-1;
+  display:grid;
+  gap:16px;
+  padding:22px;
+  border:1px solid var(--line);
+  border-radius:24px;
+  background:var(--card);
+}
+
+.metabolic-section-heading{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:18px;
+}
+
+.metabolic-section-heading small{
+  color:var(--primary);
+  font-weight:900;
+  letter-spacing:.08em;
+}
+
+.metabolic-section-heading h2{
+  margin:5px 0;
+}
+
+.metabolic-section-heading p{
+  max-width:720px;
+  margin:0;
+  color:var(--muted);
+  line-height:1.55;
+}
+
+.metabolic-section-heading>button{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  min-height:44px;
+  padding:10px 14px;
+  border:0;
+  border-radius:12px;
+  background:var(--primary);
+  color:#07110a;
+  font-weight:900;
+}
+
+.metabolic-tabs{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding-bottom:3px;
+}
+
+.metabolic-tabs button{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  min-height:42px;
+  padding:9px 13px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:var(--card2);
+  color:var(--muted);
+  white-space:nowrap;
+}
+
+.metabolic-tabs button.active{
+  border-color:color-mix(in srgb,var(--primary) 65%,var(--line));
+  background:color-mix(in srgb,var(--primary) 14%,var(--card2));
+  color:var(--text);
+  box-shadow:0 0 16px color-mix(in srgb,var(--primary) 12%,transparent);
+}
+
+.metabolic-tabs svg{
+  width:17px;
+  height:17px;
+}
+
+.metabolic-calendar-layout{
+  display:grid;
+  grid-template-columns:minmax(520px,1.2fr) minmax(300px,.8fr);
+  gap:16px;
+  align-items:start;
+}
+
+.metabolic-calendar-card,
+.metabolic-selected-day{
+  min-width:0;
+  border:1px solid var(--line);
+  border-radius:20px;
+  background:var(--card2);
+}
+
+.metabolic-calendar-card{
+  padding:16px;
+}
+
+.metabolic-calendar-card>header{
+  display:grid;
+  grid-template-columns:44px 1fr 44px;
+  gap:8px;
+  align-items:center;
+}
+
+.metabolic-calendar-card>header h3{
+  margin:0;
+  text-align:center;
+}
+
+.metabolic-calendar-card>header button{
+  display:grid;
+  place-items:center;
+  width:44px;
+  height:44px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--card);
+  color:var(--text);
+}
+
+.metabolic-weekdays,
+.metabolic-month-grid{
+  display:grid;
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:6px;
+}
+
+.metabolic-weekdays{
+  margin:16px 0 7px;
+}
+
+.metabolic-weekdays span{
+  text-align:center;
+  color:var(--muted);
+  font-size:9px;
+  font-weight:800;
+}
+
+.metabolic-month-grid>button{
+  position:relative;
+  display:grid;
+  align-content:start;
+  gap:5px;
+  min-width:0;
+  min-height:74px;
+  padding:8px;
+  overflow:hidden;
+  border:1px solid color-mix(in srgb,var(--line) 82%,transparent);
+  border-radius:12px;
+  background:#0a1922;
+  color:var(--muted);
+  text-align:left;
+}
+
+.metabolic-month-grid>button:hover,
+.metabolic-month-grid>button.selected{
+  border-color:var(--primary);
+  color:var(--text);
+}
+
+.metabolic-month-grid>button.selected{
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--primary) 18%,transparent);
+}
+
+.metabolic-month-grid>button.outside{
+  opacity:.3;
+}
+
+.metabolic-month-grid>button.future{
+  opacity:.2;
+  cursor:not-allowed;
+}
+
+.metabolic-month-grid>button.has-data{
+  background:linear-gradient(
+    145deg,
+    color-mix(in srgb,var(--primary) 6%,#0a1922),
+    #0a1922
+  );
+}
+
+.metabolic-month-grid>button b{
+  font-size:12px;
+}
+
+.metabolic-month-grid>button small{
+  overflow:hidden;
+  color:var(--muted);
+  font-size:8px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.reading-dot{
+  width:10px;
+  height:10px;
+  margin-top:6px;
+  border-radius:50%;
+  background:var(--reading-colour);
+  box-shadow:0 0 10px color-mix(in srgb,var(--reading-colour) 55%,transparent);
+}
+
+.metabolic-selected-day{
+  padding:18px;
+}
+
+.metabolic-selected-day>header{
+  margin-bottom:14px;
+}
+
+.metabolic-selected-day>header small{
+  color:var(--primary);
+  font-weight:900;
+  letter-spacing:.08em;
+}
+
+.metabolic-selected-day>header h3{
+  margin:5px 0 0;
+}
+
+.metabolic-empty-summary{
+  display:grid;
+  place-items:center;
+  gap:8px;
+  width:100%;
+  min-height:250px;
+  padding:24px;
+  border:1px dashed var(--line);
+  border-radius:17px;
+  background:transparent;
+  color:var(--muted);
+  text-align:center;
+}
+
+.metabolic-empty-summary svg{
+  width:32px;
+  height:32px;
+  color:var(--primary);
+}
+
+.metabolic-empty-summary b{
+  color:var(--text);
+}
+
+.nutrition-day-summary{
+  display:grid;
+  gap:16px;
+}
+
+.nutrition-day-summary>header{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:flex-start;
+}
+
+.nutrition-day-summary>header small{
+  color:var(--primary);
+  font-weight:900;
+}
+
+.nutrition-day-summary>header h3{
+  margin:4px 0 0;
+  font-size:29px;
+}
+
+.nutrition-day-summary>header button,
+.reading-day-summary>button{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  min-height:40px;
+  padding:8px 11px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--card);
+  color:var(--text);
+}
+
+.nutrition-macro-values{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+
+.nutrition-macro-values span,
+.nutrition-secondary-values span{
+  display:grid;
+  gap:3px;
+  padding:11px;
+  border-radius:12px;
+  background:var(--card);
+  color:var(--muted);
+  font-size:10px;
+}
+
+.nutrition-macro-values b,
+.nutrition-secondary-values b{
+  color:var(--text);
+  font-size:17px;
+}
+
+.nutrition-macro-values .carbs{
+  box-shadow:inset 0 0 0 1px rgba(56,189,248,.28);
+}
+
+.nutrition-macro-values .fat{
+  box-shadow:inset 0 0 0 1px rgba(251,191,36,.28);
+}
+
+.nutrition-macro-values .protein{
+  box-shadow:inset 0 0 0 1px rgba(167,139,250,.28);
+}
+
+.nutrition-macro-visual{
+  display:grid;
+  gap:9px;
+}
+
+.nutrition-macro-bar{
+  display:flex;
+  width:100%;
+  height:18px;
+  overflow:hidden;
+  border-radius:999px;
+  background:#263038;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);
+}
+
+.nutrition-macro-bar i{
+  display:block;
+  height:100%;
+  min-width:0;
+}
+
+.nutrition-macro-bar .macro-carbs{
+  background:linear-gradient(90deg,#0ea5e9,#38bdf8);
+}
+
+.nutrition-macro-bar .macro-fat{
+  background:linear-gradient(90deg,#f59e0b,#fbbf24);
+}
+
+.nutrition-macro-bar .macro-protein{
+  background:linear-gradient(90deg,#8b5cf6,#a78bfa);
+}
+
+.nutrition-macro-visual.compact{
+  gap:0;
+}
+
+.nutrition-macro-visual.compact .nutrition-macro-bar{
+  height:7px;
+}
+
+.nutrition-macro-legend{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:7px;
+}
+
+.nutrition-macro-legend span{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:5px;
+  color:var(--muted);
+  font-size:9px;
+}
+
+.nutrition-macro-legend span>i{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+}
+
+.nutrition-macro-legend .carbs>i{
+  background:#38bdf8;
+}
+
+.nutrition-macro-legend .fat>i{
+  background:#fbbf24;
+}
+
+.nutrition-macro-legend .protein>i{
+  background:#a78bfa;
+}
+
+.nutrition-macro-legend b{
+  color:var(--text);
+}
+
+.nutrition-secondary-values{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+
+.nutrition-day-summary footer{
+  color:var(--muted);
+  font-size:10px;
+}
+
+.reading-day-summary{
+  display:grid;
+  grid-template-columns:48px 1fr auto;
+  gap:12px;
+  align-items:center;
+  min-height:170px;
+}
+
+.reading-day-summary>span{
+  display:grid;
+  place-items:center;
+  width:48px;
+  height:48px;
+  border-radius:14px;
+  background:color-mix(in srgb,var(--reading-colour) 14%,var(--card));
+  color:var(--reading-colour);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--reading-colour) 30%,transparent);
+}
+
+.reading-day-summary small{
+  color:var(--muted);
+  font-weight:900;
+}
+
+.reading-day-summary h3{
+  margin:5px 0;
+  font-size:28px;
+}
+
+.reading-day-summary p{
+  margin:0;
+  color:var(--muted);
+  line-height:1.5;
+}
+
+.nutrition-editor{
+  width:min(680px,100%)!important;
+}
+
+.nutrition-editor-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:0 12px;
+}
+
+.nutrition-editor textarea{
+  min-height:90px;
+  resize:vertical;
+}
+
+.nutrition-delete-confirm{
+  display:grid;
+  gap:8px;
+  margin-top:15px;
+  padding:14px;
+  border:1px solid rgba(251,113,133,.45);
+  border-radius:14px;
+  background:rgba(127,29,29,.2);
+  color:#fecdd3;
+}
+
+.nutrition-delete-confirm p{
+  margin:0;
+  font-size:12px;
+  line-height:1.5;
+}
+
+.nutrition-delete-confirm>div{
+  display:flex;
+  gap:8px;
+}
+
+.nutrition-delete-confirm button,
+.fast-editor-actions .danger{
+  min-height:42px;
+  padding:8px 11px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--card2);
+  color:var(--text);
+}
+
+.nutrition-delete-confirm .danger,
+.fast-editor-actions .danger{
+  border-color:rgba(251,113,133,.45);
+  background:rgba(127,29,29,.25);
+  color:#fecdd3;
+}
+
+@media(max-width:1050px){
+  .metabolic-calendar-layout{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:650px){
+  .fast-metabolic-inputs{
+    padding:14px;
+  }
+
+  .metabolic-section-heading{
+    display:grid;
+  }
+
+  .metabolic-section-heading>button{
+    width:100%;
+    justify-content:center;
+  }
+
+  .metabolic-calendar-card{
+    padding:10px;
+  }
+
+  .metabolic-month-grid>button{
+    min-height:57px;
+    padding:5px;
+    border-radius:8px;
+  }
+
+  .nutrition-editor-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .nutrition-macro-values,
+  .nutrition-secondary-values,
+  .nutrition-macro-legend{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+
+  .reading-day-summary{
+    grid-template-columns:44px 1fr;
+  }
+
+  .reading-day-summary>button{
+    grid-column:1/-1;
+    justify-content:center;
+  }
+}
+
+/* Best-ever streak trophy: compact top-right corner badge */
+.fast-month-day .fast-streak-badge.trophy {
+  top: 4px !important;
+  right: 4px !important;
+
+  width: 25px !important;
+  height: 25px !important;
+
+  translate: 0 0 !important;
+
+  border: 1px solid rgba(255, 235, 150, .72) !important;
+  border-radius: 9px !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      #ffe26a,
+      #d99d1d
+    ) !important;
+
+  color: #3c2900 !important;
+
+  box-shadow:
+    0 2px 7px rgba(0, 0, 0, .32),
+    0 0 8px rgba(255, 210, 68, .18) !important;
+}
+
+.fast-month-day .fast-streak-badge.trophy svg {
+  width: 13px !important;
+  height: 13px !important;
+}
+
+.fast-month-day .fast-streak-badge.trophy strong {
+  position: absolute !important;
+  right: -3px !important;
+  bottom: -5px !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  min-width: 14px !important;
+  height: 14px !important;
+  padding: 0 3px !important;
+
+  border: 1px solid rgba(255, 240, 180, .7) !important;
+  border-radius: 999px !important;
+
+  background: #b9780c !important;
+  color: #fff8dc !important;
+
+  font-size: 8px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+}
+
+/* Historical trophy remains slightly muted */
+.fast-month-day .fast-streak-badge.trophy.historical {
+  opacity: .88 !important;
+}
+
+/* Prevent the corner badge from covering the date number */
+.fast-month-day.best-streak.segment-end {
+  padding-right: 29px !important;
+}
+
+@media (max-width: 650px) {
+  .fast-month-day .fast-streak-badge.trophy {
+    top: 3px !important;
+    right: 3px !important;
+
+    width: 22px !important;
+    height: 22px !important;
+
+    border-radius: 8px !important;
+  }
+
+  .fast-month-day .fast-streak-badge.trophy svg {
+    width: 11px !important;
+    height: 11px !important;
+  }
+
+  .fast-month-day.best-streak.segment-end {
+    padding-right: 24px !important;
+  }
+}
+
+/* Tiny best-ever trophy marker */
+.fast-month-day .fast-streak-badge.trophy {
+  top: 3px !important;
+  right: 3px !important;
+
+  width: 17px !important;
+  height: 17px !important;
+
+  translate: 0 0 !important;
+
+  border: 1px solid rgba(255, 229, 130, .65) !important;
+  border-radius: 6px !important;
+
+  background: #e6ad27 !important;
+  color: #3c2900 !important;
+
+  box-shadow:
+    0 1px 4px rgba(0, 0, 0, .28) !important;
+}
+
+.fast-month-day .fast-streak-badge.trophy svg {
+  width: 9px !important;
+  height: 9px !important;
+}
+
+/* Hide the separate numbered bubble */
+.fast-month-day .fast-streak-badge.trophy strong {
+  display: none !important;
+}
+
+/* No extra space needed for the small corner trophy */
+.fast-month-day.best-streak.segment-end {
+  padding-right: 8px !important;
+}
+
+@media (max-width: 650px) {
+  .fast-month-day .fast-streak-badge.trophy {
+    top: 2px !important;
+    right: 2px !important;
+
+    width: 15px !important;
+    height: 15px !important;
+
+    border-radius: 5px !important;
+  }
+
+  .fast-month-day .fast-streak-badge.trophy svg {
+    width: 8px !important;
+    height: 8px !important;
+  }
+}
+
+
+/* Fasting Patch 8 inactive grey journey ring */
+.inactive-fast-hero{
+  grid-column:1!important;
+  position:relative;
+  display:grid!important;
+  grid-template-columns:minmax(270px,.9fr) minmax(230px,.7fr)!important;
+  gap:22px!important;
+  min-width:0;
+  padding:20px!important;
+  overflow:visible!important;
+  border-color:#34414a!important;
+  background:
+    radial-gradient(
+      circle at 30% 42%,
+      rgba(148,163,184,.07),
+      transparent 44%
+    ),
+    var(--card)!important;
+}
+
+.inactive-fast-target{
+  position:absolute;
+  z-index:12;
+  top:14px;
+  right:14px;
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+.inactive-fast-target label{
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  min-height:40px;
+  padding:0 34px 0 12px;
+  border:1px solid #45515a;
+  border-radius:999px;
+  background:#0c171bea;
+  color:#9ca3af;
+}
+
+.inactive-fast-target label>span{
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+.inactive-fast-target select,
+.inactive-fast-target input{
+  min-width:64px;
+  padding:9px 0;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:#d1d5db;
+  font-weight:900;
+}
+
+.inactive-fast-target select{
+  appearance:none;
+}
+
+.inactive-fast-target svg{
+  position:absolute;
+  right:9px;
+  width:15px;
+  pointer-events:none;
+}
+
+.inactive-custom-hours{
+  padding-right:12px!important;
+}
+
+.inactive-custom-hours input{
+  width:58px;
+}
+
+.inactive-fast-ring-column{
+  display:grid;
+  place-items:center;
+  gap:10px;
+  padding-top:20px;
+}
+
+.inactive-journey-wrap{
+  min-height:0!important;
+  padding:34px 8px 4px!important;
+}
+
+.inactive-journey-ring{
+  width:280px!important;
+  background:#53606a!important;
+  box-shadow:
+    0 0 0 1px rgba(209,213,219,.12),
+    0 8px 28px rgba(0,0,0,.28)!important;
+}
+
+.inactive-journey-ring:before{
+  inset:17px!important;
+  background:#07130f!important;
+}
+
+.inactive-journey-ring:after{
+  display:none!important;
+}
+
+.inactive-journey-ring .fast-phase-point{
+  width:38px!important;
+  height:38px!important;
+  margin:-19px!important;
+  transform:
+    rotate(var(--angle))
+    translate(140px)
+    rotate(calc(-1*var(--angle)))!important;
+}
+
+.inactive-journey-ring .fast-phase-point.untouched{
+  border:1px solid #e1e4e7!important;
+  background:#cfd4d8!important;
+  color:#667078!important;
+  box-shadow:0 3px 8px rgba(0,0,0,.3)!important;
+  animation:none!important;
+  filter:none!important;
+}
+
+.inactive-journey-ring .fast-phase-point.untouched span{
+  color:#667078!important;
+  filter:grayscale(1)!important;
+  opacity:.48!important;
+  font-size:14px!important;
+}
+
+.inactive-journey-ring .fast-phase-point.untouched b{
+  color:#667078!important;
+  font-size:8px!important;
+}
+
+.inactive-journey-ring .fast-phase-point.untouched small{
+  position:absolute;
+  top:43px;
+  left:50%;
+  width:78px;
+  translate:-50% 0;
+  overflow:hidden;
+  color:#7b858c!important;
+  font-size:7px;
+  font-weight:800;
+  line-height:1.15;
+  text-align:center;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.inactive-ring-center{
+  cursor:default!important;
+}
+
+.inactive-ring-center strong{
+  color:#d1d5db!important;
+  font-size:36px!important;
+}
+
+.inactive-ring-center small,
+.inactive-ring-center em,
+.inactive-ring-center i{
+  color:#7d878e!important;
+}
+
+.inactive-ring-center em{
+  margin-top:9px;
+  font-size:11px;
+  font-style:normal;
+  font-weight:900;
+}
+
+.inactive-start-fast{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  width:min(100%,280px);
+  min-height:46px;
+  padding:11px 15px;
+  border:0;
+  border-radius:14px;
+  background:var(--primary);
+  color:#07110a;
+  font-weight:900;
+  box-shadow:0 8px 22px color-mix(in srgb,var(--primary) 18%,transparent);
+}
+
+.inactive-fast-copy{
+  align-self:center;
+  padding:40px 4px 0;
+}
+
+.inactive-stage{
+  color:#9ca3af!important;
+}
+
+.inactive-fast-copy h3{
+  margin:10px 0;
+  color:#d8dde0;
+  font-size:25px;
+}
+
+.inactive-fast-copy>p{
+  color:#8e999f;
+  line-height:1.65;
+}
+
+.inactive-fast-rules{
+  display:grid;
+  gap:8px;
+  margin-top:18px;
+}
+
+.inactive-fast-rules span{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  color:#879198;
+  font-size:11px;
+}
+
+.inactive-fast-rules i{
+  width:13px;
+  height:13px;
+  border-radius:50%;
+}
+
+.inactive-fast-rules .rule-grey{
+  background:#cfd4d8;
+}
+
+.inactive-fast-rules .rule-colour{
+  background:linear-gradient(135deg,#38bdf8,#8b5cf6);
+}
+
+.inactive-fast-rules .rule-glow{
+  background:#70e236;
+  box-shadow:0 0 9px rgba(112,226,54,.6);
+}
+
+/* Ensure the old large protocol grid never appears in the inactive state. */
+.fasting-page>.protocols{
+  display:none!important;
+}
+
+@media(max-width:1050px){
+  .inactive-fast-hero{
+    grid-column:1!important;
+  }
+}
+
+@media(max-width:760px){
+  .inactive-fast-hero{
+    grid-template-columns:1fr!important;
+    gap:5px!important;
+  }
+
+  .inactive-fast-target{
+    position:relative;
+    top:auto;
+    right:auto;
+    justify-content:flex-end;
+    flex-wrap:wrap;
+    margin-bottom:-25px;
+  }
+
+  .inactive-fast-copy{
+    padding:12px 4px 4px;
+    text-align:center;
+  }
+
+  .inactive-fast-rules{
+    width:min(100%,290px);
+    margin:16px auto 0;
+    text-align:left;
+  }
+}
+
+@media(max-width:650px){
+  .inactive-journey-ring{
+    width:240px!important;
+  }
+
+  .inactive-journey-ring .fast-phase-point{
+    width:34px!important;
+    height:34px!important;
+    margin:-17px!important;
+    transform:
+      rotate(var(--angle))
+      translate(120px)
+      rotate(calc(-1*var(--angle)))!important;
+  }
+
+  .inactive-journey-ring .fast-phase-point.untouched small{
+    top:39px;
+    width:65px;
+    font-size:6px;
+  }
+
+  .inactive-fast-target label{
+    min-height:38px;
+  }
+}
+
+
+/* Fasting Patch 9 editable start end and target */
+.fast-time-editor{
+  width:min(680px,100%)!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain;
+}
+
+.fast-editor-close{
+  display:grid!important;
+  place-items:center!important;
+  width:44px!important;
+  height:44px!important;
+  padding:0!important;
+  border-radius:50%!important;
+}
+
+.fast-editor-close svg{
+  width:21px;
+  height:21px;
+}
+
+.fast-editor-intro{
+  margin:8px 52px 18px 0;
+  color:var(--muted);
+  line-height:1.6;
+}
+
+.fast-time-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.fast-editor-preview{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+  margin-top:18px;
+}
+
+.fast-editor-preview span{
+  display:grid;
+  gap:4px;
+  min-width:0;
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:13px;
+  background:var(--card);
+}
+
+.fast-editor-preview small{
+  color:var(--muted);
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.08em;
+}
+
+.fast-editor-preview b{
+  overflow:hidden;
+  color:var(--text);
+  font-size:12px;
+  line-height:1.35;
+  text-overflow:ellipsis;
+}
+
+.fast-time-editor .fast-validation-error{
+  position:relative;
+  z-index:1;
+}
+
+.fast-time-editor input[type="datetime-local"]{
+  color-scheme:dark;
+}
+
+.fast-time-editor .fast-editor-actions{
+  z-index:20;
+}
+
+@media(max-width:650px){
+  .fast-time-grid,
+  .fast-editor-preview{
+    grid-template-columns:1fr;
+  }
+
+  .fast-editor-intro{
+    margin-right:44px;
+  }
+}
+
+
+/* Fasting Patch 10+11 attachments and glycemic foundation */
+.metric-attachments{
+  display:grid;
+  gap:12px;
+  margin-top:16px;
+  padding-top:16px;
+  border-top:1px solid var(--line);
+}
+
+.metric-attachments.empty{
+  grid-template-columns:40px 1fr;
+  align-items:center;
+  padding:14px;
+  border:1px dashed var(--line);
+  border-radius:14px;
+  color:var(--muted);
+}
+
+.metric-attachments.empty>svg{
+  color:var(--primary);
+}
+
+.metric-attachments.empty p{
+  margin:3px 0 0;
+  font-size:11px;
+  line-height:1.45;
+}
+
+.metric-attachments>header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+}
+
+.metric-attachments>header small{
+  color:var(--primary);
+  font-weight:900;
+  letter-spacing:.07em;
+}
+
+.metric-attachments>header h3{
+  margin:4px 0;
+}
+
+.metric-attachments>header p{
+  margin:0;
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.45;
+}
+
+.metric-attachments>header>button{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  min-height:39px;
+  padding:8px 10px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--card);
+  color:var(--text);
+  white-space:nowrap;
+}
+
+.metric-attachment-grid{
+  display:grid;
+  gap:8px;
+}
+
+.metric-attachment-grid article{
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr) auto;
+  gap:10px;
+  align-items:center;
+  min-width:0;
+  padding:10px;
+  border:1px solid var(--line);
+  border-radius:13px;
+  background:var(--card);
+}
+
+.metric-icon{
+  display:grid;
+  place-items:center;
+  width:42px;
+  height:42px;
+  border-radius:12px;
+  background:rgba(148,163,184,.1);
+  color:#94a3b8;
+}
+
+.metric-icon.glucose{
+  background:rgba(248,113,113,.12);
+  color:#f87171;
+}
+
+.metric-icon.weight{
+  background:rgba(56,189,248,.12);
+  color:#38bdf8;
+}
+
+.metric-icon.rhr{
+  background:rgba(251,113,133,.12);
+  color:#fb7185;
+}
+
+.metric-icon.hba1c{
+  background:rgba(167,139,250,.12);
+  color:#a78bfa;
+}
+
+.metric-attachment-grid article small{
+  color:var(--muted);
+  font-size:8px;
+  font-weight:900;
+}
+
+.metric-attachment-grid article b{
+  display:block;
+  margin-top:3px;
+  font-size:15px;
+}
+
+.metric-attachment-grid article p{
+  margin:3px 0 0;
+  overflow:hidden;
+  color:var(--muted);
+  font-size:9px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.metric-attachment-actions{
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+
+.metric-attachment-actions button{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  min-height:35px;
+  padding:7px 8px;
+  border:1px solid var(--line);
+  border-radius:9px;
+  background:var(--card2);
+  color:var(--text);
+  font-size:10px;
+}
+
+.metric-attachment-actions button:first-child:not(:last-child){
+  width:35px;
+  padding:0;
+  justify-content:center;
+  color:var(--muted);
+}
+
+.metric-attachment-actions svg{
+  width:14px;
+  height:14px;
+}
+
+.metric-attachment-picker{
+  width:min(620px,100%)!important;
+}
+
+.metric-attachment-picker>p{
+  margin-right:50px;
+  color:var(--muted);
+  line-height:1.55;
+}
+
+.metric-attachment-options{
+  display:grid;
+  gap:8px;
+  margin:18px 0 90px;
+}
+
+.metric-attachment-options>button{
+  display:grid;
+  grid-template-columns:44px 1fr 26px;
+  gap:10px;
+  align-items:center;
+  width:100%;
+  padding:11px;
+  border:1px solid var(--line);
+  border-radius:13px;
+  background:var(--card);
+  color:var(--text);
+  text-align:left;
+}
+
+.metric-attachment-options>button.selected{
+  border-color:var(--primary);
+  background:color-mix(in srgb,var(--primary) 8%,var(--card));
+}
+
+.metric-attachment-options>button>span{
+  display:grid;
+  place-items:center;
+  width:44px;
+  height:44px;
+  border-radius:12px;
+  background:var(--card2);
+  color:var(--primary);
+}
+
+.metric-attachment-options>button small{
+  display:block;
+  margin-top:4px;
+  color:var(--muted);
+  font-size:10px;
+}
+
+.metric-attachment-options>button>i{
+  color:var(--primary);
+}
+
+.metric-attachment-empty{
+  display:grid;
+  place-items:center;
+  min-height:250px;
+  padding:25px;
+  border:1px dashed var(--line);
+  border-radius:16px;
+  color:var(--muted);
+  text-align:center;
+}
+
+.metric-attachment-empty>svg{
+  width:34px;
+  height:34px;
+  color:var(--primary);
+}
+
+.metric-attachment-empty>b{
+  margin-top:10px;
+  color:var(--text);
+}
+
+.metric-attachment-empty p{
+  max-width:380px;
+  line-height:1.55;
+}
+
+.metric-attachment-empty button{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:10px 13px;
+  border:0;
+  border-radius:11px;
+  background:var(--primary);
+  color:#07110a;
+  font-weight:900;
+}
+
+.glycemic-foundation{
+  grid-column:1/-1;
+  display:grid;
+  gap:16px;
+  padding:22px;
+  border:1px solid var(--line);
+  border-radius:24px;
+  background:
+    radial-gradient(circle at 90% 10%,rgba(56,189,248,.08),transparent 30%),
+    var(--card);
+}
+
+.glycemic-foundation.improving{
+  border-color:rgba(52,211,153,.34);
+}
+
+.glycemic-foundation.worsening{
+  border-color:rgba(251,113,133,.34);
+}
+
+.glycemic-foundation>header{
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  align-items:flex-start;
+}
+
+.glycemic-foundation>header small{
+  color:var(--primary);
+  font-weight:900;
+  letter-spacing:.08em;
+}
+
+.glycemic-foundation>header h2{
+  margin:5px 0;
+}
+
+.glycemic-foundation>header p{
+  max-width:720px;
+  margin:0;
+  color:var(--muted);
+  line-height:1.55;
+}
+
+.glycemic-confidence{
+  padding:8px 11px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:var(--card2);
+  color:var(--muted);
+  font-size:10px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.glycemic-foundation-main{
+  display:grid;
+  grid-template-columns:minmax(260px,.7fr) minmax(330px,1.3fr);
+  gap:12px;
+}
+
+.glycemic-direction-card,
+.glycemic-data-card,
+.glycemic-driver-grid article{
+  border:1px solid var(--line);
+  border-radius:17px;
+  background:var(--card2);
+}
+
+.glycemic-direction-card{
+  display:grid;
+  place-items:center;
+  padding:22px;
+  text-align:center;
+}
+
+.glycemic-direction-card>svg{
+  width:38px;
+  height:38px;
+  margin-bottom:7px;
+  color:#fbbf24;
+}
+
+.glycemic-foundation.improving .glycemic-direction-card>svg{
+  color:#34d399;
+}
+
+.glycemic-foundation.worsening .glycemic-direction-card>svg{
+  color:#fb7185;
+}
+
+.glycemic-direction-card small{
+  color:var(--muted);
+  font-weight:900;
+}
+
+.glycemic-direction-card strong{
+  margin:5px 0;
+  font-size:31px;
+}
+
+.glycemic-direction-card span{
+  color:var(--primary);
+  font-size:24px;
+  font-weight:900;
+}
+
+.glycemic-direction-card p{
+  margin:4px 0 0;
+  color:var(--muted);
+  font-size:10px;
+}
+
+.glycemic-data-card{
+  padding:18px;
+}
+
+.glycemic-data-card h3{
+  margin:0 0 13px;
+}
+
+.glycemic-data-card>div{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+}
+
+.glycemic-data-card span{
+  display:grid;
+  grid-template-columns:30px auto 1fr;
+  align-items:center;
+  gap:7px;
+  padding:11px;
+  border-radius:12px;
+  background:var(--card);
+  color:var(--muted);
+  font-size:10px;
+}
+
+.glycemic-data-card svg{
+  color:var(--primary);
+}
+
+.glycemic-data-card b{
+  color:var(--text);
+  font-size:20px;
+}
+
+.glycemic-driver-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+
+.glycemic-driver-grid article{
+  padding:16px;
+}
+
+.glycemic-driver-grid h3{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  margin:0 0 11px;
+  font-size:14px;
+}
+
+.glycemic-driver-grid h3 svg{
+  width:17px;
+  color:var(--primary);
+}
+
+.glycemic-driver-grid p{
+  margin:7px 0;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.5;
+}
+
+.glycemic-foundation>footer{
+  padding-top:13px;
+  border-top:1px solid var(--line);
+  color:var(--muted);
+  font-size:9px;
+  line-height:1.55;
+}
+
+@media(max-width:900px){
+  .glycemic-foundation-main,
+  .glycemic-driver-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:650px){
+  .metric-attachments>header,
+  .glycemic-foundation>header{
+    display:grid;
+  }
+
+  .metric-attachments>header>button{
+    width:100%;
+    justify-content:center;
+  }
+
+  .metric-attachment-grid article{
+    grid-template-columns:40px 1fr;
+  }
+
+  .metric-attachment-actions{
+    grid-column:1/-1;
+    justify-content:flex-end;
+  }
+
+  .glycemic-foundation{
+    padding:14px;
+  }
+
+  .glycemic-data-card>div{
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+
+/* Fasting Patch 12 consolidated UX, history and inputs */
+.fasting-page{align-items:stretch!important}.fast-hero{align-self:start}.fast-calendar-card{align-self:stretch}.fast-type-label{position:absolute;left:-9999px}.fast-started-card{display:grid!important;padding:10px!important;border:1px solid var(--line)!important;border-radius:12px!important;background:var(--card2)!important;color:var(--text)!important;text-align:left!important}.fast-started-card i{font-size:8px;color:var(--muted);font-style:normal}.fast-ring-times>span{display:grid}.fast-hero-copy>div{display:flex;justify-content:center}.fast-hero-copy .end-fast{min-width:150px;background:linear-gradient(135deg,#35d483,#20b968)!important;color:#04120a!important;border:0!important}.compact-phase-card{grid-column:1!important;display:grid!important;grid-template-columns:130px 1fr!important;gap:14px!important;padding:15px!important}.compact-phase-card .fast-phase-art{min-height:150px!important}.compact-phase-card h2{font-size:21px!important}.compact-phase-card p{font-size:11px!important}.fast-calendar-card{padding:14px!important}.fast-calendar-month-head{grid-template-columns:38px 1fr 38px!important}.fast-calendar-month-head button{width:38px!important;height:38px!important;min-height:38px!important}.fast-calendar-month-head h2{font-size:19px!important}.fast-calendar-weekdays{margin:9px 0 4px!important}.fast-month-grid{gap:4px!important}.fast-month-day{height:46px!important;min-height:46px!important;padding:4px!important}.fast-month-day>small{display:none!important}.fast-streak-summary{margin:10px 0!important}.fast-streak-summary span{min-height:36px!important;padding:7px 9px!important}.fast-recent-list{margin-top:7px!important}.fast-recent-list>button{min-height:39px!important;padding:7px 0!important}.fast-day-detail{display:none!important}.recent-fast-modal{position:relative;z-index:2;width:min(820px,100%);max-height:calc(100dvh - 36px);overflow:auto;padding:25px;border:1px solid var(--line);border-radius:24px;background:#08120d}.recent-fast-close{position:absolute;right:14px;top:14px;width:42px;height:42px;border:1px solid var(--line);border-radius:50%;background:var(--card2);color:var(--text)}.recent-fast-duration{display:block;margin:14px 0;font-size:36px;color:var(--primary)}.recent-fast-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.recent-fast-stats span{display:grid;padding:12px;border-radius:12px;background:var(--card2);color:var(--muted)}.recent-fast-stats b{font-size:19px;color:var(--text)}.recent-fast-modal section{margin-top:18px;padding-top:15px;border-top:1px solid var(--line)}.recent-metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.recent-metric-grid article{display:grid;padding:11px;border-radius:12px;background:var(--card2)}.recent-macro-bar{display:flex;height:17px;overflow:hidden;border-radius:99px;background:#263038}.recent-macro-bar i:nth-child(1){background:#38bdf8}.recent-macro-bar i:nth-child(2){background:#fbbf24}.recent-macro-bar i:nth-child(3){background:#a78bfa}.recent-fast-modal footer{display:flex;justify-content:flex-end;gap:9px;margin-top:20px}.recent-fast-modal footer button{padding:11px 14px;border:1px solid var(--line);border-radius:11px;background:var(--card2);color:var(--text)}
+@media(max-width:1024px){.fast-month-day{height:40px!important;min-height:40px!important}.fast-calendar-month-head button{width:34px!important;height:34px!important;min-height:34px!important}.fast-calendar-month-head{grid-template-columns:34px 1fr 34px!important}.compact-phase-card{grid-template-columns:105px 1fr!important}.compact-phase-card .fast-phase-art{min-height:125px!important}}
+@media(max-width:650px){.fast-calendar-card{padding:9px!important}.fast-month-day{height:34px!important;min-height:34px!important}.fast-calendar-weekdays,.fast-month-grid{gap:3px!important}.fast-calendar-weekdays span{font-size:7px!important}.fast-recent-list>button:nth-of-type(n+4){display:none!important}.recent-fast-stats,.recent-metric-grid{grid-template-columns:1fr 1fr}.compact-phase-card{grid-template-columns:90px 1fr!important}.compact-phase-card .fast-phase-art{min-height:105px!important}.recent-fast-modal{width:100%;height:100dvh;max-height:100dvh;border-radius:0}}
+
+
+/* Fasting Patch 13 equal top-column heights */
+
+/*
+ * Desktop/iPad landscape top dashboard:
+ * left row 1 = active fast
+ * left row 2 = detailed phase preview
+ * right      = calendar spanning both rows
+ */
+@media (min-width: 1051px) {
+  .fasting-page {
+    grid-template-columns:
+      minmax(390px, .92fr)
+      minmax(500px, 1.08fr) !important;
+
+    grid-template-rows:
+      auto
+      auto
+      auto
+      auto !important;
+
+    align-items: stretch !important;
+  }
+
+  .fasting-heading {
+    grid-column: 1 / -1 !important;
+    grid-row: 1 !important;
+  }
+
+  .fast-hero,
+  .inactive-fast-hero {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    align-self: stretch !important;
+  }
+
+  .fast-current-phase.compact-phase-card {
+    grid-column: 1 !important;
+    grid-row: 3 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    align-self: stretch !important;
+    margin: 0 !important;
+  }
+
+  .fast-calendar-card.exercises-style-calendar {
+    grid-column: 2 !important;
+    grid-row: 2 / 4 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    align-self: stretch !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* Recent fasts consume the remaining vertical space neatly. */
+  .fast-calendar-card .fast-recent-list {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    margin-top: 10px !important;
+  }
+
+  .fast-calendar-card .fast-recent-list > h3 {
+    flex: 0 0 auto !important;
+    margin: 8px 0 5px !important;
+  }
+
+  .fast-calendar-card .fast-recent-list > button {
+    flex: 0 0 42px !important;
+  }
+
+  .fast-calendar-card .fast-recent-list > p {
+    margin: auto 0 !important;
+    text-align: center !important;
+    color: var(--muted) !important;
+  }
+
+  /* Everything after the top dashboard returns to full width. */
+  .fast-metabolic-inputs,
+  .glycemic-foundation,
+  .fast-analytics-card {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+/* Keep the phase preview compact but readable. */
+.fast-current-phase.compact-phase-card {
+  overflow: hidden !important;
+  border-radius: 22px !important;
+}
+
+.fast-current-phase.compact-phase-card .fast-phase-art {
+  height: 100% !important;
+  min-height: 145px !important;
+}
+
+.fast-current-phase.compact-phase-card > div:last-child {
+  align-self: center !important;
+  min-width: 0 !important;
+}
+
+.fast-current-phase.compact-phase-card h2 {
+  line-height: 1.15 !important;
+}
+
+.fast-current-phase.compact-phase-card p {
+  margin: 7px 0 10px !important;
+  line-height: 1.5 !important;
+}
+
+.fast-current-phase.compact-phase-card button {
+  min-height: 40px !important;
+  margin: 4px 0 0 !important;
+}
+
+/* Tablet portrait and phone remain stacked in the natural order. */
+@media (max-width: 1050px) {
+  .fast-hero,
+  .inactive-fast-hero,
+  .fast-current-phase.compact-phase-card,
+  .fast-calendar-card.exercises-style-calendar {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    height: auto !important;
+  }
+}
+
+@media (max-width: 650px) {
+  .fast-current-phase.compact-phase-card {
+    grid-template-columns: 82px minmax(0, 1fr) !important;
+    gap: 11px !important;
+    padding: 12px !important;
+  }
+
+  .fast-current-phase.compact-phase-card .fast-phase-art {
+    min-height: 108px !important;
+  }
+
+  .fast-current-phase.compact-phase-card h2 {
+    font-size: 18px !important;
+  }
+}
+
+
+/* Fasting Patch 16 active-fast workflow */
+.fast-ring-times{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  gap:12px!important;
+  width:min(100%,342px)!important;
+  margin:14px auto 0!important;
+}
+
+.fast-ring-times>button,
+.fast-ring-times>span{
+  box-sizing:border-box!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:62px!important;
+  margin:0!important;
+  padding:10px 11px!important;
+  border:1px solid var(--line)!important;
+  border-radius:12px!important;
+  background:var(--card2)!important;
+}
+
+.fast-started-card{
+  display:grid!important;
+  gap:4px!important;
+  color:var(--text)!important;
+  text-align:left!important;
+  cursor:pointer!important;
+}
+
+.fast-started-card:hover,
+.fast-started-card:focus-visible{
+  border-color:var(--primary)!important;
+  background:color-mix(in srgb,var(--primary) 8%,var(--card2))!important;
+  outline:none!important;
+}
+
+.fast-started-card i,
+.fast-started-card em{
+  display:none!important;
+}
+
+.fast-ring-times small{
+  font-size:8px!important;
+  color:var(--muted)!important;
+  letter-spacing:.08em!important;
+}
+
+.fast-ring-times b{
+  overflow:hidden!important;
+  font-size:11px!important;
+  line-height:1.35!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+
+.fast-type-label{
+  position:absolute!important;
+  left:-9999px!important;
+}
+
+.fast-protocol-row label{
+  min-width:116px!important;
+  justify-content:center!important;
+}
+
+.fast-protocol-row select{
+  width:100%!important;
+  text-align:center!important;
+  cursor:pointer!important;
+}
+
+.fast-hero-copy>div{
+  display:flex!important;
+  justify-content:center!important;
+}
+
+.fast-hero-copy .end-fast{
+  min-width:150px!important;
+  min-height:46px!important;
+  margin:9px 0 0!important;
+  border:0!important;
+  border-radius:12px!important;
+  background:linear-gradient(135deg,#35d483,#20b968)!important;
+  color:#04120a!important;
+  font-weight:900!important;
+  box-shadow:0 8px 20px rgba(32,185,104,.18)!important;
+}
+
+.quick-fast-editor,
+.custom-target-editor{
+  width:min(520px,100%)!important;
+}
+
+.quick-fast-editor>p,
+.custom-target-editor>p{
+  margin-right:48px!important;
+  color:var(--muted)!important;
+  line-height:1.55!important;
+}
+
+.quick-fast-preview{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+  margin-top:16px;
+}
+
+.custom-target-editor .quick-fast-preview{
+  grid-template-columns:1fr;
+}
+
+.quick-fast-preview span{
+  display:grid;
+  gap:4px;
+  min-width:0;
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--card);
+}
+
+.quick-fast-preview small{
+  color:var(--muted);
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.08em;
+}
+
+.quick-fast-preview b{
+  overflow:hidden;
+  font-size:12px;
+  text-overflow:ellipsis;
+}
+
+@media(max-width:650px){
+  .fast-ring-times{
+    gap:8px!important;
+    width:min(100%,310px)!important;
+  }
+
+  .fast-ring-times>button,
+  .fast-ring-times>span{
+    min-height:58px!important;
+    padding:9px!important;
+  }
+
+  .quick-fast-preview{
+    grid-template-columns:1fr!important;
+  }
+}
+
+/* Fasting type dropdown: dark readable menu */
+.fast-protocol-row select {
+  color: #f8fafc !important;
+  background: #07130f !important;
+  color-scheme: dark !important;
+  -webkit-text-fill-color: #f8fafc !important;
+}
+
+.fast-protocol-row select option {
+  color: #f8fafc !important;
+  background: #0b1b18 !important;
+  -webkit-text-fill-color: #f8fafc !important;
+}
+
+.fast-protocol-row select option:checked {
+  color: #07110a !important;
+  background: #70e236 !important;
+  -webkit-text-fill-color: #07110a !important;
+}
+
+.fast-protocol-row select:focus {
+  outline: none !important;
+}
+
+.fast-protocol-row label:focus-within {
+  border-color: #70e236 !important;
+  box-shadow: 0 0 0 3px rgba(112, 226, 54, .14) !important;
+}
+
+/* iPhone and iPad */
+@media (max-width: 1050px) {
+  .fast-protocol-row select {
+    font-size: 16px !important;
+  }
+
+  .fast-protocol-row select option {
+    font-size: 16px !important;
+  }
+}
+
+
+/* Fasting Patch 17 reliable calendar details */
+.metabolic-month-grid > button {
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
+  user-select: none !important;
+  cursor: pointer !important;
+}
+
+.metabolic-calendar-hint {
+  margin: -5px 0 0 !important;
+  color: var(--muted) !important;
+  font-size: 9px !important;
+}
+
+.metabolic-record-detail {
+  position: relative !important;
+  z-index: 2 !important;
+  width: min(720px, 100%) !important;
+  max-height: calc(100dvh - 36px) !important;
+  overflow: auto !important;
+  padding: 26px !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 24px !important;
+  background: #08120d !important;
+  box-shadow: 0 24px 70px rgba(0,0,0,.48) !important;
+}
+
+.metabolic-record-detail > small {
+  color: var(--primary) !important;
+  font-weight: 900 !important;
+  letter-spacing: .08em !important;
+}
+
+.metabolic-record-detail > h2 {
+  margin: 6px 50px 18px 0 !important;
+}
+
+.metabolic-detail-close {
+  position: absolute !important;
+  top: 14px !important;
+  right: 14px !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 42px !important;
+  height: 42px !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 50% !important;
+  background: var(--card2) !important;
+  color: var(--text) !important;
+}
+
+.metabolic-detail-empty,
+.metabolic-edit-question {
+  margin-top: 16px !important;
+  padding: 15px !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 15px !important;
+  background: var(--card2) !important;
+}
+
+.metabolic-detail-empty {
+  display: grid !important;
+  place-items: center !important;
+  min-height: 190px !important;
+  text-align: center !important;
+}
+
+.metabolic-detail-empty svg {
+  width: 32px !important;
+  height: 32px !important;
+  margin-bottom: 8px !important;
+  color: var(--primary) !important;
+}
+
+.metabolic-detail-empty p {
+  margin: 5px 0 0 !important;
+  color: var(--muted) !important;
+}
+
+.metabolic-detail-actions {
+  position: sticky !important;
+  bottom: -26px !important;
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 9px !important;
+  margin: 20px -26px -26px !important;
+  padding: 14px 26px max(18px, env(safe-area-inset-bottom)) !important;
+  border-top: 1px solid var(--line) !important;
+  background: #08120df2 !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.metabolic-detail-actions button {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  min-height: 44px !important;
+  padding: 10px 14px !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 11px !important;
+  background: var(--card2) !important;
+  color: var(--text) !important;
+  font-weight: 800 !important;
+}
+
+.metabolic-detail-actions .primary {
+  border-color: transparent !important;
+  background: var(--primary) !important;
+  color: #07110a !important;
+}
+
+@media (max-width: 650px) {
+  .metabolic-record-detail {
+    width: 100% !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    padding: 20px !important;
+    border-radius: 0 !important;
+  }
+
+  .metabolic-detail-actions {
+    bottom: -20px !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1.4fr !important;
+    margin: 20px -20px -20px !important;
+    padding-inline: 20px !important;
+  }
+}
+
+
+/* Final Bundle UI Cleanup */
+.fast-ring-times {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  gap: 14px !important;
+  width: min(100%, 344px) !important;
+}
+
+.fast-ring-times > * {
+  min-width: 0 !important;
+  margin: 0 !important;
+}
+
+.fast-started-card i,
+.fast-started-card em {
+  display: none !important;
+}
+
+.fast-hero-copy h3:empty {
+  display: none !important;
+}
+
+.inactive-fast-ring-column {
+  gap: 22px !important;
+}
+
+.inactive-journey-ring {
+  margin-bottom: 24px !important;
+}
+
+.inactive-start-fast {
+  position: relative !important;
+  z-index: 2 !important;
+  margin-top: 20px !important;
+}
+
+.nutrition-editor .fast-editor-actions {
+  display: flex !important;
+  justify-content: center !important;
+}
+
+.nutrition-editor .fast-editor-actions > button:not(.save) {
+  display: none !important;
+}
+
+.nutrition-editor .fast-editor-actions > .save {
+  flex: 0 0 auto !important;
+  min-width: 184px !important;
+  justify-content: center !important;
+}
+
+.fast-drawer .close {
+  display: grid !important;
+  place-items: center !important;
+}
+
+@media (max-width: 650px) {
+  .fast-ring-times {
+    gap: 10px !important;
+  }
+
+  .inactive-start-fast {
+    margin-top: 26px !important;
+  }
+}
+
+
+/* Final Bundle 30D Graphs */
+.fasting-30d-graph{min-height:330px;padding:16px;border:1px solid var(--line);border-radius:20px;background:var(--card2)}.dot-plot-stage{position:relative;height:260px;border-left:1px solid var(--line);border-bottom:1px solid var(--line);background:linear-gradient(to top,transparent 24%,rgba(255,255,255,.04) 25%,transparent 26%,transparent 49%,rgba(255,255,255,.04) 50%,transparent 51%,transparent 74%,rgba(255,255,255,.04) 75%,transparent 76%)}.dot-plot-stage button{position:absolute;width:10px;height:10px;translate:-50% 50%;border:2px solid #dfffea;border-radius:50%;background:var(--primary);box-shadow:0 0 8px color-mix(in srgb,var(--primary) 50%,transparent)}.nutrition-30d-bars{position:relative;display:grid;gap:8px}.nutrition-30d-bars header{display:flex;justify-content:space-between}.nutrition-30d-bars header span{display:flex;gap:6px;font-size:9px;color:var(--muted)}.nutrition-30d-bars header i{width:8px;height:8px}.nutrition-30d-bars button{display:grid;grid-template-columns:42px 1fr 70px;gap:8px;align-items:center;border:0;background:transparent;color:var(--text)}.nutrition-30d-bars button>span{display:flex;height:20px;overflow:hidden;border-radius:4px;background:#263038}.nutrition-30d-bars .c{background:#38bdf8}.nutrition-30d-bars .f{background:#fbbf24}.nutrition-30d-bars .p{background:#a78bfa}.nutrition-30d-bars button>b,.nutrition-30d-bars button>small{font-size:9px;color:var(--muted)}.nutrition-target-lines{position:absolute;inset:40px 70px 0 50px;display:flex;justify-content:space-around;pointer-events:none}.nutrition-target-lines i{height:100%;border-left:1px dotted rgba(255,255,255,.22)}
+@media(max-width:650px){.fasting-30d-graph{min-height:260px;padding:10px}.dot-plot-stage{height:210px}}
+
+
+
+/* FASTING PATCH 23 CENTERED HERO AND METRIC MAPPING */
+.fast-hero,.inactive-fast-hero{display:grid!important;grid-template-columns:1fr!important;justify-items:center!important;align-content:center!important;min-height:620px!important;padding:24px!important}.fast-hero>.fast-protocol-row,.inactive-fast-target{top:16px!important;right:16px!important}.fast-journey-wrap,.inactive-journey-wrap{width:100%!important;min-height:400px!important;padding:48px 40px 34px!important}.fast-journey-ring,.inactive-journey-ring{margin-inline:auto!important}.fast-ring-times{position:relative!important;z-index:8!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:16px!important;width:min(100%,390px)!important;margin:36px auto 0!important}.fast-ring-times>button,.fast-ring-times>span{min-height:64px!important}.fast-hero-copy,.inactive-fast-copy{display:grid!important;place-items:center!important;width:100%!important;text-align:center!important}.fast-hero-copy>p,.inactive-fast-copy>p{display:none!important}.fast-stage{margin-top:12px!important}.icon-fast-control,.inactive-start-fast{display:grid!important;place-items:center!important;width:54px!important;min-width:54px!important;height:54px!important;min-height:54px!important;padding:0!important;border-radius:50%!important}.icon-fast-control svg,.inactive-start-fast svg{width:22px!important;height:22px!important}.inactive-start-fast .control-label{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important}.inactive-fast-ring-column{display:grid!important;place-items:center!important}.inactive-start-fast{position:relative!important;z-index:20!important;margin-top:38px!important}.inactive-fast-copy{margin-top:14px!important}.fast-phase-point{z-index:4!important}.fast-phase-point>small{display:none!important}
+.metric-recorder{width:min(620px,100%)!important}.metric-recorder-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:0 12px!important}.metric-recorder textarea{min-height:86px!important}.metric-no-equivalent{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;padding:13px!important;border:1px dashed var(--line)!important;border-radius:13px!important;color:var(--muted)!important}.metric-no-equivalent button{padding:8px 11px!important;border:1px solid var(--line)!important;border-radius:10px!important;background:var(--card2)!important;color:var(--text)!important}
+@media(min-width:1051px){.fasting-page{align-items:start!important}.fast-hero,.inactive-fast-hero{grid-column:1!important;grid-row:2!important}.fast-calendar-card.exercises-style-calendar{grid-column:2!important;grid-row:2/4!important}.fast-current-phase.compact-phase-card{grid-column:1!important;grid-row:3!important;margin-top:0!important}}
+@media(max-width:650px){.fast-hero,.inactive-fast-hero{min-height:560px!important;padding:16px!important}.fast-journey-wrap,.inactive-journey-wrap{padding-inline:10px!important}.fast-ring-times{gap:10px!important;width:min(100%,320px)!important}.metric-recorder-grid{grid-template-columns:1fr!important}}
+
+
+/* FASTING PATCH 24 LOWER HERO AND REAL DATA ONLY */
+
+/* Move the ring and its supporting controls down as one unit. */
+.fast-hero,
+.inactive-fast-hero {
+  padding-top: 38px !important;
+}
+
+.fast-journey-wrap,
+.inactive-journey-wrap {
+  translate: 0 18px !important;
+}
+
+/* Keep the time cards clear of the lower milestone after the shift. */
+.fast-ring-times {
+  margin-top: 52px !important;
+}
+
+/* Keep current phase and stop/play control comfortably below the cards. */
+.fast-hero-copy,
+.inactive-fast-copy {
+  margin-top: 16px !important;
+}
+
+.fast-hero-copy .icon-fast-control,
+.inactive-start-fast {
+  margin-top: 13px !important;
+}
+
+/* A graph with no real saved readings stays visibly empty. */
+.metric-dot-plot {
+  position: relative !important;
+}
+
+.metric-graph-empty {
+  position: absolute !important;
+  z-index: 3 !important;
+  inset: 58px 20px 32px !important;
+  display: grid !important;
+  place-content: center !important;
+  gap: 5px !important;
+  border: 1px dashed var(--line) !important;
+  border-radius: 14px !important;
+  background: color-mix(in srgb, var(--card2) 92%, transparent) !important;
+  color: var(--muted) !important;
+  text-align: center !important;
+}
+
+.metric-graph-empty b {
+  color: var(--text) !important;
+  font-size: 13px !important;
+}
+
+.metric-graph-empty span {
+  font-size: 10px !important;
+}
+
+.metric-dot-plot:has(.metric-graph-empty) .dot-plot-stage {
+  opacity: .22 !important;
+}
+
+@media (max-width: 650px) {
+  .fast-hero,
+  .inactive-fast-hero {
+    padding-top: 30px !important;
+  }
+
+  .fast-journey-wrap,
+  .inactive-journey-wrap {
+    translate: 0 12px !important;
+  }
+
+  .fast-ring-times {
+    margin-top: 44px !important;
+  }
+}
+
+
+/* FASTING PATCH 25 TIME CARDS AND PHASE SIZING */
+
+/*
+ * Pull Started and Target End closer to the lower milestone while keeping
+ * a safe, visible gap. The pair remains centred under the ring.
+ */
+.fast-ring-times {
+  position: relative !important;
+  z-index: 9 !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  gap: 14px !important;
+  width: min(100%, 420px) !important;
+  margin: 28px auto 0 !important;
+}
+
+.fast-ring-times > button,
+.fast-ring-times > span {
+  box-sizing: border-box !important;
+  display: grid !important;
+  align-content: center !important;
+  gap: 6px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 72px !important;
+  margin: 0 !important;
+  padding: 12px 15px !important;
+  border-radius: 13px !important;
+}
+
+.fast-ring-times small {
+  color: var(--muted) !important;
+  font-size: 9px !important;
+  font-weight: 900 !important;
+  letter-spacing: .08em !important;
+}
+
+.fast-ring-times b {
+  overflow: hidden !important;
+  color: var(--text) !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  line-height: 1.3 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* Keep the two timestamps balanced and visually aligned. */
+.fast-ring-times > button:first-child,
+.fast-ring-times > span:first-child {
+  text-align: left !important;
+}
+
+.fast-ring-times > button:last-child,
+.fast-ring-times > span:last-child {
+  text-align: left !important;
+}
+
+/* Reduce the excessive space below the time cards. */
+.fast-hero-copy {
+  margin-top: 28px !important;
+}
+
+.fast-hero-copy .fast-stage {
+  min-height: 44px !important;
+  margin: 0 !important;
+  padding: 10px 16px !important;
+}
+
+.fast-hero-copy .icon-fast-control,
+.fast-hero-copy .end-fast {
+  margin-top: 12px !important;
+}
+
+/*
+ * Use spare left-column space for a larger Current Phase card rather than
+ * leaving a dead gap below the hero.
+ */
+.fast-current-phase.compact-phase-card {
+  display: grid !important;
+  grid-template-columns: 150px minmax(0, 1fr) !important;
+  gap: 18px !important;
+  min-height: 230px !important;
+  padding: 18px !important;
+  border-radius: 24px !important;
+}
+
+.fast-current-phase.compact-phase-card .fast-phase-art {
+  width: 100% !important;
+  min-height: 190px !important;
+  height: 100% !important;
+  max-height: 230px !important;
+  border-radius: 18px !important;
+}
+
+.fast-current-phase.compact-phase-card > div:last-child {
+  align-self: center !important;
+  min-width: 0 !important;
+}
+
+.fast-current-phase.compact-phase-card > div:last-child > small {
+  font-size: 9px !important;
+  letter-spacing: .09em !important;
+}
+
+.fast-current-phase.compact-phase-card h2 {
+  margin: 7px 0 10px !important;
+  font-size: clamp(22px, 2.1vw, 29px) !important;
+  line-height: 1.12 !important;
+}
+
+.fast-current-phase.compact-phase-card p {
+  margin: 0 0 14px !important;
+  color: var(--muted) !important;
+  font-size: 12px !important;
+  line-height: 1.55 !important;
+}
+
+.fast-current-phase.compact-phase-card button {
+  min-height: 43px !important;
+  padding: 10px 14px !important;
+  border-radius: 12px !important;
+}
+
+/* Desktop: keep Current Phase immediately below the hero. */
+@media (min-width: 1051px) {
+  .fasting-page {
+    row-gap: 18px !important;
+    align-items: start !important;
+  }
+
+  .fast-hero,
+  .inactive-fast-hero {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+  }
+
+  .fast-current-phase.compact-phase-card {
+    grid-column: 1 !important;
+    grid-row: 3 !important;
+    margin-top: 0 !important;
+  }
+
+  .fast-calendar-card.exercises-style-calendar {
+    grid-column: 2 !important;
+    grid-row: 2 / 4 !important;
+    height: 100% !important;
+  }
+}
+
+@media (max-width: 1050px) {
+  .fast-current-phase.compact-phase-card {
+    grid-template-columns: 130px minmax(0, 1fr) !important;
+    min-height: 205px !important;
+  }
+
+  .fast-current-phase.compact-phase-card .fast-phase-art {
+    min-height: 170px !important;
+  }
+}
+
+@media (max-width: 650px) {
+  .fast-ring-times {
+    gap: 9px !important;
+    width: min(100%, 340px) !important;
+    margin-top: 24px !important;
+  }
+
+  .fast-ring-times > button,
+  .fast-ring-times > span {
+    min-height: 66px !important;
+    padding: 10px 11px !important;
+  }
+
+  .fast-ring-times b {
+    font-size: 12px !important;
+  }
+
+  .fast-current-phase.compact-phase-card {
+    grid-template-columns: 100px minmax(0, 1fr) !important;
+    gap: 13px !important;
+    min-height: 175px !important;
+    padding: 13px !important;
+  }
+
+  .fast-current-phase.compact-phase-card .fast-phase-art {
+    min-height: 145px !important;
+    max-height: 165px !important;
+  }
+
+  .fast-current-phase.compact-phase-card h2 {
+    font-size: 19px !important;
+  }
+}
+
+
+/* FASTING PATCH 26 METRIC CHOICE AND HERO POLISH */
+
+/* Raise only the ring. Started and Target End remain in their current place. */
+.fast-journey-wrap,
+.inactive-journey-wrap {
+  translate: 0 -18px !important;
+}
+
+.fast-ring-times {
+  margin-top: 18px !important;
+}
+
+/* Use the available lower-left space for a larger Current Phase card. */
+.fast-current-phase.compact-phase-card {
+  display: grid !important;
+  grid-template-columns: 170px minmax(0,1fr) !important;
+  gap: 20px !important;
+  min-height: 260px !important;
+  padding: 20px !important;
+}
+
+.fast-current-phase.compact-phase-card .fast-phase-art {
+  min-height: 220px !important;
+  max-height: 260px !important;
+  height: 100% !important;
+  border-radius: 18px !important;
+}
+
+.fast-current-phase.compact-phase-card h2 {
+  margin: 8px 0 11px !important;
+  font-size: clamp(28px,2.5vw,36px) !important;
+  line-height: 1.1 !important;
+}
+
+.fast-current-phase.compact-phase-card p {
+  margin: 0 0 16px !important;
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+}
+
+/* Metric choice flow */
+.metric-choice-drawer,
+.metric-card-picker,
+.metric-recorder {
+  width: min(620px,100%) !important;
+}
+
+.metric-choice-drawer > p,
+.metric-card-picker > p,
+.metric-record-source {
+  color: var(--muted) !important;
+  line-height: 1.55 !important;
+}
+
+.metric-choice-actions {
+  display: grid !important;
+  gap: 10px !important;
+  margin: 20px 0 90px !important;
+}
+
+.metric-choice-actions > button {
+  display: grid !important;
+  grid-template-columns: 46px minmax(0,1fr) 22px !important;
+  gap: 11px !important;
+  align-items: center !important;
+  width: 100% !important;
+  min-height: 76px !important;
+  padding: 12px !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 15px !important;
+  background: var(--card) !important;
+  color: var(--text) !important;
+  text-align: left !important;
+}
+
+.metric-choice-actions > button:disabled {
+  opacity: .45 !important;
+}
+
+.metric-choice-actions > button > span {
+  display: grid !important;
+  place-items: center !important;
+  width: 46px !important;
+  height: 46px !important;
+  border-radius: 13px !important;
+  background: var(--card2) !important;
+  color: var(--primary) !important;
+}
+
+.metric-choice-actions > button div {
+  display: grid !important;
+  gap: 4px !important;
+}
+
+.metric-choice-actions > button small {
+  color: var(--muted) !important;
+  line-height: 1.4 !important;
+}
+
+.metric-recorder-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 0 12px !important;
+}
+
+.metric-recorder textarea {
+  min-height: 88px !important;
+}
+
+.link-later-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  min-height: 40px !important;
+  margin-top: 12px !important;
+  padding: 9px 12px !important;
+  border: 1px solid color-mix(in srgb,var(--primary) 45%,var(--line)) !important;
+  border-radius: 11px !important;
+  background: color-mix(in srgb,var(--primary) 8%,var(--card2)) !important;
+  color: var(--text) !important;
+  font-weight: 800 !important;
+}
+
+@media (max-width:650px) {
+  .fast-journey-wrap,
+  .inactive-journey-wrap {
+    translate: 0 -12px !important;
+  }
+
+  .fast-current-phase.compact-phase-card {
+    grid-template-columns: 110px minmax(0,1fr) !important;
+    gap: 13px !important;
+    min-height: 190px !important;
+    padding: 13px !important;
+  }
+
+  .fast-current-phase.compact-phase-card .fast-phase-art {
+    min-height: 160px !important;
+    max-height: 185px !important;
+  }
+
+  .fast-current-phase.compact-phase-card h2 {
+    font-size: 21px !important;
+  }
+
+  .metric-recorder-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+
+/* PATCH 28 REAL HEALTH DATA AND CARD DISCOVERY */
+
+/* Compact phase card so the calendar retains five visible recent fast rows. */
+.fast-current-phase.compact-phase-card {
+  grid-template-columns: 138px minmax(0,1fr) !important;
+  gap: 16px !important;
+  min-height: 205px !important;
+  max-height: 225px !important;
+  padding: 16px !important;
+}
+.fast-current-phase.compact-phase-card .fast-phase-art {
+  min-height: 172px !important;
+  max-height: 193px !important;
+}
+.fast-current-phase.compact-phase-card h2 {
+  margin: 6px 0 8px !important;
+  font-size: clamp(21px,1.8vw,27px) !important;
+  line-height: 1.12 !important;
+}
+.fast-current-phase.compact-phase-card p {
+  margin: 0 0 11px !important;
+  font-size: 11px !important;
+  line-height: 1.48 !important;
+}
+.fast-current-phase.compact-phase-card button {
+  min-height: 40px !important;
+  padding: 9px 12px !important;
+}
+
+/* Compact biometric destination popouts, incorporated because Patch 27 was skipped. */
+.metric-choice-drawer,
+.metric-card-picker {
+  width: min(560px,calc(100vw - 32px)) !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: calc(100dvh - 40px) !important;
+  margin: auto !important;
+  padding: 24px !important;
+  overflow-y: auto !important;
+  border-radius: 22px !important;
+}
+.metric-choice-actions {
+  margin: 16px 0 0 !important;
+}
+.metric-card-picker .fast-editor-actions {
+  position: static !important;
+  margin: 20px 0 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+.fast-layer:has(.metric-choice-drawer),
+.fast-layer:has(.metric-card-picker),
+.fast-layer:has(.metric-recorder) {
+  display: grid !important;
+  place-items: center !important;
+  padding: 16px !important;
+}
+
+/* Health charts without dated records are explicitly empty. */
+.health-chart-empty {
+  display: grid;
+  place-content: center;
+  gap: 5px;
+  height: 142px;
+  min-height: 142px;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  color: var(--muted);
+  text-align: center;
+}
+.health-chart-empty b { color: var(--text); }
+.health-chart-empty span { font-size: 9px; }
+
+@media(max-width:650px) {
+  .fast-current-phase.compact-phase-card {
+    grid-template-columns: 96px minmax(0,1fr) !important;
+    min-height: 165px !important;
+    max-height: none !important;
+    padding: 12px !important;
+  }
+  .fast-current-phase.compact-phase-card .fast-phase-art {
+    min-height: 138px !important;
+  }
+  .fast-current-phase.compact-phase-card h2 {
+    font-size: 18px !important;
+  }
+  .metric-choice-drawer,
+  .metric-card-picker {
+    width: min(94vw,520px) !important;
+    padding: 20px !important;
+  }
+}
+
+
+/* PATCH 29 CLOCKWISE RING ORIGIN */
+/* Start at 12 o'clock and progress clockwise toward the right. */
+.fast-journey-ring {
+  background: conic-gradient(
+    from 0deg,
+    #43d6b5 0deg,
+    #4aa8f5 calc(var(--progress) * .38),
+    #8b63ed calc(var(--progress) * .65),
+    #ef6c77 calc(var(--progress) * .84),
+    #f4c84a var(--progress),
+    #d5d8dc var(--progress) 360deg
+  ) !important;
+}
+
+.fast-journey-ring[data-complete="true"] {
+  background: conic-gradient(
+    from 0deg,
+    #2ccf7a 0deg,
+    #76e5a5 34%,
+    #35d483 68%,
+    #9af0bb 100%
+  ) !important;
+}
+
+/* Ready state remains neutral and does not show false progress. */
+.inactive-journey-ring {
+  background: #53606a !important;
+}
+
+
+/* PATCH 30 DEFINITIVE CLOCK ORIGIN */
+/* 0deg is 12 o'clock. The coloured arc proceeds clockwise toward 1, 2, 3... */
+.fast-journey-ring:not(.inactive-journey-ring){
+  background-image:conic-gradient(
+    from 0deg,
+    #43d6b5 0deg,
+    #4aa8f5 calc(var(--progress) * .38),
+    #8b63ed calc(var(--progress) * .65),
+    #ef6c77 calc(var(--progress) * .84),
+    #f4c84a var(--progress),
+    #d5d8dc var(--progress) 360deg
+  )!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+}
+.inactive-journey-ring{background:#53606a!important;background-image:none!important}
+
+
+/* FASTING UI REMAINING PATCH 31 */
+/* Precise clock origin. Milestones and arc both start from 12 o'clock. */
+.fast-journey-ring:not(.inactive-journey-ring){background-image:conic-gradient(from 0deg,#43d6b5 0deg,#4aa8f5 calc(var(--progress)*.38),#8b63ed calc(var(--progress)*.65),#ef6c77 calc(var(--progress)*.84),#f4c84a var(--progress),#d5d8dc var(--progress) 360deg)!important}
+.fast-phase-point.reached{filter:none!important}.fast-phase-point:not(.reached):not(.current){background:#d5d8dc!important;color:#667078!important}.fast-phase-point:not(.reached):not(.current) span{filter:grayscale(1)!important;opacity:.48!important}
+/* Future fasting dates match metabolic calendars. */
+.fast-month-day.future{opacity:.22!important;filter:blur(.35px) saturate(.45)!important;cursor:not-allowed!important;pointer-events:none!important}.fast-month-day.future.qualifies{background:#0b1b29!important;color:#617283!important;border-color:#1d3444!important;box-shadow:none!important}
+/* Up to five recent fasts remain visible. */
+.fast-recent-list>button{min-height:38px!important;flex:0 0 38px!important}.fast-recent-list>button:nth-of-type(n+6){display:none!important}
+/* Enhanced biometric plots. */
+.metric-dot-plot.enhanced{position:relative;display:grid;gap:8px}.metric-dot-plot.enhanced header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.metric-dot-plot.enhanced header>div{display:grid;gap:3px}.metric-dot-plot.enhanced header small{color:var(--muted);font-size:8px}.metric-dot-plot.enhanced header>span{display:flex;align-items:center;gap:5px;color:var(--muted);font-size:8px}.metric-dot-plot.enhanced header i{width:9px;height:9px;border-radius:50%;background:var(--metric-default);border:2px solid var(--metric-default)}.metric-dot-plot.enhanced header i.hollow{background:transparent}.enhanced-stage{height:210px!important;overflow:visible}.reading-plot-dot{position:absolute!important;width:13px!important;height:13px!important;translate:-50% 50%!important;border:2px solid var(--dot-colour)!important;border-radius:50%!important;background:var(--dot-colour)!important;box-shadow:0 0 10px color-mix(in srgb,var(--dot-colour) 55%,transparent)!important}.reading-plot-dot.manual{background:var(--card2)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--dot-colour) 18%,transparent)!important}.reading-plot-dot:focus-visible{outline:3px solid #fff!important;outline-offset:3px!important}.baseline-band{position:absolute;z-index:0;left:0;right:0;min-height:2px;background:color-mix(in srgb,var(--metric-default) 12%,transparent);border-block:1px dashed color-mix(in srgb,var(--metric-default) 45%,transparent)}.baseline-band b{position:absolute;right:4px;top:2px;color:var(--muted);font-size:7px}.baseline-band.personal{background:color-mix(in srgb,var(--metric-default) 7%,transparent);border-style:dotted}.plot-axis{display:flex;justify-content:space-between;color:var(--muted);font-size:8px}.latest-readings{display:grid;gap:0;margin-top:4px;border-top:1px solid var(--line)}.latest-readings h4{margin:10px 0 5px;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}.latest-readings>button{display:grid!important;grid-template-columns:minmax(105px,.75fr) minmax(95px,.75fr) minmax(125px,1fr)!important;align-items:center!important;gap:8px!important;width:100%!important;min-height:39px!important;padding:7px 2px!important;border:0!important;border-bottom:1px solid var(--line)!important;background:transparent!important;color:var(--text)!important;text-align:left!important}.latest-readings>button span{display:grid}.latest-readings>button small{color:var(--muted);font-size:8px}.latest-readings>button strong{font-size:10px}.latest-readings>button em{justify-self:end;padding:4px 7px;border-radius:999px;font-size:8px;font-style:normal;white-space:nowrap}.latest-readings>button em.linked{background:color-mix(in srgb,var(--metric-default) 16%,var(--card2));color:var(--metric-default)}.latest-readings>button em.manual{border:1px solid var(--line);color:var(--muted)}.metric-graph-empty.static{position:static!important;min-height:260px!important}.fasting-30d-graph:has(.metric-dot-plot.enhanced){min-height:520px!important}
+@media(max-width:650px){.latest-readings>button{grid-template-columns:1fr auto!important}.latest-readings>button em{grid-column:1/-1;justify-self:start}.fasting-30d-graph:has(.metric-dot-plot.enhanced){min-height:560px!important}}
+
+
+/* FASTING UI PATCH 32 COMPACT HERO */
+
+/* Undo the oversized vertical stretch introduced by later hero overrides. */
+.fast-hero,
+.inactive-fast-hero {
+  min-height: 0 !important;
+  height: auto !important;
+  align-content: start !important;
+  padding: 20px 22px 22px !important;
+}
+
+/* Keep the selector compact in the upper-right corner. */
+.fast-hero > .fast-protocol-row,
+.inactive-fast-target {
+  top: 14px !important;
+  right: 14px !important;
+}
+
+/* Compact ring area while preserving milestone clearance. */
+.fast-journey-wrap,
+.inactive-journey-wrap {
+  min-height: 0 !important;
+  padding: 46px 24px 0 !important;
+  translate: 0 0 !important;
+}
+
+.fast-journey-ring,
+.inactive-journey-ring {
+  width: 280px !important;
+}
+
+.fast-phase-point {
+  transform:
+    rotate(var(--angle))
+    translate(140px)
+    rotate(calc(-1 * var(--angle))) !important;
+}
+
+/* Time cards remain directly below the ring, with no large empty zone. */
+.fast-ring-times {
+  width: min(100%, 390px) !important;
+  margin: 30px auto 0 !important;
+}
+
+.fast-ring-times > button,
+.fast-ring-times > span {
+  min-height: 64px !important;
+  padding: 10px 13px !important;
+}
+
+.fast-ring-times b {
+  font-size: 13px !important;
+}
+
+/* Pull phase label and stop/play control upward. */
+.fast-hero-copy,
+.inactive-fast-copy {
+  margin-top: 18px !important;
+}
+
+.fast-hero-copy .fast-stage,
+.inactive-stage {
+  min-height: 40px !important;
+  margin: 0 !important;
+  padding: 8px 13px !important;
+  font-size: 13px !important;
+}
+
+.fast-hero-copy .icon-fast-control,
+.fast-hero-copy .end-fast,
+.inactive-start-fast {
+  width: 50px !important;
+  min-width: 50px !important;
+  height: 50px !important;
+  min-height: 50px !important;
+  margin: 10px auto 0 !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+}
+
+/* Desktop target: hero and compact phase fit the calendar without dead space. */
+@media (min-width: 1051px) {
+  .fast-hero,
+  .inactive-fast-hero {
+    min-height: 590px !important;
+    max-height: 650px !important;
+  }
+
+  .fast-current-phase.compact-phase-card {
+    min-height: 185px !important;
+    max-height: 210px !important;
+  }
+
+  .fast-current-phase.compact-phase-card .fast-phase-art {
+    min-height: 152px !important;
+    max-height: 178px !important;
+  }
+
+  .fast-current-phase.compact-phase-card h2 {
+    font-size: clamp(20px, 1.65vw, 25px) !important;
+  }
+}
+
+@media (max-width: 650px) {
+  .fast-hero,
+  .inactive-fast-hero {
+    padding: 15px !important;
+  }
+
+  .fast-journey-wrap,
+  .inactive-journey-wrap {
+    padding: 42px 7px 0 !important;
+  }
+
+  .fast-journey-ring,
+  .inactive-journey-ring {
+    width: 240px !important;
+  }
+
+  .fast-phase-point {
+    transform:
+      rotate(var(--angle))
+      translate(120px)
+      rotate(calc(-1 * var(--angle))) !important;
+  }
+
+  .fast-ring-times {
+    width: min(100%, 320px) !important;
+    margin-top: 27px !important;
+  }
+}
+
+
+/* FASTING MASTER PATCH 33 CANONICAL */
+/* LOCKED DESKTOP: ring top-left; compact phase below; calendar right spanning both. */
+@media (min-width:1051px){
+ .fasting-page{display:grid!important;grid-template-columns:minmax(390px,.92fr) minmax(500px,1.08fr)!important;grid-template-rows:auto auto auto!important;column-gap:18px!important;row-gap:18px!important;align-items:start!important}
+ .fasting-heading{grid-column:1/-1!important;grid-row:1!important}
+ .fast-hero,.inactive-fast-hero{grid-column:1!important;grid-row:2!important;width:100%!important;height:620px!important;min-height:620px!important;max-height:620px!important;margin:0!important;align-self:start!important}
+ .fast-current-phase.compact-phase-card{grid-column:1!important;grid-row:3!important;width:100%!important;height:205px!important;min-height:205px!important;max-height:205px!important;margin:0!important;align-self:start!important}
+ .fast-calendar-card.exercises-style-calendar{grid-column:2!important;grid-row:2/4!important;width:100%!important;height:843px!important;min-height:843px!important;max-height:843px!important;margin:0!important;display:flex!important;flex-direction:column!important;overflow:hidden!important}
+ .fast-metabolic-inputs,.glycemic-foundation,.fast-analytics-card{grid-column:1/-1!important;grid-row:auto!important}
+}
+/* Hero has explicit non-overlapping zones. */
+.fast-hero,.inactive-fast-hero{position:relative!important;display:grid!important;grid-template-columns:1fr!important;grid-template-rows:390px 70px 54px 52px!important;justify-items:center!important;align-content:start!important;gap:10px!important;padding:18px 20px!important;overflow:visible!important}
+.fast-journey-wrap,.inactive-journey-wrap{grid-row:1!important;display:grid!important;place-items:center!important;width:100%!important;height:390px!important;min-height:390px!important;padding:48px 0 0!important;margin:0!important;translate:none!important}
+.fast-journey-ring,.inactive-journey-ring{width:280px!important;height:280px!important;aspect-ratio:1/1!important;min-width:280px!important;min-height:280px!important;max-width:280px!important;max-height:280px!important;margin:0!important;border-radius:50%!important;flex:none!important}
+/* Clock origin and exact clockwise progress. */
+.fast-journey-ring:not(.inactive-journey-ring){background-image:conic-gradient(from 0deg,#43d6b5 0deg,#4aa8f5 calc(var(--progress)*.38),#8b63ed calc(var(--progress)*.65),#ef6c77 calc(var(--progress)*.84),#f4c84a var(--progress),#d5d8dc var(--progress) 360deg)!important}
+.inactive-journey-ring{background:#53606a!important;background-image:none!important}
+/* Milestones are immutable circles. */
+.fast-phase-point,.inactive-journey-ring .fast-phase-point{box-sizing:border-box!important;width:42px!important;height:42px!important;min-width:42px!important;min-height:42px!important;max-width:42px!important;max-height:42px!important;aspect-ratio:1/1!important;margin:-21px!important;padding:0!important;border-radius:50%!important;flex:0 0 42px!important;display:grid!important;grid-template-rows:auto auto!important;place-content:center!important;gap:1px!important;transform:rotate(var(--angle)) translate(140px) rotate(calc(-1*var(--angle)))!important;overflow:visible!important}
+.fast-phase-point span{font-size:14px!important;line-height:1!important}.fast-phase-point b{font-size:8px!important;line-height:1!important}.fast-phase-point small{display:none!important}.fast-phase-point:not(.reached):not(.current){background:#d5d8dc!important;color:#667078!important;border-color:#eef1f2!important;box-shadow:0 3px 8px #0005!important}.fast-phase-point:not(.reached):not(.current) span{filter:grayscale(1)!important;opacity:.48!important}.fast-phase-point.reached{background:var(--phase)!important;color:#fff!important}.fast-phase-point.current{background:var(--phase)!important;color:#fff!important;box-shadow:0 0 0 4px color-mix(in srgb,var(--phase) 18%,transparent),0 0 15px var(--phase)!important}
+/* Time cards are a separate collision-safe row. */
+.fast-ring-times{grid-row:2!important;position:relative!important;z-index:10!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:12px!important;width:min(100%,390px)!important;height:70px!important;margin:0!important;padding:0!important}.fast-ring-times>button,.fast-ring-times>span{box-sizing:border-box!important;width:100%!important;height:70px!important;min-height:70px!important;margin:0!important;padding:10px 13px!important;border-radius:12px!important}.fast-ring-times small{font-size:9px!important}.fast-ring-times b{font-size:13px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+/* Phase title + stop share one compact row. */
+.fast-hero-copy,.inactive-fast-copy{grid-row:3/5!important;display:grid!important;grid-template-columns:minmax(0,1fr) 48px!important;grid-template-rows:54px 52px!important;align-items:center!important;gap:0 12px!important;width:min(100%,390px)!important;margin:0!important;padding:0!important;text-align:left!important}.fast-hero-copy>p,.inactive-fast-copy>p,.fast-hero-copy>h3{display:none!important}.fast-stage,.inactive-stage{grid-column:1!important;grid-row:1!important;display:flex!important;align-items:center!important;min-width:0!important;min-height:44px!important;margin:0!important;padding:8px 11px!important;border-radius:12px!important;font-size:13px!important;line-height:1.25!important;overflow:hidden!important}.fast-hero-copy>div,.inactive-fast-copy>.inactive-start-fast{grid-column:2!important;grid-row:1!important;margin:0!important}.icon-fast-control,.end-fast,.inactive-start-fast{display:grid!important;place-items:center!important;width:46px!important;min-width:46px!important;height:46px!important;min-height:46px!important;margin:0!important;padding:0!important;border-radius:13px!important}.inactive-fast-rules{grid-column:1/-1!important;grid-row:2!important;margin:4px 0 0!important}
+/* Selector is visible, icon-led, and collision-free. */
+.fast-protocol-row,.inactive-fast-target{position:absolute!important;z-index:30!important;top:14px!important;right:14px!important}.fast-protocol-row label,.inactive-fast-target label{display:flex!important;align-items:center!important;justify-content:center!important;min-width:152px!important;min-height:42px!important;padding:0 35px 0 13px!important;border-radius:999px!important}.fast-protocol-row label::before,.inactive-fast-target label::before{content:'⏱️';margin-right:7px;font-size:14px}.fast-protocol-row select,.inactive-fast-target select{min-width:92px!important;text-align:center!important;text-align-last:center!important}.fast-protocol-row svg,.inactive-fast-target svg{display:block!important;position:absolute!important;right:11px!important}
+/* Small Current Phase card under hero. */
+.fast-current-phase.compact-phase-card{box-sizing:border-box!important;display:grid!important;grid-template-columns:132px minmax(0,1fr)!important;gap:14px!important;padding:14px!important;overflow:hidden!important;border-radius:20px!important}.fast-current-phase.compact-phase-card .fast-phase-art{width:100%!important;height:177px!important;min-height:177px!important;max-height:177px!important;border-radius:15px!important}.fast-current-phase.compact-phase-card>div:last-child{align-self:center!important;min-width:0!important;max-height:177px!important;overflow:hidden!important}.fast-current-phase.compact-phase-card h2{margin:5px 0 7px!important;font-size:20px!important;line-height:1.14!important}.fast-current-phase.compact-phase-card p{display:-webkit-box!important;margin:0 0 9px!important;overflow:hidden!important;font-size:10px!important;line-height:1.45!important;-webkit-line-clamp:3!important;-webkit-box-orient:vertical!important}.fast-current-phase.compact-phase-card button{min-height:38px!important;margin:0!important;padding:8px 10px!important}
+/* Calendar: five recent rows, internal containment, future dates muted. */
+.fast-calendar-card .fast-recent-list{display:flex!important;flex-direction:column!important;flex:1 1 auto!important;min-height:0!important;overflow:hidden!important}.fast-calendar-card .fast-recent-list>button{flex:0 0 39px!important;min-height:39px!important;padding:7px 0!important}.fast-calendar-card .fast-recent-list>button:nth-of-type(n+6){display:none!important}.fast-month-day.future{opacity:.22!important;filter:blur(.35px) saturate(.45)!important;cursor:not-allowed!important;pointer-events:none!important}.fast-month-day.future.qualifies{background:#0b1b29!important;color:#617283!important;border-color:#1d3444!important;box-shadow:none!important}
+/* Responsive: stack, never compress circles into collisions. */
+@media(max-width:1050px){.fasting-page{grid-template-columns:1fr!important;grid-template-rows:none!important}.fast-hero,.inactive-fast-hero,.fast-current-phase.compact-phase-card,.fast-calendar-card.exercises-style-calendar{grid-column:1!important;grid-row:auto!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important}.fast-hero,.inactive-fast-hero{min-height:610px!important}}
+@media(max-width:650px){.fast-hero,.inactive-fast-hero{grid-template-rows:340px 66px 50px 48px!important;min-height:550px!important;padding:14px!important}.fast-journey-wrap,.inactive-journey-wrap{height:340px!important;min-height:340px!important;padding-top:44px!important}.fast-journey-ring,.inactive-journey-ring{width:240px!important;height:240px!important;min-width:240px!important;min-height:240px!important}.fast-phase-point,.inactive-journey-ring .fast-phase-point{width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;max-width:36px!important;max-height:36px!important;flex-basis:36px!important;margin:-18px!important;transform:rotate(var(--angle)) translate(120px) rotate(calc(-1*var(--angle)))!important}.fast-ring-times{width:min(100%,320px)!important;height:66px!important}.fast-ring-times>button,.fast-ring-times>span{height:66px!important;min-height:66px!important;padding:9px!important}.fast-ring-times b{font-size:11px!important}.fast-hero-copy,.inactive-fast-copy{width:min(100%,320px)!important;grid-template-columns:minmax(0,1fr) 44px!important}.icon-fast-control,.end-fast,.inactive-start-fast{width:44px!important;min-width:44px!important;height:44px!important;min-height:44px!important}.fast-current-phase.compact-phase-card{grid-template-columns:90px minmax(0,1fr)!important;height:auto!important;min-height:155px!important;padding:11px!important}.fast-current-phase.compact-phase-card .fast-phase-art{height:132px!important;min-height:132px!important}.fast-current-phase.compact-phase-card h2{font-size:17px!important}}
+
+
+/* FASTING FINAL APPROVED DESIGN P36 */
+@media(min-width:1051px){
+ .fasting-page{grid-template-columns:minmax(440px,.93fr) minmax(520px,1.07fr)!important;grid-template-rows:auto 610px 205px auto!important;gap:18px!important;align-items:start!important}
+ .fasting-heading{grid-column:1/-1!important;grid-row:1!important}
+ .fast-hero,.inactive-fast-hero{grid-column:1!important;grid-row:2!important;height:610px!important;min-height:610px!important;max-height:610px!important}
+ .fast-current-phase.compact-phase-card{grid-column:1!important;grid-row:3!important;height:205px!important;min-height:205px!important;max-height:205px!important}
+ .fast-calendar-card.exercises-style-calendar{grid-column:2!important;grid-row:2/4!important;height:833px!important;min-height:833px!important;max-height:833px!important}
+ .fast-metabolic-inputs,.glycemic-foundation,.fast-analytics-card{grid-column:1/-1!important}
+}
+.fast-hero{position:relative!important;display:block!important;padding:18px!important;overflow:hidden!important;background:radial-gradient(circle at 50% 36%,color-mix(in srgb,var(--phase) 9%,transparent),transparent 38%),var(--card)!important}
+.fast-hero-copy{display:none!important}.fast-protocol-row{top:14px!important;right:14px!important;z-index:30!important}.fast-protocol-row label{min-width:96px!important;min-height:34px!important;padding:0 28px 0 9px!important}.fast-protocol-row label::before{content:'◷'!important;margin-right:5px!important;font-size:12px!important}.fast-protocol-row select{font-size:12px!important;padding:7px 0!important}.fast-protocol-row svg{right:8px!important;width:14px!important}
+.revised-fast-instrument{display:grid!important;grid-template-rows:410px 64px 44px!important;align-content:start!important;justify-items:center!important;width:100%!important;height:100%!important;min-height:0!important;padding:42px 0 0!important;margin:0!important;translate:none!important}
+.revised-journey-ring{position:relative!important;width:340px!important;height:340px!important;min-width:340px!important;min-height:340px!important;max-width:340px!important;max-height:340px!important;aspect-ratio:1/1!important;border-radius:50%!important;background:#30383d!important;background-image:none!important;box-shadow:0 0 28px color-mix(in srgb,var(--phase) 14%,transparent)!important}
+.revised-journey-ring::before{inset:16px!important;background:#06120e!important;box-shadow:inset 0 0 34px #0009!important}
+.revised-ring-center{inset:25%!important;cursor:default!important}.revised-ring-center strong{font-size:38px!important}.revised-ring-center small{font-size:13px!important}.revised-ring-center em{margin-top:9px!important;color:#fb923c!important;font-size:12px!important;font-style:normal!important;font-weight:900!important;letter-spacing:.04em!important}.revised-ring-center i{display:none!important}
+.fast-phase-point.embedded{box-sizing:border-box!important;width:46px!important;height:46px!important;min-width:46px!important;min-height:46px!important;max-width:46px!important;max-height:46px!important;aspect-ratio:1/1!important;margin:-23px!important;padding:0!important;border-radius:50%!important;flex:0 0 46px!important;transform:rotate(var(--angle)) translate(170px) rotate(calc(-1*var(--angle)))!important;display:grid!important;place-content:center!important;gap:1px!important}.fast-phase-point.embedded span{font-size:17px!important}.fast-phase-point.embedded b{font-size:8px!important}.fast-phase-point.embedded.locked{background:#20282d!important;border-color:#53606a!important;color:#98a1a7!important;box-shadow:0 2px 8px #0008!important}.fast-phase-point.embedded.locked span{filter:grayscale(1)!important;opacity:.65!important}.fast-phase-point.embedded.reached{background:color-mix(in srgb,var(--phase) 22%,#13221c)!important;border-color:var(--phase)!important;color:#fff!important}.fast-phase-point.embedded.current{box-shadow:0 0 0 4px color-mix(in srgb,var(--phase) 20%,transparent),0 0 18px var(--phase)!important}
+.fast-progress-marker{--marker-angle:-90deg;position:absolute!important;z-index:12!important;left:50%!important;top:50%!important;width:12px!important;height:12px!important;margin:-6px!important;border:2px solid #dfffea!important;border-radius:50%!important;background:#54e78b!important;box-shadow:0 0 12px #54e78b!important;transform:rotate(var(--marker-angle)) translate(170px) rotate(calc(-1*var(--marker-angle)))!important}
+.revised-ring-times{display:grid!important;grid-template-columns:1fr 1fr!important;gap:34px!important;width:min(100%,410px)!important;height:64px!important;margin:0!important}.revised-ring-times>button,.revised-ring-times>span{position:relative!important;display:grid!important;align-content:center!important;gap:4px!important;height:64px!important;min-height:64px!important;padding:7px 10px!important;border:0!important;border-radius:0!important;background:transparent!important}.revised-ring-times>button:first-child,.revised-ring-times>span:first-child{border-right:1px solid var(--line)!important}.revised-ring-times small{font-size:9px!important;color:#4ade80!important}.revised-ring-times b{font-size:13px!important}.revised-ring-times svg{position:absolute!important;right:9px!important;bottom:9px!important;width:14px!important;color:#4ade80!important}.revised-end-fast{display:grid!important;place-items:center!important;width:42px!important;height:42px!important;margin:2px 0 0!important;padding:0!important;border:1px solid color-mix(in srgb,var(--primary) 60%,var(--line))!important;border-radius:12px!important;background:color-mix(in srgb,var(--primary) 12%,var(--card2))!important;color:var(--primary)!important}
+.fast-current-phase.compact-phase-card{grid-template-columns:138px minmax(0,1fr)!important;gap:15px!important;padding:14px!important;overflow:hidden!important}.fast-current-phase.compact-phase-card .fast-phase-art{width:100%!important;height:177px!important;min-height:177px!important;max-height:177px!important}.fast-current-phase.compact-phase-card h2{font-size:20px!important}.fast-current-phase.compact-phase-card p{display:-webkit-box!important;-webkit-line-clamp:3!important;-webkit-box-orient:vertical!important;overflow:hidden!important;font-size:10px!important}.fast-current-phase.compact-phase-card button{min-height:38px!important}
+.fast-calendar-data-dots{position:absolute!important;left:50%!important;bottom:4px!important;translate:-50% 0!important;display:flex!important;align-items:center!important;gap:3px!important;height:7px!important}.fast-calendar-data-dots i,.fast-calendar-dot-legend i{width:6px!important;height:6px!important;border-radius:50%!important}.fast-calendar-data-dots small{display:inline!important;font-size:6px!important;color:var(--muted)!important}.fast-calendar-data-dots .fast,.fast-calendar-dot-legend .fast{background:#7dcc4a!important}.fast-calendar-data-dots .nutrition,.fast-calendar-dot-legend .nutrition{background:#328bd2!important}.fast-calendar-data-dots .glucose,.fast-calendar-dot-legend .glucose{background:#f97373!important}.fast-calendar-data-dots .rhr,.fast-calendar-dot-legend .rhr{background:#ec4899!important}.fast-calendar-data-dots .weight,.fast-calendar-dot-legend .weight{background:#27c2bd!important}.fast-calendar-data-dots .hba1c,.fast-calendar-dot-legend .hba1c{background:#7c3aed!important}.fast-calendar-dot-legend{display:flex!important;flex-wrap:wrap!important;gap:8px 14px!important;margin:11px 0!important;padding-top:9px!important;border-top:1px solid var(--line)!important;color:var(--muted)!important;font-size:8px!important}.fast-calendar-dot-legend span{display:flex!important;align-items:center!important;gap:5px!important}.fast-month-day.future{opacity:.2!important;filter:blur(.3px) saturate(.35)!important;pointer-events:none!important}
+.metric-link-hyperlink{border:0!important;background:transparent!important;color:var(--primary)!important;text-decoration:underline!important;text-underline-offset:3px!important;padding:6px 0!important}.metabolic-month-grid>button{touch-action:manipulation!important}.metric-choice-drawer,.metric-card-picker{height:auto!important;min-height:0!important;max-height:calc(100dvh - 40px)!important;margin:auto!important}.metric-choice-actions{margin-bottom:0!important}
+@media(max-width:1050px){.fasting-page{grid-template-columns:1fr!important}.fast-hero,.inactive-fast-hero,.fast-current-phase.compact-phase-card,.fast-calendar-card.exercises-style-calendar{grid-column:1!important;grid-row:auto!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important}.fast-hero{min-height:575px!important}.revised-fast-instrument{grid-template-rows:390px 62px 44px!important}.revised-journey-ring{width:310px!important;height:310px!important;min-width:310px!important;min-height:310px!important}.fast-phase-point.embedded{width:42px!important;height:42px!important;min-width:42px!important;min-height:42px!important;max-width:42px!important;max-height:42px!important;margin:-21px!important;transform:rotate(var(--angle)) translate(155px) rotate(calc(-1*var(--angle)))!important}.fast-progress-marker{transform:rotate(var(--marker-angle)) translate(155px) rotate(calc(-1*var(--marker-angle)))!important}}
+@media(max-width:650px){.fasting-page{padding:10px!important;gap:12px!important}.fast-hero{min-height:500px!important;padding:12px!important}.revised-fast-instrument{grid-template-rows:330px 62px 42px!important;padding-top:38px!important}.revised-journey-ring{width:250px!important;height:250px!important;min-width:250px!important;min-height:250px!important}.fast-phase-point.embedded{width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;max-width:36px!important;max-height:36px!important;margin:-18px!important;transform:rotate(var(--angle)) translate(125px) rotate(calc(-1*var(--angle)))!important}.fast-progress-marker{width:10px!important;height:10px!important;margin:-5px!important;transform:rotate(var(--marker-angle)) translate(125px) rotate(calc(-1*var(--marker-angle)))!important}.revised-ring-center strong{font-size:29px!important}.revised-ring-times{width:min(100%,300px)!important;gap:18px!important}.revised-ring-times b{font-size:11px!important}.fast-current-phase.compact-phase-card{grid-template-columns:86px minmax(0,1fr)!important;height:auto!important;min-height:145px!important}.fast-current-phase.compact-phase-card .fast-phase-art{height:122px!important;min-height:122px!important}.fast-calendar-card .fast-recent-list>button:nth-of-type(n+4){display:none!important}}
+
+
+/* FASTING PATCH 37 TIMER SWITCH AND ADAPTIVE PLOTS */
+.revised-ring-center{border:0!important;background:transparent!important;color:var(--text)!important;cursor:pointer!important}.revised-ring-center:hover,.revised-ring-center:focus-visible{outline:2px solid color-mix(in srgb,var(--primary) 50%,transparent)!important;outline-offset:5px!important}.adaptive-shell{height:auto!important;min-height:0!important;padding:0!important;border:0!important;background:transparent!important}.adaptive-plot-card{box-sizing:border-box;display:grid;gap:12px;width:100%;padding:17px;border:1px solid color-mix(in srgb,var(--metric) 25%,var(--line));border-radius:19px;background:var(--card2)}.adaptive-plot-card>header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.adaptive-plot-card>header>div{display:grid;gap:3px}.adaptive-plot-card>header small{color:var(--muted);font-size:8px}.adaptive-legend{display:flex;align-items:center;gap:5px;color:var(--muted);font-size:8px}.adaptive-legend i{width:9px;height:9px;border:2px solid var(--metric);border-radius:50%}.adaptive-legend i.linked{background:var(--metric)}.adaptive-empty{display:grid;place-items:center;align-content:center;gap:9px;min-height:250px;padding:25px;text-align:center}.adaptive-empty>span{font-size:36px;color:var(--metric)}.adaptive-empty p,.adaptive-hint{max-width:290px;margin:0 auto;color:var(--muted);font-size:10px;line-height:1.5;text-align:center}.adaptive-single{display:grid;place-items:center;gap:9px;min-height:255px;padding:24px;border:1px solid var(--line);border-radius:16px;background:var(--card);text-align:center}.adaptive-single>small{color:var(--primary);font-size:9px;font-weight:900}.adaptive-single>strong{font-size:clamp(30px,4vw,43px)}.adaptive-single>strong i{font-size:16px;font-style:normal}.adaptive-single p{margin:0;color:var(--muted);font-size:10px}.adaptive-dot{box-sizing:border-box;width:13px;height:13px;min-width:13px;min-height:13px;border:2px solid var(--reading,var(--metric));border-radius:50%;background:var(--reading,var(--metric));box-shadow:0 0 9px color-mix(in srgb,var(--reading,var(--metric)) 50%,transparent)}.adaptive-dot.manual{background:var(--card2);box-shadow:0 0 0 2px color-mix(in srgb,var(--reading,var(--metric)) 14%,transparent)}.adaptive-single em,.adaptive-latest em{padding:4px 7px;border-radius:999px;font-size:8px;font-style:normal}.adaptive-single em.linked,.adaptive-latest em.linked{background:color-mix(in srgb,var(--metric) 14%,var(--card));color:var(--metric)}.adaptive-single em.manual,.adaptive-latest em.manual{border:1px solid var(--line);color:var(--muted)}.adaptive-chart{display:grid;grid-template-columns:42px minmax(0,1fr);height:220px}.adaptive-plot-card.compact .adaptive-chart{height:165px}.adaptive-y{display:flex;flex-direction:column;justify-content:space-between;padding-right:7px;color:var(--muted);font-size:8px;text-align:right}.adaptive-stage{position:relative;overflow:hidden;border-left:1px solid var(--line);border-bottom:1px solid var(--line);background:repeating-linear-gradient(to top,transparent 0,transparent calc(33.33% - 1px),rgba(255,255,255,.05) 33.33%)}.adaptive-dot.plotted{position:absolute;z-index:3;translate:-50% 50%;padding:0}.adaptive-band{position:absolute;z-index:1;left:0;right:0;min-height:2px;border-block:1px dashed color-mix(in srgb,var(--metric) 40%,transparent);background:color-mix(in srgb,var(--metric) 6%,transparent)}.adaptive-band b{position:absolute;top:2px;right:4px;color:var(--muted);font-size:7px}.adaptive-stage svg{position:absolute;z-index:2;inset:0;width:100%;height:100%}.adaptive-stage polyline{fill:none;stroke:color-mix(in srgb,var(--metric) 55%,transparent);stroke-width:1.3;vector-effect:non-scaling-stroke}.adaptive-x{display:flex;justify-content:space-between;padding-left:42px;color:var(--muted);font-size:8px}.adaptive-latest{display:grid;border-top:1px solid var(--line)}.adaptive-latest h4{margin:11px 0 4px;color:var(--primary);font-size:9px;letter-spacing:.08em}.adaptive-latest>button{display:grid;grid-template-columns:minmax(115px,.8fr) minmax(90px,.6fr) minmax(120px,1fr);align-items:center;gap:8px;width:100%;min-height:40px;padding:6px 2px;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--text);text-align:left}.adaptive-latest>button span{display:grid}.adaptive-latest small{color:var(--muted);font-size:8px}.adaptive-latest strong{font-size:10px}.adaptive-latest em{justify-self:end}.adaptive-plot-card.empty{min-height:340px}.adaptive-plot-card.single{min-height:410px}.adaptive-plot-card.compact{min-height:380px}.adaptive-plot-card.full{min-height:510px}@media(max-width:650px){.adaptive-plot-card{padding:13px}.adaptive-plot-card>header{display:grid}.adaptive-latest>button{grid-template-columns:1fr auto}.adaptive-latest em{grid-column:1/-1;justify-self:start}.adaptive-plot-card.single{min-height:380px}}
+
+
+/* FASTING PATCH 38 MOCKUP ALIGNMENT */
+/* Dark track + precise green-to-cyan arc. The roaming dot shares the same endpoint. */
+.revised-journey-ring{
+  background:
+    conic-gradient(from 0deg,#45d66f 0deg,#22d3b6 var(--arc),#30383d var(--arc) 360deg)!important;
+  box-shadow:0 0 24px rgba(55,211,122,.12)!important;
+}
+.revised-journey-ring[data-complete="true"]{
+  background:conic-gradient(from 0deg,#45d66f,#22d3b6 48%,#45d66f 100%)!important;
+}
+/* Nodes overlap the track by half their diameter, visually embedded rather than floating. */
+.fast-phase-point.embedded{border-width:2px!important;background:#152027!important}
+.fast-phase-point.embedded.reached{background:color-mix(in srgb,var(--phase) 20%,#112019)!important}
+/* Reduce dead space and integrate the end control beside the Started/Goal row. */
+@media(min-width:1051px){
+  .fasting-page{grid-template-rows:auto 570px 190px auto!important}
+  .fast-hero,.inactive-fast-hero{height:570px!important;min-height:570px!important;max-height:570px!important}
+  .fast-current-phase.compact-phase-card{height:190px!important;min-height:190px!important;max-height:190px!important}
+  .fast-calendar-card.exercises-style-calendar{height:778px!important;min-height:778px!important;max-height:778px!important}
+}
+.revised-fast-instrument{grid-template-rows:385px 68px!important;padding-top:38px!important}
+.revised-end-fast{position:absolute!important;right:18px!important;bottom:18px!important;margin:0!important}
+.revised-ring-times{padding-right:54px!important;gap:24px!important}
+.revised-ring-times>button,.revised-ring-times>span{padding-inline:8px!important}
+/* Calendar controls and dots */
+.fast-calendar-month-head{grid-template-columns:42px 1fr auto 42px!important}
+.fast-calendar-today{width:auto!important;min-width:66px!important;padding-inline:12px!important;border:1px solid #286b42!important;background:transparent!important;color:#65d67d!important;font-size:10px!important}
+.fast-calendar-data-dots{z-index:4!important;bottom:4px!important;height:6px!important}
+.fast-calendar-data-dots i,.fast-calendar-dot-legend i{display:block!important;width:6px!important;height:6px!important;min-width:6px!important;min-height:6px!important;max-width:6px!important;max-height:6px!important;margin:0!important;padding:0!important;border:0!important;border-radius:50%!important;box-shadow:none!important;transform:none!important}
+.fast-calendar-data-dots .data-fast,.fast-calendar-dot-legend .data-fast{background:#7dcc4a!important}
+.fast-calendar-data-dots .data-nutrition,.fast-calendar-dot-legend .data-nutrition{background:#328bd2!important}
+.fast-calendar-data-dots .data-glucose,.fast-calendar-dot-legend .data-glucose{background:#f97373!important}
+.fast-calendar-data-dots .data-rhr,.fast-calendar-dot-legend .data-rhr{background:#ec4899!important}
+.fast-calendar-data-dots .data-weight,.fast-calendar-dot-legend .data-weight{background:#27c2bd!important}
+.fast-calendar-data-dots .data-hba1c,.fast-calendar-dot-legend .data-hba1c{background:#7c3aed!important}
+.fast-calendar-dot-legend{align-items:center!important;min-height:24px!important}
+.fast-calendar-dot-legend span{font-size:8px!important}
+/* Recent fasts match the approved compact rows. */
+.fast-recent-list>button{grid-template-columns:minmax(88px,1fr) 58px 64px auto 16px!important;gap:8px!important}
+.fast-recent-list>button em{justify-self:end;padding:3px 8px;border:1px solid #286b42;border-radius:999px;color:#65d67d;font-size:8px;font-style:normal}
+.fast-view-all-fasts{display:flex!important;justify-content:center!important;align-items:center!important;gap:6px!important;width:100%!important;min-height:34px!important;border:0!important;background:transparent!important;color:#65d67d!important;font-size:10px!important}
+.fast-view-all-fasts svg{width:13px!important}
+/* Warm compact phase illustration instead of the tall blue silhouette. */
+.fast-current-phase.compact-phase-card{grid-template-columns:140px minmax(0,1fr)!important;padding:14px!important}
+.fast-current-phase.compact-phase-card .fast-phase-art{position:relative!important;height:162px!important;min-height:162px!important;max-height:162px!important;background:radial-gradient(circle at 34% 37%,#ffb347 0 8%,#d85224 9% 14%,transparent 15%),radial-gradient(circle at 66% 28%,#ff7b36 0 6%,#8f2e20 7% 12%,transparent 13%),radial-gradient(circle at 62% 66%,#ffb347 0 10%,#b93c24 11% 17%,transparent 18%),radial-gradient(circle at 30% 70%,#f46c2c 0 7%,#6e221d 8% 13%,transparent 14%),linear-gradient(145deg,#29120c,#100b0a)!important}
+.fast-current-phase.compact-phase-card .art-body,.fast-current-phase.compact-phase-card .art-body:before,.fast-current-phase.compact-phase-card .art-orbit,.fast-current-phase.compact-phase-card .art-particle{display:none!important}
+.fast-current-phase.compact-phase-card h2{font-size:19px!important}.fast-current-phase.compact-phase-card p{font-size:10px!important}
+@media(max-width:1050px){.revised-fast-instrument{grid-template-rows:365px 66px!important}.revised-end-fast{right:15px!important;bottom:15px!important}}
+@media(max-width:650px){.fast-hero{min-height:455px!important}.revised-fast-instrument{grid-template-rows:315px 76px!important;padding-top:34px!important}.revised-ring-times{grid-template-columns:1fr!important;gap:0!important;padding-right:48px!important;height:76px!important}.revised-ring-times>button,.revised-ring-times>span{height:38px!important;min-height:38px!important}.revised-ring-times>button:first-child{border-right:0!important;border-bottom:1px solid var(--line)!important}.revised-end-fast{right:12px!important;bottom:20px!important}.fast-calendar-month-head{grid-template-columns:34px 1fr auto 34px!important}.fast-calendar-today{min-width:52px!important;padding-inline:7px!important}.fast-current-phase.compact-phase-card{grid-template-columns:90px minmax(0,1fr)!important}.fast-current-phase.compact-phase-card .fast-phase-art{height:122px!important;min-height:122px!important}.fast-recent-list>button{grid-template-columns:55px 40px 48px auto 12px!important;font-size:8px!important}}
+
+
+/* FASTING PATCH 39 THICK TRACK AND LARGER MARKER */
+
+/*
+ * Visual direction:
+ * - substantial deep-teal track instead of the thin white ring
+ * - green/cyan elapsed section remains clearly visible
+ * - milestone circles sit across the middle of the track
+ * - roaming progress marker is large enough to see
+ */
+.revised-journey-ring {
+  --track-colour: #176583;
+  --track-shadow: #082c3d;
+  --progress-start: #45d66f;
+  --progress-end: #22d3b6;
+
+  background-color: var(--track-colour) !important;
+  background-image: conic-gradient(
+    from 0deg,
+    var(--progress-start) 0deg,
+    var(--progress-end) var(--arc),
+    var(--track-colour) var(--arc),
+    var(--track-colour) 360deg
+  ) !important;
+  box-shadow:
+    0 0 0 3px var(--track-shadow),
+    0 0 30px rgba(34, 211, 182, .13) !important;
+}
+
+/* A wider track, matching the reference sketch. */
+.revised-journey-ring::before {
+  inset: 25px !important;
+  background: #06120e !important;
+  box-shadow:
+    inset 0 0 0 3px #082c3d,
+    inset 0 0 35px rgba(0, 0, 0, .72) !important;
+}
+
+/* Completed fast retains the same substantial geometry. */
+.revised-journey-ring[data-complete="true"] {
+  background-color: #45d66f !important;
+  background-image: conic-gradient(
+    from 0deg,
+    #45d66f 0deg,
+    #22d3b6 52%,
+    #45d66f 100%
+  ) !important;
+}
+
+/*
+ * Milestones straddle the track instead of floating outside it.
+ * Equal dimensions and aspect-ratio prevent oblong shapes.
+ */
+.fast-phase-point.embedded {
+  box-sizing: border-box !important;
+  width: 50px !important;
+  height: 50px !important;
+  min-width: 50px !important;
+  min-height: 50px !important;
+  max-width: 50px !important;
+  max-height: 50px !important;
+  aspect-ratio: 1 / 1 !important;
+  margin: -25px !important;
+  border: 3px solid var(--track-shadow) !important;
+  border-radius: 50% !important;
+  background: #16262d !important;
+  color: #aab5ba !important;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, .52),
+    inset 0 0 0 1px #3d5964 !important;
+}
+
+.fast-phase-point.embedded span {
+  font-size: 17px !important;
+}
+
+.fast-phase-point.embedded b {
+  font-size: 8px !important;
+}
+
+/* Reached milestones become clearly green, similar to the sketch. */
+.fast-phase-point.embedded.reached {
+  border-color: #0a5038 !important;
+  background: #45d66f !important;
+  color: #04150c !important;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, .42),
+    0 0 13px rgba(69, 214, 111, .34) !important;
+}
+
+.fast-phase-point.embedded.reached span {
+  filter: none !important;
+  opacity: 1 !important;
+}
+
+/* Current milestone remains distinct without becoming oversized. */
+.fast-phase-point.embedded.current {
+  border-color: #d8fff0 !important;
+  background: #22d3b6 !important;
+  color: #03130f !important;
+  box-shadow:
+    0 0 0 5px rgba(34, 211, 182, .18),
+    0 0 20px rgba(34, 211, 182, .7) !important;
+}
+
+/* Large roaming endpoint marker. */
+.fast-progress-marker {
+  box-sizing: border-box !important;
+  width: 22px !important;
+  height: 22px !important;
+  min-width: 22px !important;
+  min-height: 22px !important;
+  margin: -11px !important;
+  border: 4px solid #dffff0 !important;
+  border-radius: 50% !important;
+  background: #45d66f !important;
+  box-shadow:
+    0 0 0 5px rgba(69, 214, 111, .16),
+    0 0 18px rgba(69, 214, 111, .82) !important;
+}
+
+/* Keep the marker and milestones centred on the thicker track. */
+@media (min-width: 1051px) {
+  .fast-phase-point.embedded {
+    transform:
+      rotate(var(--angle))
+      translate(170px)
+      rotate(calc(-1 * var(--angle))) !important;
+  }
+
+  .fast-progress-marker {
+    transform:
+      rotate(var(--marker-angle))
+      translate(170px)
+      rotate(calc(-1 * var(--marker-angle))) !important;
+  }
+}
+
+@media (max-width: 1050px) {
+  .revised-journey-ring::before {
+    inset: 23px !important;
+  }
+
+  .fast-phase-point.embedded {
+    width: 46px !important;
+    height: 46px !important;
+    min-width: 46px !important;
+    min-height: 46px !important;
+    max-width: 46px !important;
+    max-height: 46px !important;
+    margin: -23px !important;
+    transform:
+      rotate(var(--angle))
+      translate(155px)
+      rotate(calc(-1 * var(--angle))) !important;
+  }
+
+  .fast-progress-marker {
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px !important;
+    min-height: 20px !important;
+    margin: -10px !important;
+    transform:
+      rotate(var(--marker-angle))
+      translate(155px)
+      rotate(calc(-1 * var(--marker-angle))) !important;
+  }
+}
+
+@media (max-width: 650px) {
+  .revised-journey-ring::before {
+    inset: 19px !important;
+  }
+
+  .fast-phase-point.embedded {
+    width: 39px !important;
+    height: 39px !important;
+    min-width: 39px !important;
+    min-height: 39px !important;
+    max-width: 39px !important;
+    max-height: 39px !important;
+    margin: -19.5px !important;
+    border-width: 2px !important;
+    transform:
+      rotate(var(--angle))
+      translate(125px)
+      rotate(calc(-1 * var(--angle))) !important;
+  }
+
+  .fast-progress-marker {
+    width: 17px !important;
+    height: 17px !important;
+    min-width: 17px !important;
+    min-height: 17px !important;
+    margin: -8.5px !important;
+    border-width: 3px !important;
+    transform:
+      rotate(var(--marker-angle))
+      translate(125px)
+      rotate(calc(-1 * var(--marker-angle))) !important;
+  }
+}
+
+
+/* FASTING PATCH 40 RING REBUILD FINAL */
+.revised-journey-ring{
+  position:relative!important;
+  background:none!important;
+  isolation:isolate!important;
+}
+.revised-journey-ring::before{content:none!important}
+.revised-journey-ring::after{
+  content:''!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:0!important;
+  border-radius:50%!important;
+  background:
+    conic-gradient(
+      from 0deg,
+      #45d66f 0deg,
+      #22d3b6 var(--arc),
+      #176583 var(--arc) 360deg
+    )!important;
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 34px),#000 calc(100% - 33px));
+          mask:radial-gradient(farthest-side,transparent calc(100% - 34px),#000 calc(100% - 33px));
+  box-shadow:0 0 26px rgba(34,211,182,.14)!important;
+}
+.revised-journey-ring[data-complete="true"]::after{
+  background:conic-gradient(from 0deg,#45d66f 0deg,#22d3b6 55%,#45d66f 100%)!important;
+}
+.revised-ring-center{position:relative!important;z-index:2!important}
+.fast-phase-point.embedded{position:absolute!important;left:50%!important;top:50%!important;z-index:3!important;box-sizing:border-box!important;width:50px!important;height:50px!important;min-width:50px!important;min-height:50px!important;max-width:50px!important;max-height:50px!important;aspect-ratio:1/1!important;margin:-25px!important;border:3px solid #082c3d!important;border-radius:50%!important;background:#16262d!important;color:#aab5ba!important;transform:rotate(var(--angle)) translate(170px) rotate(calc(-1*var(--angle)))!important;display:grid!important;place-content:center!important;box-shadow:0 4px 12px rgba(0,0,0,.52),inset 0 0 0 1px #3d5964!important}
+.fast-phase-point.embedded span{font-size:17px!important}.fast-phase-point.embedded b{font-size:8px!important}
+.fast-phase-point.embedded.reached{border-color:#0a5038!important;background:#45d66f!important;color:#04150c!important;box-shadow:0 4px 12px rgba(0,0,0,.42),0 0 13px rgba(69,214,111,.34)!important}
+.fast-phase-point.embedded.reached span{filter:none!important;opacity:1!important}
+.fast-phase-point.embedded.current{border-color:#d8fff0!important;background:#22d3b6!important;color:#03130f!important;box-shadow:0 0 0 5px rgba(34,211,182,.18),0 0 20px rgba(34,211,182,.7)!important}
+.fast-progress-marker{position:absolute!important;left:50%!important;top:50%!important;z-index:4!important;box-sizing:border-box!important;width:22px!important;height:22px!important;min-width:22px!important;min-height:22px!important;margin:-11px!important;border:4px solid #dffff0!important;border-radius:50%!important;background:#45d66f!important;transform:rotate(var(--marker-angle)) translate(170px) rotate(calc(-1*var(--marker-angle)))!important;box-shadow:0 0 0 5px rgba(69,214,111,.16),0 0 18px rgba(69,214,111,.82)!important}
+@media(max-width:1050px){
+  .revised-journey-ring::after{-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 30px),#000 calc(100% - 29px));mask:radial-gradient(farthest-side,transparent calc(100% - 30px),#000 calc(100% - 29px))}
+  .fast-phase-point.embedded{width:46px!important;height:46px!important;min-width:46px!important;min-height:46px!important;max-width:46px!important;max-height:46px!important;margin:-23px!important;transform:rotate(var(--angle)) translate(155px) rotate(calc(-1*var(--angle)))!important}
+  .fast-progress-marker{width:20px!important;height:20px!important;min-width:20px!important;min-height:20px!important;margin:-10px!important;transform:rotate(var(--marker-angle)) translate(155px) rotate(calc(-1*var(--marker-angle)))!important}
+}
+@media(max-width:650px){
+  .revised-journey-ring::after{-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 24px),#000 calc(100% - 23px));mask:radial-gradient(farthest-side,transparent calc(100% - 24px),#000 calc(100% - 23px))}
+  .fast-phase-point.embedded{width:39px!important;height:39px!important;min-width:39px!important;min-height:39px!important;max-width:39px!important;max-height:39px!important;margin:-19.5px!important;border-width:2px!important;transform:rotate(var(--angle)) translate(125px) rotate(calc(-1*var(--angle)))!important}
+  .fast-progress-marker{width:17px!important;height:17px!important;min-width:17px!important;min-height:17px!important;margin:-8.5px!important;border-width:3px!important;transform:rotate(var(--marker-angle)) translate(125px) rotate(calc(-1*var(--marker-angle)))!important}
+}
+
+
+/* FASTING PATCH 41 FINAL RING CONTROLS */
+
+/* Ring centre: no grey disc, no green outline, no browser button chrome. */
+.revised-ring-center,
+.revised-ring-center:hover,
+.revised-ring-center:focus,
+.revised-ring-center:focus-visible,
+.revised-ring-center:active {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  position: absolute !important;
+  z-index: 2 !important;
+  inset: 25% !important;
+  display: grid !important;
+  place-content: center !important;
+  justify-items: center !important;
+  gap: 5px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  outline: 0 !important;
+  outline-offset: 0 !important;
+  background: #06120e !important;
+  background-image: none !important;
+  color: var(--text) !important;
+  box-shadow: inset 0 0 34px rgba(0,0,0,.68) !important;
+  filter: none !important;
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+.revised-ring-center strong {
+  color: #f8fbf9 !important;
+}
+
+.revised-ring-center small {
+  color: #94a39c !important;
+}
+
+.revised-ring-center em {
+  color: #fb923c !important;
+}
+
+/* Track: absolute final authority over all older white-ring rules. */
+.revised-journey-ring {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+.revised-journey-ring::before {
+  content: none !important;
+  display: none !important;
+}
+
+.revised-journey-ring::after {
+  content: '' !important;
+  position: absolute !important;
+  z-index: 1 !important;
+  inset: 0 !important;
+  border-radius: 50% !important;
+  background: conic-gradient(
+    from 0deg,
+    #45d66f 0deg,
+    #22d3b6 var(--arc),
+    #176583 var(--arc),
+    #176583 360deg
+  ) !important;
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 33px),
+    #000 calc(100% - 32px)
+  ) !important;
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 33px),
+    #000 calc(100% - 32px)
+  ) !important;
+  pointer-events: none !important;
+}
+
+/* Milestones and roaming dot sit above the track overlay. */
+.fast-phase-point.embedded {
+  z-index: 4 !important;
+}
+
+.fast-progress-marker {
+  z-index: 5 !important;
+}
+
+/* Started / Goal: a unified compact strip, not two floating blocks. */
+.revised-ring-times {
+  box-sizing: border-box !important;
+  display: grid !important;
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr) !important;
+  gap: 0 !important;
+  width: min(100%, 390px) !important;
+  height: 68px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(83,126,105,.36) !important;
+  border-radius: 14px !important;
+  background: rgba(5,22,15,.66) !important;
+}
+
+.revised-ring-times > button,
+.revised-ring-times > span {
+  box-sizing: border-box !important;
+  position: relative !important;
+  display: grid !important;
+  align-content: center !important;
+  justify-items: start !important;
+  gap: 5px !important;
+  width: 100% !important;
+  height: 68px !important;
+  min-height: 68px !important;
+  margin: 0 !important;
+  padding: 10px 34px 10px 15px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  color: var(--text) !important;
+  text-align: left !important;
+}
+
+.revised-ring-times > button:first-child {
+  border-right: 1px solid rgba(83,126,105,.34) !important;
+}
+
+.revised-ring-times > button:hover,
+.revised-ring-times > button:focus-visible {
+  background: rgba(69,214,111,.055) !important;
+  outline: 0 !important;
+}
+
+.revised-ring-times small {
+  color: #4ade80 !important;
+  font-size: 9px !important;
+  font-weight: 900 !important;
+  letter-spacing: .08em !important;
+}
+
+.revised-ring-times b {
+  overflow: hidden !important;
+  color: #f2f8f4 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.revised-ring-times svg {
+  position: absolute !important;
+  right: 13px !important;
+  bottom: 13px !important;
+  width: 15px !important;
+  height: 15px !important;
+  color: #4ade80 !important;
+}
+
+/* End Fast sits beside the strip, aligned and deliberate. */
+.revised-end-fast {
+  position: absolute !important;
+  right: 18px !important;
+  bottom: 18px !important;
+  z-index: 8 !important;
+  width: 46px !important;
+  min-width: 46px !important;
+  height: 46px !important;
+  min-height: 46px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid #28784a !important;
+  border-radius: 13px !important;
+  background: #0b2a1a !important;
+  color: #57df83 !important;
+  box-shadow: 0 5px 14px rgba(0,0,0,.28) !important;
+}
+
+@media (max-width: 650px) {
+  .revised-ring-times {
+    width: min(100%, 300px) !important;
+    height: 116px !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: 58px 58px !important;
+  }
+
+  .revised-ring-times > button,
+  .revised-ring-times > span {
+    height: 58px !important;
+    min-height: 58px !important;
+    padding: 8px 34px 8px 12px !important;
+  }
+
+  .revised-ring-times > button:first-child {
+    border-right: 0 !important;
+    border-bottom: 1px solid rgba(83,126,105,.34) !important;
+  }
+
+  .revised-end-fast {
+    right: 12px !important;
+    bottom: 52px !important;
+    width: 42px !important;
+    min-width: 42px !important;
+    height: 42px !important;
+    min-height: 42px !important;
+  }
+}
+
+
+/* FASTING PATCH 42 LAYERED SVG RING */
+/*
+  Layer order:
+  1. SVG base track
+  2. SVG progress track
+  3. roaming progress dot
+  4. milestone buttons
+  5. timer centre
+*/
+.layered-fast-instrument{
+  box-sizing:border-box!important;
+  display:grid!important;
+  grid-template-rows:380px 76px!important;
+  justify-items:center!important;
+  align-content:start!important;
+  width:100%!important;
+  height:100%!important;
+  padding:38px 0 0!important;
+  margin:0!important;
+}
+
+.layered-ring{
+  position:relative!important;
+  width:340px!important;
+  height:340px!important;
+  min-width:340px!important;
+  min-height:340px!important;
+  aspect-ratio:1/1!important;
+  border-radius:50%!important;
+  isolation:isolate!important;
+}
+
+.layered-ring-svg{
+  position:absolute!important;
+  z-index:1!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  overflow:visible!important;
+  transform:rotate(-90deg)!important;
+}
+
+.layered-base-track,
+.layered-progress-track{
+  fill:none!important;
+  stroke-width:30!important;
+  stroke-linecap:round!important;
+}
+
+.layered-base-track{
+  stroke:#176583!important;
+  filter:drop-shadow(0 0 3px #082c3d)!important;
+}
+
+.layered-progress-track{
+  stroke:url(#fastingProgressGradient)!important;
+  transition:stroke-dasharray .35s ease!important;
+  filter:drop-shadow(0 0 5px rgba(34,211,182,.23))!important;
+}
+
+.layered-progress-dot{
+  box-sizing:border-box!important;
+  position:absolute!important;
+  z-index:4!important;
+  width:20px!important;
+  height:20px!important;
+  min-width:20px!important;
+  min-height:20px!important;
+  translate:-50% -50%!important;
+  border:4px solid #e4fff0!important;
+  border-radius:50%!important;
+  background:#45d66f!important;
+  box-shadow:0 0 0 5px rgba(69,214,111,.16),0 0 17px rgba(69,214,111,.78)!important;
+  pointer-events:none!important;
+}
+
+.layered-milestone{
+  box-sizing:border-box!important;
+  position:absolute!important;
+  z-index:5!important;
+  left:50%!important;
+  top:50%!important;
+  display:grid!important;
+  place-content:center!important;
+  gap:1px!important;
+  width:48px!important;
+  height:48px!important;
+  min-width:48px!important;
+  min-height:48px!important;
+  max-width:48px!important;
+  max-height:48px!important;
+  aspect-ratio:1/1!important;
+  margin:-24px!important;
+  padding:0!important;
+  border:3px solid #082c3d!important;
+  border-radius:50%!important;
+  background:#16262d!important;
+  color:#9eaaaf!important;
+  transform:rotate(var(--node-angle)) translate(151px) rotate(calc(-1*var(--node-angle)))!important;
+  box-shadow:0 4px 11px rgba(0,0,0,.48),inset 0 0 0 1px #3d5964!important;
+  cursor:pointer!important;
+}
+
+.layered-milestone span{
+  font-size:16px!important;
+  line-height:1!important;
+}
+
+.layered-milestone b{
+  font-size:8px!important;
+  line-height:1!important;
+}
+
+.layered-milestone.locked span{
+  filter:grayscale(1)!important;
+  opacity:.62!important;
+}
+
+.layered-milestone.reached{
+  border-color:#0a5038!important;
+  background:#45d66f!important;
+  color:#04150c!important;
+  box-shadow:0 4px 11px rgba(0,0,0,.42),0 0 11px rgba(69,214,111,.3)!important;
+}
+
+.layered-milestone.current{
+  border-color:#e4fff7!important;
+  background:#22d3b6!important;
+  color:#03130f!important;
+  box-shadow:0 0 0 5px rgba(34,211,182,.18),0 0 19px rgba(34,211,182,.72)!important;
+}
+
+.layered-ring-centre,
+.layered-ring-centre:hover,
+.layered-ring-centre:focus,
+.layered-ring-centre:focus-visible{
+  appearance:none!important;
+  position:absolute!important;
+  z-index:6!important;
+  inset:25%!important;
+  display:grid!important;
+  place-content:center!important;
+  justify-items:center!important;
+  gap:5px!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:50%!important;
+  outline:0!important;
+  background:#06120e!important;
+  color:#f8fbf9!important;
+  box-shadow:inset 0 0 30px rgba(0,0,0,.74)!important;
+  cursor:pointer!important;
+  -webkit-tap-highlight-color:transparent!important;
+}
+
+.layered-ring-centre strong{
+  font-size:38px!important;
+  line-height:1!important;
+}
+
+.layered-ring-centre small{
+  color:#94a39c!important;
+  font-size:12px!important;
+}
+
+.layered-ring-centre em{
+  margin-top:7px!important;
+  color:#fb923c!important;
+  font-size:11px!important;
+  font-style:normal!important;
+  font-weight:900!important;
+  letter-spacing:.04em!important;
+}
+
+.layered-time-strip{
+  box-sizing:border-box!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) 50px!important;
+  align-items:stretch!important;
+  gap:0!important;
+  width:min(100%,430px)!important;
+  height:68px!important;
+  overflow:hidden!important;
+  border:1px solid rgba(83,126,105,.36)!important;
+  border-radius:14px!important;
+  background:rgba(5,22,15,.66)!important;
+}
+
+.layered-started,
+.layered-goal{
+  box-sizing:border-box!important;
+  position:relative!important;
+  display:grid!important;
+  align-content:center!important;
+  gap:5px!important;
+  min-width:0!important;
+  padding:9px 32px 9px 14px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#f2f8f4!important;
+  text-align:left!important;
+}
+
+.layered-started{
+  border-right:1px solid rgba(83,126,105,.34)!important;
+  cursor:pointer!important;
+}
+
+.layered-started:hover,
+.layered-started:focus-visible{
+  outline:0!important;
+  background:rgba(69,214,111,.055)!important;
+}
+
+.layered-started small,
+.layered-goal small{
+  color:#4ade80!important;
+  font-size:9px!important;
+  font-weight:900!important;
+  letter-spacing:.08em!important;
+}
+
+.layered-started b,
+.layered-goal b{
+  overflow:hidden!important;
+  font-size:12px!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+
+.layered-started svg{
+  position:absolute!important;
+  right:11px!important;
+  bottom:11px!important;
+  width:14px!important;
+  color:#4ade80!important;
+}
+
+.layered-end-fast{
+  display:grid!important;
+  place-items:center!important;
+  width:50px!important;
+  min-width:50px!important;
+  height:68px!important;
+  min-height:68px!important;
+  padding:0!important;
+  border:0!important;
+  border-left:1px solid rgba(83,126,105,.34)!important;
+  border-radius:0!important;
+  background:#0b2a1a!important;
+  color:#57df83!important;
+  cursor:pointer!important;
+}
+
+.layered-end-fast:hover,
+.layered-end-fast:focus-visible{
+  outline:0!important;
+  background:#103a24!important;
+}
+
+/* Suppress every older ring implementation after structural replacement. */
+.revised-fast-instrument,
+.revised-journey-ring,
+.revised-ring-times,
+.revised-end-fast,
+.fast-progress-marker,
+.fast-phase-point.embedded,
+.revised-ring-center{
+  display:none!important;
+}
+
+@media(max-width:1050px){
+  .layered-fast-instrument{grid-template-rows:350px 70px!important;padding-top:34px!important}
+  .layered-ring{width:310px!important;height:310px!important;min-width:310px!important;min-height:310px!important}
+  .layered-base-track,.layered-progress-track{stroke-width:27!important}
+  .layered-milestone{width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;max-width:44px!important;max-height:44px!important;margin:-22px!important;transform:rotate(var(--node-angle)) translate(138px) rotate(calc(-1*var(--node-angle)))!important}
+}
+
+@media(max-width:650px){
+  .layered-fast-instrument{grid-template-rows:292px 116px!important;padding-top:30px!important}
+  .layered-ring{width:252px!important;height:252px!important;min-width:252px!important;min-height:252px!important}
+  .layered-base-track,.layered-progress-track{stroke-width:22!important}
+  .layered-milestone{width:37px!important;height:37px!important;min-width:37px!important;min-height:37px!important;max-width:37px!important;max-height:37px!important;margin:-18.5px!important;border-width:2px!important;transform:rotate(var(--node-angle)) translate(112px) rotate(calc(-1*var(--node-angle)))!important}
+  .layered-milestone span{font-size:13px!important}.layered-milestone b{font-size:7px!important}
+  .layered-progress-dot{width:16px!important;height:16px!important;min-width:16px!important;min-height:16px!important;border-width:3px!important}
+  .layered-ring-centre strong{font-size:28px!important}.layered-ring-centre small{font-size:10px!important}.layered-ring-centre em{font-size:9px!important}
+  .layered-time-strip{grid-template-columns:1fr 48px!important;grid-template-rows:58px 58px!important;width:min(100%,300px)!important;height:116px!important}
+  .layered-started,.layered-goal{height:58px!important;min-height:58px!important;padding:7px 30px 7px 11px!important}
+  .layered-started{grid-column:1!important;grid-row:1!important;border-right:0!important;border-bottom:1px solid rgba(83,126,105,.34)!important}
+  .layered-goal{grid-column:1!important;grid-row:2!important}
+  .layered-end-fast{grid-column:2!important;grid-row:1/3!important;width:48px!important;min-width:48px!important;height:116px!important;min-height:116px!important}
+}
+
+
+/* FASTING PATCH 45 PHASE VISUALS AND FIRST MILESTONE */
+
+/* Before 4h every milestone remains visually locked. */
+.layered-ring[data-before-first="true"] .layered-milestone,
+.layered-milestone.locked {
+  border-color: #10384a !important;
+  background: #172930 !important;
+  color: #829198 !important;
+  box-shadow:
+    0 4px 11px rgba(0,0,0,.48),
+    inset 0 0 0 1px #35515c !important;
+}
+
+.layered-milestone.locked span {
+  filter: grayscale(1) !important;
+  opacity: .58 !important;
+}
+
+.layered-milestone.locked b {
+  color: #829198 !important;
+}
+
+/* Never allow a locked milestone to inherit a current-state glow. */
+.layered-milestone.locked.current {
+  border-color: #10384a !important;
+  background: #172930 !important;
+  color: #829198 !important;
+  box-shadow:
+    0 4px 11px rgba(0,0,0,.48),
+    inset 0 0 0 1px #35515c !important;
+}
+
+/* Shared illustration canvas based on the first approved visual set. */
+.fast-phase-art {
+  --art-main: #5ce89c;
+  --art-secondary: #35b8d8;
+  --art-glow: rgba(92,232,156,.34);
+  position: relative !important;
+  isolation: isolate !important;
+  overflow: hidden !important;
+  border: 1px solid color-mix(in srgb,var(--art-main) 28%,#183745) !important;
+  border-radius: 18px !important;
+  background:
+    radial-gradient(circle at 50% 48%,var(--art-glow),transparent 34%),
+    linear-gradient(145deg,#071923,#061118 64%,#07130f) !important;
+}
+
+.fast-phase-art::before,
+.fast-phase-art::after {
+  content: '' !important;
+  position: absolute !important;
+  z-index: 2 !important;
+  left: 50% !important;
+  top: 50% !important;
+  translate: -50% -50% !important;
+  pointer-events: none !important;
+}
+
+.fast-phase-art .art-orbit {
+  position: absolute !important;
+  z-index: 3 !important;
+  left: 50% !important;
+  top: 50% !important;
+  width: 68% !important;
+  height: 35% !important;
+  border: 1px solid color-mix(in srgb,var(--art-main) 75%,transparent) !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  opacity: .88 !important;
+  translate: -50% -50% !important;
+}
+
+.fast-phase-art .art-orbit.one {
+  rotate: 18deg !important;
+}
+
+.fast-phase-art .art-orbit.two {
+  rotate: -27deg !important;
+  scale: .88 !important;
+}
+
+.fast-phase-art .art-particle {
+  position: absolute !important;
+  z-index: 4 !important;
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 50% !important;
+  background: var(--art-main) !important;
+  box-shadow: 0 0 14px var(--art-main) !important;
+}
+
+.fast-phase-art .p1 { left: 24% !important; top: 38% !important; }
+.fast-phase-art .p2 { right: 18% !important; top: 45% !important; }
+.fast-phase-art .p3 { left: 34% !important; bottom: 17% !important; }
+
+/* 4h: soft digestion/transition orb. */
+.fast-phase-art.art-fed {
+  --art-main: #68e394;
+  --art-secondary: #bde8f0;
+  --art-glow: rgba(104,227,148,.32);
+}
+
+.fast-phase-art.art-fed::before {
+  width: 42% !important;
+  height: 58% !important;
+  border-radius: 48% 48% 42% 42% / 35% 35% 58% 58% !important;
+  background:
+    radial-gradient(circle at 50% 28%,#d7f3f4 0 16%,transparent 17%),
+    linear-gradient(180deg,#b7e0e5 0 25%,#75d7bd 26% 58%,#2b745d 100%) !important;
+  box-shadow: 0 0 26px var(--art-glow) !important;
+}
+
+/* 8h: balanced dual-energy orbs. */
+.fast-phase-art.art-balance {
+  --art-main: #42dfc7;
+  --art-secondary: #4aa8f5;
+  --art-glow: rgba(66,223,199,.32);
+}
+
+.fast-phase-art.art-balance::before {
+  width: 34% !important;
+  height: 34% !important;
+  margin-left: -16% !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at 35% 30%,#d9fff7,#43dcb5 40%,#167761 100%) !important;
+  box-shadow: 55px 0 0 -2px #318fd2,55px 0 26px rgba(49,143,210,.5) !important;
+}
+
+.fast-phase-art.art-balance::after {
+  width: 54% !important;
+  height: 3px !important;
+  background: linear-gradient(90deg,var(--art-main),var(--art-secondary)) !important;
+  box-shadow: 0 -19px 0 -1px rgba(255,255,255,.2) !important;
+}
+
+/* 12h: orange fat-droplet cluster. */
+.fast-phase-art.art-fat {
+  --art-main: #ff9c3f;
+  --art-secondary: #ed5c2d;
+  --art-glow: rgba(255,156,63,.38);
+}
+
+.fast-phase-art.art-fat::before {
+  width: 48% !important;
+  height: 48% !important;
+  border-radius: 50% !important;
+  background:
+    radial-gradient(circle at 27% 28%,#ffd277 0 11%,#ff8c34 12% 20%,transparent 21%),
+    radial-gradient(circle at 64% 24%,#ffc55c 0 10%,#f66b2d 11% 19%,transparent 20%),
+    radial-gradient(circle at 74% 62%,#ffbe4d 0 13%,#e85228 14% 23%,transparent 24%),
+    radial-gradient(circle at 33% 72%,#ffd36a 0 14%,#f9792f 15% 26%,transparent 27%),
+    radial-gradient(circle,#ff9e3f 0 32%,#bb3d24 55%,transparent 57%) !important;
+  box-shadow: 0 0 32px var(--art-glow) !important;
+}
+
+/* 16h: blue stored-energy droplet. */
+.fast-phase-art.art-deep {
+  --art-main: #48bdf4;
+  --art-secondary: #2d72d2;
+  --art-glow: rgba(72,189,244,.36);
+}
+
+.fast-phase-art.art-deep::before {
+  width: 35% !important;
+  height: 52% !important;
+  border-radius: 58% 42% 54% 46% / 72% 49% 51% 28% !important;
+  rotate: 45deg !important;
+  background: linear-gradient(135deg,#d8f6ff 0 12%,#4abdf3 36%,#2364be 74%,#113c76 100%) !important;
+  box-shadow: 0 0 35px var(--art-glow) !important;
+}
+
+/* 18h: orbital brain/ketone visual. */
+.fast-phase-art.art-ketone {
+  --art-main: #a875f4;
+  --art-secondary: #6e45c7;
+  --art-glow: rgba(168,117,244,.36);
+}
+
+.fast-phase-art.art-ketone::before {
+  width: 49% !important;
+  height: 39% !important;
+  border-radius: 49% 52% 44% 52% !important;
+  background:
+    radial-gradient(circle at 27% 35%,transparent 0 10%,#bc8cf2 11% 19%,transparent 20%),
+    radial-gradient(circle at 52% 28%,transparent 0 9%,#9d6ae0 10% 18%,transparent 19%),
+    radial-gradient(circle at 72% 46%,transparent 0 10%,#c59af5 11% 20%,transparent 21%),
+    radial-gradient(ellipse,#9963db 0 58%,#54309b 82%) !important;
+  box-shadow: 0 0 34px var(--art-glow) !important;
+}
+
+/* 24h: cleanup/recycling ring. */
+.fast-phase-art.art-autophagy {
+  --art-main: #68d75f;
+  --art-secondary: #2a9c57;
+  --art-glow: rgba(104,215,95,.34);
+}
+
+.fast-phase-art.art-autophagy::before {
+  width: 48% !important;
+  height: 48% !important;
+  border: 16px solid color-mix(in srgb,var(--art-main) 82%,#185c35) !important;
+  border-left-color: transparent !important;
+  border-radius: 50% !important;
+  box-shadow: 0 0 30px var(--art-glow),inset 0 0 24px rgba(104,215,95,.18) !important;
+}
+
+.fast-phase-art.art-autophagy::after {
+  width: 18% !important;
+  height: 18% !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle,#b8f8a9,#4dbb61 55%,#185c35 100%) !important;
+}
+
+/* 36h: adaptation/sprout visual. */
+.fast-phase-art.art-adapt {
+  --art-main: #b9d83f;
+  --art-secondary: #6ba93d;
+  --art-glow: rgba(185,216,63,.34);
+}
+
+.fast-phase-art.art-adapt::before {
+  width: 12% !important;
+  height: 50% !important;
+  border-radius: 50% 50% 25% 25% !important;
+  background: linear-gradient(#d8ef67,#5b9a3a) !important;
+  box-shadow: -27px -8px 0 3px #85c84e,27px -25px 0 2px #a9d855,0 0 32px var(--art-glow) !important;
+}
+
+.fast-phase-art.art-adapt::after {
+  top: 71% !important;
+  width: 39% !important;
+  height: 18% !important;
+  border-radius: 50% !important;
+  background: radial-gradient(ellipse,#d9ed62,#779f2d 62%,transparent 65%) !important;
+}
+
+/* 48h: gold repair nucleus. */
+.fast-phase-art.art-repair {
+  --art-main: #f2c94c;
+  --art-secondary: #dc8c20;
+  --art-glow: rgba(242,201,76,.38);
+}
+
+.fast-phase-art.art-repair::before {
+  width: 48% !important;
+  height: 48% !important;
+  clip-path: polygon(50% 0,61% 34%,98% 22%,72% 50%,98% 78%,61% 66%,50% 100%,39% 66%,2% 78%,28% 50%,2% 22%,39% 34%) !important;
+  background: radial-gradient(circle,#fff5b3 0 12%,#f5c94f 32%,#cb7a19 72%,#75400c 100%) !important;
+  box-shadow: 0 0 34px var(--art-glow) !important;
+}
+
+/* 72h: concentric deep-adaptation rings. */
+.fast-phase-art.art-long {
+  --art-main: #a56cf4;
+  --art-secondary: #f1b94a;
+  --art-glow: rgba(165,108,244,.35);
+}
+
+.fast-phase-art.art-long::before {
+  width: 52% !important;
+  height: 52% !important;
+  border: 2px solid var(--art-secondary) !important;
+  border-radius: 50% !important;
+  background:
+    radial-gradient(circle,#ffe397 0 9%,#a56cf4 10% 18%,transparent 19% 31%,rgba(165,108,244,.3) 32% 34%,transparent 35% 47%,rgba(241,185,74,.45) 48% 50%,transparent 51%) !important;
+  box-shadow: 0 0 32px var(--art-glow) !important;
+}
+
+/* Keep the Current Phase card and popout illustration scale consistent. */
+.fast-current-phase .fast-phase-art,
+.phase-detail-layout .fast-phase-art,
+.phase-panel .fast-phase-art {
+  min-width: 0 !important;
+}
+
+
+/* FASTING PATCH 46 USER-SUPPLIED PHASE IMAGES */
+/* Exact artwork cropped from the user-approved first illustration board. */
+.fast-phase-art{
+  background-color:#06131b!important;
+  background-repeat:no-repeat!important;
+  background-position:center!important;
+  background-size:cover!important;
+  border:1px solid rgba(80,136,151,.28)!important;
+  box-shadow:inset 0 0 25px rgba(0,0,0,.36)!important;
+}
+
+.fast-phase-art.art-fed{background-image:url('/assets/fasting-phases/phase-4h.jpg')!important}
+.fast-phase-art.art-balance{background-image:url('/assets/fasting-phases/phase-8h.jpg')!important}
+.fast-phase-art.art-fat{background-image:url('/assets/fasting-phases/phase-12h.jpg')!important}
+.fast-phase-art.art-deep{background-image:url('/assets/fasting-phases/phase-16h.jpg')!important}
+.fast-phase-art.art-ketone{background-image:url('/assets/fasting-phases/phase-18h.jpg')!important}
+.fast-phase-art.art-autophagy{background-image:url('/assets/fasting-phases/phase-24h.jpg')!important}
+.fast-phase-art.art-adapt{background-image:url('/assets/fasting-phases/phase-36h.jpg')!important}
+.fast-phase-art.art-repair{background-image:url('/assets/fasting-phases/phase-48h.jpg')!important}
+.fast-phase-art.art-long{background-image:url('/assets/fasting-phases/phase-72h.jpg')!important}
+
+/* Remove the previous generated CSS illustration layers. */
+.fast-phase-art::before,
+.fast-phase-art::after,
+.fast-phase-art .art-body,
+.fast-phase-art .art-orbit,
+.fast-phase-art .art-particle{
+  content:none!important;
+  display:none!important;
+}
+
+/* Current Phase card keeps a compact image crop beside the explanation. */
+.fast-current-phase.compact-phase-card .fast-phase-art{
+  background-size:cover!important;
+  background-position:center!important;
+}
+
+/* Phase explanation popout uses the same artwork at a larger scale. */
+.phase-panel .fast-phase-art,
+.phase-detail-layout .fast-phase-art,
+.fast-phase-modal .fast-phase-art{
+  min-height:310px!important;
+  background-size:cover!important;
+  background-position:center!important;
+}
+
+/* Unreached milestones, including 4h before 04:00:00, never glow. */
+.layered-milestone.locked,
+.layered-milestone.locked.current,
+.fast-phase-point.locked,
+.fast-phase-point.locked.current{
+  border-color:#10384a!important;
+  background:#172930!important;
+  color:#829198!important;
+  box-shadow:0 4px 11px rgba(0,0,0,.48),inset 0 0 0 1px #35515c!important;
+}
+
+.layered-milestone.locked span,
+.fast-phase-point.locked span{
+  filter:grayscale(1)!important;
+  opacity:.58!important;
+}
+
+@media(max-width:650px){
+  .phase-panel .fast-phase-art,
+  .phase-detail-layout .fast-phase-art,
+  .fast-phase-modal .fast-phase-art{
+    min-height:220px!important;
+  }
+}
+
+
+/* FASTING PATCH 46B IMAGE FIT DETAILS */
+
+/* ---------------------------------------------------------
+   CURRENT PHASE CARD
+   Fill the compact thumbnail box. Slight cropping is allowed.
+   --------------------------------------------------------- */
+.fast-current-phase.compact-phase-card .fast-phase-art,
+.fast-current-phase .fast-phase-art {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  border-radius: 16px !important;
+  background-color: #06131b !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+}
+
+/* Prevent old generated illustration layers from covering the image. */
+.fast-current-phase .fast-phase-art::before,
+.fast-current-phase .fast-phase-art::after,
+.fast-current-phase .fast-phase-art .art-body,
+.fast-current-phase .fast-phase-art .art-orbit,
+.fast-current-phase .fast-phase-art .art-particle {
+  content: none !important;
+  display: none !important;
+}
+
+/* ---------------------------------------------------------
+   PHASE DETAILS POPOUT
+   Show the complete approved artwork without cropping.
+   --------------------------------------------------------- */
+.phase-panel .fast-phase-art,
+.phase-detail-layout .fast-phase-art,
+.fast-phase-modal .fast-phase-art,
+.fast-layer .phase-detail-art .fast-phase-art {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 360px !important;
+  max-height: min(620px, calc(100dvh - 150px)) !important;
+  padding: 24px !important;
+  overflow: hidden !important;
+  border-radius: 18px !important;
+  background-color: #06131b !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: contain !important;
+}
+
+/* Remove the previous CSS-generated artwork from the detail view. */
+.phase-panel .fast-phase-art::before,
+.phase-panel .fast-phase-art::after,
+.phase-detail-layout .fast-phase-art::before,
+.phase-detail-layout .fast-phase-art::after,
+.fast-phase-modal .fast-phase-art::before,
+.fast-phase-modal .fast-phase-art::after,
+.phase-panel .fast-phase-art .art-body,
+.phase-panel .fast-phase-art .art-orbit,
+.phase-panel .fast-phase-art .art-particle,
+.phase-detail-layout .fast-phase-art .art-body,
+.phase-detail-layout .fast-phase-art .art-orbit,
+.phase-detail-layout .fast-phase-art .art-particle,
+.fast-phase-modal .fast-phase-art .art-body,
+.fast-phase-modal .fast-phase-art .art-orbit,
+.fast-phase-modal .fast-phase-art .art-particle {
+  content: none !important;
+  display: none !important;
+}
+
+/* ---------------------------------------------------------
+   DESKTOP / LANDSCAPE
+   Artwork and explanation remain side-by-side.
+   --------------------------------------------------------- */
+@media (min-width: 851px) {
+  .phase-panel,
+  .phase-detail-layout,
+  .fast-phase-modal {
+    box-sizing: border-box !important;
+    width: min(960px, calc(100vw - 40px)) !important;
+    max-height: calc(100dvh - 40px) !important;
+    overflow: hidden !important;
+  }
+
+  .phase-detail-layout,
+  .phase-panel .phase-detail-layout,
+  .fast-phase-modal .phase-detail-layout {
+    display: grid !important;
+    grid-template-columns: minmax(300px, 39%) minmax(0, 1fr) !important;
+    align-items: stretch !important;
+    gap: 24px !important;
+    min-height: 520px !important;
+    max-height: calc(100dvh - 80px) !important;
+  }
+
+  .phase-detail-layout > :first-child,
+  .phase-panel .phase-detail-art,
+  .fast-phase-modal .phase-detail-art {
+    min-width: 0 !important;
+    height: 100% !important;
+    min-height: 520px !important;
+    overflow: hidden !important;
+  }
+
+  .phase-detail-layout > :last-child,
+  .phase-panel .phase-copy,
+  .fast-phase-modal .phase-copy {
+    min-width: 0 !important;
+    max-height: calc(100dvh - 100px) !important;
+    padding-right: 8px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+}
+
+/* ---------------------------------------------------------
+   IPAD PORTRAIT / PHONE
+   Stack artwork above explanation. No side-by-side compression.
+   --------------------------------------------------------- */
+@media (max-width: 850px) {
+  .phase-panel,
+  .fast-phase-modal {
+    box-sizing: border-box !important;
+    width: min(94vw, 720px) !important;
+    height: auto !important;
+    max-height: calc(100dvh - 24px) !important;
+    padding: 16px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  .phase-detail-layout,
+  .phase-panel .phase-detail-layout,
+  .fast-phase-modal .phase-detail-layout {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto !important;
+    gap: 16px !important;
+    width: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+  }
+
+  .phase-panel .fast-phase-art,
+  .phase-detail-layout .fast-phase-art,
+  .fast-phase-modal .fast-phase-art {
+    width: 100% !important;
+    height: min(42vh, 360px) !important;
+    min-height: 260px !important;
+    max-height: 360px !important;
+    padding: 18px !important;
+    background-size: contain !important;
+  }
+
+  .phase-panel .phase-copy,
+  .fast-phase-modal .phase-copy,
+  .phase-detail-layout > :last-child {
+    max-height: none !important;
+    padding: 0 2px 18px !important;
+    overflow: visible !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .phase-panel,
+  .fast-phase-modal {
+    width: calc(100vw - 16px) !important;
+    max-height: calc(100dvh - 16px) !important;
+    padding: 12px !important;
+    border-radius: 18px !important;
+  }
+
+  .phase-panel .fast-phase-art,
+  .phase-detail-layout .fast-phase-art,
+  .fast-phase-modal .fast-phase-art {
+    height: 250px !important;
+    min-height: 220px !important;
+    max-height: 250px !important;
+    padding: 12px !important;
+    border-radius: 14px !important;
+  }
+}
+
+
+/* FASTING PATCH 47 PADDED PHASE ART AND SOFTER CENTRE */
+
+/* Softer inner circle: still readable, but no near-black disc. */
+.layered-ring-centre,
+.layered-ring-centre:hover,
+.layered-ring-centre:focus,
+.layered-ring-centre:focus-visible,
+.revised-ring-center,
+.revised-ring-center:hover,
+.revised-ring-center:focus,
+.revised-ring-center:focus-visible {
+  border: 1px solid rgba(55, 128, 96, .26) !important;
+  outline: 0 !important;
+  background:
+    radial-gradient(circle at 50% 36%, #173c2e 0%, #102f24 50%, #0d281f 100%) !important;
+  background-image:
+    radial-gradient(circle at 50% 36%, #173c2e 0%, #102f24 50%, #0d281f 100%) !important;
+  box-shadow:
+    inset 0 0 22px rgba(44, 112, 83, .18),
+    0 0 0 1px rgba(0, 0, 0, .14) !important;
+}
+
+.layered-ring-centre strong,
+.revised-ring-center strong {
+  color: #f5fbf7 !important;
+}
+
+.layered-ring-centre small,
+.revised-ring-center small {
+  color: #a9bbb2 !important;
+}
+
+/* Compact Current Phase thumbnail remains full-bleed. */
+.fast-current-phase.compact-phase-card .fast-phase-art,
+.fast-current-phase .fast-phase-art {
+  padding: 0 !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+/*
+  Details popout: the replacement assets already contain intentional dark
+  padding. Cover now fills the panel without enlarging the central symbol.
+*/
+.fast-layer:has(.phase-panel) .fast-phase-art,
+.fast-layer:has(.phase-detail-layout) .fast-phase-art,
+.phase-panel .fast-phase-art,
+.phase-detail-layout .fast-phase-art,
+.fast-phase-modal .fast-phase-art,
+.fast-phase-detail .fast-phase-art,
+.phase-detail-art .fast-phase-art {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 360px !important;
+  max-height: min(620px, calc(100dvh - 140px)) !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border-radius: 18px !important;
+  background-color: #06131b !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+}
+
+/* Broad image fallback in case the visual renders as an actual img element. */
+.fast-layer:has(.phase-panel) img,
+.fast-layer:has(.phase-detail-layout) img,
+.phase-panel img,
+.phase-detail-layout img,
+.fast-phase-modal img,
+.fast-phase-detail img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 360px !important;
+  max-height: min(620px, calc(100dvh - 140px)) !important;
+  padding: 0 !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  border-radius: 18px !important;
+  background: #06131b !important;
+}
+
+/* Prevent decorative CSS layers from sitting over the approved images. */
+.fast-layer:has(.phase-panel) .fast-phase-art::before,
+.fast-layer:has(.phase-panel) .fast-phase-art::after,
+.fast-layer:has(.phase-detail-layout) .fast-phase-art::before,
+.fast-layer:has(.phase-detail-layout) .fast-phase-art::after,
+.phase-panel .fast-phase-art::before,
+.phase-panel .fast-phase-art::after,
+.phase-detail-layout .fast-phase-art::before,
+.phase-detail-layout .fast-phase-art::after,
+.fast-phase-modal .fast-phase-art::before,
+.fast-phase-modal .fast-phase-art::after,
+.phase-panel .art-body,
+.phase-panel .art-orbit,
+.phase-panel .art-particle,
+.phase-detail-layout .art-body,
+.phase-detail-layout .art-orbit,
+.phase-detail-layout .art-particle {
+  content: none !important;
+  display: none !important;
+}
+
+@media (min-width: 851px) {
+  .phase-detail-layout,
+  .phase-panel .phase-detail-layout,
+  .fast-phase-modal .phase-detail-layout {
+    grid-template-columns: minmax(300px, 38%) minmax(0, 1fr) !important;
+    gap: 22px !important;
+  }
+}
+
+@media (max-width: 850px) {
+  .phase-detail-layout,
+  .phase-panel .phase-detail-layout,
+  .fast-phase-modal .phase-detail-layout {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto !important;
+  }
+
+  .fast-layer:has(.phase-panel) .fast-phase-art,
+  .fast-layer:has(.phase-detail-layout) .fast-phase-art,
+  .phase-panel .fast-phase-art,
+  .phase-detail-layout .fast-phase-art,
+  .fast-phase-modal .fast-phase-art,
+  .fast-phase-detail .fast-phase-art,
+  .phase-detail-art .fast-phase-art,
+  .phase-panel img,
+  .phase-detail-layout img,
+  .fast-phase-modal img {
+    height: min(42vh, 360px) !important;
+    min-height: 250px !important;
+    max-height: 360px !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .fast-layer:has(.phase-panel) .fast-phase-art,
+  .fast-layer:has(.phase-detail-layout) .fast-phase-art,
+  .phase-panel .fast-phase-art,
+  .phase-detail-layout .fast-phase-art,
+  .fast-phase-modal .fast-phase-art,
+  .fast-phase-detail .fast-phase-art,
+  .phase-detail-art .fast-phase-art,
+  .phase-panel img,
+  .phase-detail-layout img,
+  .fast-phase-modal img {
+    height: 250px !important;
+    min-height: 220px !important;
+    max-height: 250px !important;
+  }
+}
+
+
+/* FASTING PATCH 48 ACTUAL SELECTORS NO CENTRE FILL */
+
+/*
+  Actual JSX selector: .layered-ring-centre
+  Remove every centre fill, border, shadow and focus ring.
+  The timer now sits directly inside the open centre of the SVG ring.
+*/
+.layered-ring-centre,
+.layered-ring-centre:hover,
+.layered-ring-centre:focus,
+.layered-ring-centre:focus-visible,
+.layered-ring-centre:active {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  border: 0 !important;
+  outline: 0 !important;
+  outline-offset: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+.layered-ring-centre::before,
+.layered-ring-centre::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Keep text readable without adding another filled disc. */
+.layered-ring-centre strong {
+  color: #f7fbf8 !important;
+  text-shadow: 0 2px 10px rgba(0,0,0,.46) !important;
+}
+
+.layered-ring-centre small {
+  color: #a9bbb2 !important;
+  text-shadow: 0 1px 7px rgba(0,0,0,.42) !important;
+}
+
+.layered-ring-centre em {
+  color: #fb923c !important;
+  text-shadow: 0 1px 8px rgba(0,0,0,.46) !important;
+}
+
+/*
+  Actual phase details markup:
+  .fast-phase-panel
+    > button.phase-close
+    > .fast-phase-art
+    > .phase-copy
+
+  Previous patches targeted .phase-panel, which does not exist.
+*/
+.fast-phase-panel {
+  box-sizing: border-box !important;
+  display: grid !important;
+  grid-template-columns: minmax(300px, 38%) minmax(0, 1fr) !important;
+  gap: 0 !important;
+  width: min(960px, calc(100vw - 40px)) !important;
+  height: min(720px, calc(100dvh - 40px)) !important;
+  max-height: calc(100dvh - 40px) !important;
+  overflow: hidden !important;
+}
+
+/* Full approved artwork, fitted into the actual left panel. */
+.fast-phase-panel > .fast-phase-art {
+  box-sizing: border-box !important;
+  align-self: stretch !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 100% !important;
+  max-height: none !important;
+  padding: 20px !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-right: 1px solid var(--line) !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: contain !important;
+  box-shadow: none !important;
+}
+
+/* Remove every old generated visual layer from the real popout artwork. */
+.fast-phase-panel > .fast-phase-art::before,
+.fast-phase-panel > .fast-phase-art::after,
+.fast-phase-panel > .fast-phase-art .art-body,
+.fast-phase-panel > .fast-phase-art .art-orbit,
+.fast-phase-panel > .fast-phase-art .art-particle {
+  content: none !important;
+  display: none !important;
+}
+
+/* Explanation occupies its column and scrolls independently if required. */
+.fast-phase-panel > .phase-copy {
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  padding: 30px !important;
+  padding-right: 24px !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+}
+
+/* Current Phase card keeps a full-bleed compact thumbnail. */
+.fast-current-phase.compact-phase-card > .fast-phase-art {
+  padding: 0 !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+}
+
+/* Tablet portrait and phone: artwork above explanation. */
+@media (max-width: 850px) {
+  .fast-phase-panel {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: minmax(230px, 38vh) auto !important;
+    width: min(94vw, 720px) !important;
+    height: auto !important;
+    max-height: calc(100dvh - 24px) !important;
+    overflow-y: auto !important;
+  }
+
+  .fast-phase-panel > .fast-phase-art {
+    width: 100% !important;
+    height: min(38vh, 340px) !important;
+    min-height: 230px !important;
+    max-height: 340px !important;
+    padding: 16px !important;
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--line) !important;
+    background-size: contain !important;
+  }
+
+  .fast-phase-panel > .phase-copy {
+    height: auto !important;
+    max-height: none !important;
+    padding: 22px !important;
+    overflow: visible !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .fast-phase-panel {
+    width: 100% !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+  }
+
+  .fast-phase-panel > .fast-phase-art {
+    height: 240px !important;
+    min-height: 240px !important;
+    max-height: 240px !important;
+    padding: 12px !important;
+  }
+
+  .fast-phase-panel > .phase-copy {
+    padding: 20px !important;
+  }
+}
+
+
+/* FASTING PATCH 49 INACTIVE RESPONSIVE LAYOUT */
+.inactive-layered-card{
+  box-sizing:border-box!important;
+  position:relative!important;
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  height:570px!important;
+  min-height:570px!important;
+  max-height:570px!important;
+  padding:18px!important;
+  overflow:hidden!important;
+  background:var(--card)!important;
+}
+
+.compact-inactive-target{
+  position:absolute!important;
+  z-index:20!important;
+  top:14px!important;
+  right:14px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+}
+
+.compact-inactive-target label{
+  min-width:108px!important;
+  min-height:36px!important;
+  padding:0 30px 0 10px!important;
+  border:1px solid #36566a!important;
+  border-radius:999px!important;
+  background:#0c171b!important;
+}
+
+.compact-inactive-target label::before{content:none!important}
+.compact-inactive-target label>span{font-size:8px!important}
+.compact-inactive-target select{min-width:58px!important;font-size:12px!important;text-align:center!important;text-align-last:center!important}
+.compact-inactive-target svg{right:9px!important;width:14px!important}
+
+.inactive-layered-instrument{
+  display:grid!important;
+  grid-template-rows:390px 52px!important;
+  justify-items:center!important;
+  align-content:start!important;
+  width:100%!important;
+  height:100%!important;
+  padding-top:38px!important;
+}
+
+.inactive-layered-ring{
+  position:relative!important;
+  width:340px!important;
+  height:340px!important;
+  min-width:340px!important;
+  min-height:340px!important;
+  aspect-ratio:1/1!important;
+  border-radius:50%!important;
+}
+
+.inactive-layered-svg{
+  position:absolute!important;
+  z-index:1!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  overflow:visible!important;
+}
+
+.inactive-layered-track{
+  fill:none!important;
+  stroke:#52616b!important;
+  stroke-width:24!important;
+  stroke-linecap:round!important;
+  filter:drop-shadow(0 0 3px rgba(0,0,0,.34))!important;
+}
+
+.inactive-layered-milestone{
+  box-sizing:border-box!important;
+  position:absolute!important;
+  z-index:5!important;
+  left:50%!important;
+  top:50%!important;
+  display:grid!important;
+  place-content:center!important;
+  gap:1px!important;
+  width:44px!important;
+  height:44px!important;
+  min-width:44px!important;
+  min-height:44px!important;
+  max-width:44px!important;
+  max-height:44px!important;
+  aspect-ratio:1/1!important;
+  margin:-22px!important;
+  padding:0!important;
+  border:2px solid #839098!important;
+  border-radius:50%!important;
+  background:#34434b!important;
+  color:#d4dde0!important;
+  transform:rotate(var(--node-angle)) translate(151px) rotate(calc(-1*var(--node-angle)))!important;
+  box-shadow:0 3px 9px rgba(0,0,0,.34)!important;
+  cursor:pointer!important;
+}
+
+.inactive-layered-milestone span{
+  display:block!important;
+  color:#d8e0e3!important;
+  font-size:15px!important;
+  line-height:1!important;
+  filter:grayscale(.72)!important;
+  opacity:.82!important;
+}
+
+.inactive-layered-milestone b{
+  color:#d0d9dc!important;
+  font-size:8px!important;
+  line-height:1!important;
+}
+
+.inactive-layered-milestone:hover,
+.inactive-layered-milestone:focus-visible{
+  outline:0!important;
+  border-color:#b2c0c5!important;
+  background:#40515a!important;
+}
+
+.inactive-layered-centre{
+  position:absolute!important;
+  z-index:3!important;
+  inset:28%!important;
+  display:grid!important;
+  place-content:center!important;
+  justify-items:center!important;
+  gap:3px!important;
+  border:0!important;
+  border-radius:50%!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  text-align:center!important;
+}
+
+.inactive-layered-centre strong{
+  color:#f0f4f5!important;
+  font-size:36px!important;
+  line-height:1!important;
+}
+
+.inactive-layered-centre small{
+  color:#8fa0a7!important;
+  font-size:12px!important;
+}
+
+.inactive-layered-start{
+  box-sizing:border-box!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:9px!important;
+  width:auto!important;
+  min-width:148px!important;
+  height:48px!important;
+  min-height:48px!important;
+  margin:0!important;
+  padding:0 18px!important;
+  border:0!important;
+  border-radius:14px!important;
+  background:var(--primary)!important;
+  color:#07110a!important;
+  font-weight:900!important;
+  line-height:1!important;
+  box-shadow:0 7px 18px color-mix(in srgb,var(--primary) 18%,transparent)!important;
+}
+
+.inactive-layered-start svg{
+  display:block!important;
+  width:20px!important;
+  height:20px!important;
+  min-width:20px!important;
+  fill:currentColor!important;
+  stroke-width:2!important;
+}
+
+.inactive-layered-start span{
+  display:inline!important;
+  width:auto!important;
+  height:auto!important;
+  overflow:visible!important;
+  clip:auto!important;
+  white-space:nowrap!important;
+}
+
+.inactive-phase-card{
+  --phase:#52616b!important;
+  grid-template-columns:86px minmax(0,1fr)!important;
+  height:190px!important;
+  min-height:190px!important;
+  max-height:190px!important;
+  gap:16px!important;
+  padding:16px!important;
+  border-color:#344852!important;
+}
+
+.inactive-phase-icon{
+  display:grid!important;
+  place-items:center!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  border-radius:16px!important;
+  background:linear-gradient(145deg,#132933,#0b1a21)!important;
+  color:#91a2a9!important;
+}
+
+.inactive-phase-icon svg{width:32px!important;height:32px!important}
+.inactive-phase-card h2{margin:6px 0 8px!important;font-size:21px!important}
+.inactive-phase-card p{margin:0!important;color:var(--muted)!important;font-size:11px!important;line-height:1.5!important}
+
+/* Do not render any legacy inactive onboarding column. */
+.inactive-fast-copy,
+.inactive-fast-rules,
+.inactive-fast-ring-column,
+.inactive-journey-wrap{
+  display:none!important;
+}
+
+@media(min-width:1051px){
+  .inactive-layered-card{grid-column:1!important;grid-row:2!important}
+  .inactive-phase-card{grid-column:1!important;grid-row:3!important}
+}
+
+/* iPad landscape keeps the same left-column ring/current-phase and right calendar. */
+@media(min-width:851px) and (max-width:1050px) and (orientation:landscape){
+  .fasting-page{
+    grid-template-columns:minmax(420px,.95fr) minmax(430px,1.05fr)!important;
+    grid-template-rows:auto 540px 170px auto!important;
+    column-gap:16px!important;
+    row-gap:16px!important;
+  }
+  .fasting-heading{grid-column:1/-1!important;grid-row:1!important}
+  .inactive-layered-card{grid-column:1!important;grid-row:2!important;height:540px!important;min-height:540px!important;max-height:540px!important}
+  .inactive-phase-card{grid-column:1!important;grid-row:3!important;height:170px!important;min-height:170px!important;max-height:170px!important}
+  .fast-calendar-card.exercises-style-calendar{grid-column:2!important;grid-row:2/4!important;height:726px!important;min-height:726px!important;max-height:726px!important}
+  .fast-metabolic-inputs,.glycemic-foundation,.fast-analytics-card{grid-column:1/-1!important}
+  .inactive-layered-instrument{grid-template-rows:360px 50px!important;padding-top:34px!important}
+  .inactive-layered-ring{width:310px!important;height:310px!important;min-width:310px!important;min-height:310px!important}
+  .inactive-layered-milestone{width:42px!important;height:42px!important;min-width:42px!important;min-height:42px!important;max-width:42px!important;max-height:42px!important;margin:-21px!important;transform:rotate(var(--node-angle)) translate(138px) rotate(calc(-1*var(--node-angle)))!important}
+}
+
+/* iPad portrait and phone stack in one column. */
+@media(max-width:850px), (max-width:1050px) and (orientation:portrait){
+  .inactive-layered-card,
+  .inactive-phase-card,
+  .fast-calendar-card.exercises-style-calendar{
+    grid-column:1!important;
+    grid-row:auto!important;
+    width:100%!important;
+    max-width:none!important;
+  }
+  .inactive-layered-card{height:525px!important;min-height:525px!important;max-height:525px!important}
+  .inactive-phase-card{height:auto!important;min-height:150px!important;max-height:none!important}
+}
+
+@media(max-width:650px){
+  .inactive-layered-card{height:450px!important;min-height:450px!important;max-height:450px!important;padding:12px!important}
+  .inactive-layered-instrument{grid-template-rows:300px 48px!important;padding-top:34px!important}
+  .inactive-layered-ring{width:250px!important;height:250px!important;min-width:250px!important;min-height:250px!important}
+  .inactive-layered-track{stroke-width:20px!important}
+  .inactive-layered-milestone{width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;max-width:36px!important;max-height:36px!important;margin:-18px!important;transform:rotate(var(--node-angle)) translate(111px) rotate(calc(-1*var(--node-angle)))!important}
+  .inactive-layered-milestone span{font-size:12px!important}.inactive-layered-milestone b{font-size:7px!important}
+  .inactive-layered-centre strong{font-size:29px!important}.inactive-layered-centre small{font-size:10px!important}
+  .inactive-layered-start{min-width:138px!important;height:46px!important;min-height:46px!important;padding-inline:15px!important}
+  .compact-inactive-target label{min-width:94px!important;min-height:34px!important}
+  .inactive-phase-card{grid-template-columns:70px minmax(0,1fr)!important;min-height:135px!important;padding:12px!important}
+  .inactive-phase-card h2{font-size:18px!important}
+}
+
+/* FASTING PATCH 50 IPAD CONTENT-WIDTH SAFETY */
+
+/* Never let the Fasting page push the application outside the viewport. */
+.fasting-page {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 1500px !important;
+  min-width: 0 !important;
+  overflow-x: clip !important;
+}
+
+.fasting-page > *,
+.fast-hero,
+.inactive-fast-hero,
+.inactive-layered-card,
+.inactive-phase-card,
+.fast-current-phase,
+.fast-calendar-card,
+.fast-metabolic-inputs,
+.glycemic-foundation,
+.fast-analytics-card {
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+/*
+ * Use the desktop two-column dashboard only when there is genuinely
+ * enough width after the FitLife navigation rail and browser chrome.
+ */
+@media (min-width: 1281px) {
+  .fasting-page {
+    display: grid !important;
+    grid-template-columns:
+      minmax(420px, 0.93fr)
+      minmax(500px, 1.07fr) !important;
+    column-gap: 18px !important;
+    row-gap: 18px !important;
+  }
+
+  .fasting-heading {
+    grid-column: 1 / -1 !important;
+    grid-row: 1 !important;
+  }
+
+  .inactive-layered-card,
+  .fast-hero {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+  }
+
+  .inactive-phase-card,
+  .fast-current-phase.compact-phase-card {
+    grid-column: 1 !important;
+    grid-row: 3 !important;
+  }
+
+  .fast-calendar-card.exercises-style-calendar {
+    grid-column: 2 !important;
+    grid-row: 2 / 4 !important;
+  }
+
+  .fast-metabolic-inputs,
+  .glycemic-foundation,
+  .fast-analytics-card {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+/*
+ * iPad, browser split-screen and narrow desktop panes:
+ * stack instead of forcing two minimum-width columns.
+ */
+@media (max-width: 1280px) {
+  .fasting-page {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: none !important;
+    gap: 16px !important;
+    padding-inline: clamp(10px, 2vw, 20px) !important;
+  }
+
+  .fasting-heading,
+  .fast-hero,
+  .inactive-fast-hero,
+  .inactive-layered-card,
+  .fast-current-phase.compact-phase-card,
+  .inactive-phase-card,
+  .fast-calendar-card.exercises-style-calendar,
+  .fast-metabolic-inputs,
+  .glycemic-foundation,
+  .fast-analytics-card {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    margin-inline: 0 !important;
+  }
+
+  .inactive-layered-card {
+    min-height: 520px !important;
+  }
+
+  .inactive-phase-card {
+    min-height: 150px !important;
+  }
+
+  .fast-calendar-card.exercises-style-calendar {
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+}
+
+/* Additional protection for narrow iPad split-screen panes. */
+@media (max-width: 850px) {
+  .fasting-page {
+    padding: 10px !important;
+    gap: 12px !important;
+  }
+
+  .fasting-heading {
+    display: grid !important;
+    gap: 12px !important;
+  }
+
+  .fasting-heading-actions {
+    width: 100% !important;
+  }
+
+  .inactive-layered-card {
+    min-height: 455px !important;
+    padding: 12px !important;
+  }
+
+  .inactive-phase-card {
+    grid-template-columns: 72px minmax(0, 1fr) !important;
+    min-height: 135px !important;
+    padding: 12px !important;
+  }
+
+  .inactive-layered-ring {
+    max-width: calc(100vw - 52px) !important;
+    max-height: calc(100vw - 52px) !important;
+  }
+}
+
+/* Prevent any child from producing page-level horizontal scrolling. */
+html,
+body,
+#root {
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+
+/* PATCH 50 REAL WIDTH FIX */
+
+@media (max-width: 1400px) {
+
+  .fasting-page{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    grid-template-rows:none !important;
+
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+
+    gap:16px !important;
+  }
+
+  .fasting-heading,
+  .fast-hero,
+  .inactive-fast-hero,
+  .inactive-layered-card,
+  .fast-current-phase,
+  .inactive-phase-card,
+  .fast-calendar-card,
+  .fast-metabolic-inputs,
+  .glycemic-foundation,
+  .fast-analytics-card{
+
+    grid-column:1 !important;
+    grid-row:auto !important;
+
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+  }
+}
+
+.fasting-page,
+.fast-hero,
+.inactive-fast-hero,
+.fast-current-phase,
+.inactive-phase-card,
+.fast-calendar-card{
+  min-width:0 !important;
+  max-width:100% !important;
+}
+
+html,
+body,
+#root{
+  overflow-x:hidden !important;
+}
+
+
+/* PATCH 50 REAL WIDTH FIX */
+
+@media (max-width: 1400px) {
+
+  .fasting-page{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    grid-template-rows:none !important;
+
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+
+    gap:16px !important;
+  }
+
+  .fasting-heading,
+  .fast-hero,
+  .inactive-fast-hero,
+  .inactive-layered-card,
+  .fast-current-phase,
+  .inactive-phase-card,
+  .fast-calendar-card,
+  .fast-metabolic-inputs,
+  .glycemic-foundation,
+  .fast-analytics-card{
+
+    grid-column:1 !important;
+    grid-row:auto !important;
+
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+  }
+}
+
+.fasting-page,
+.fast-hero,
+.inactive-fast-hero,
+.fast-current-phase,
+.inactive-phase-card,
+.fast-calendar-card{
+  min-width:0 !important;
+  max-width:100% !important;
+}
+
+html,
+body,
+#root{
+  overflow-x:hidden !important;
+}
+
+
+/* FASTING PHASE IMAGE CLASS MAPPING FIX */
+
+/*
+ * Actual JSX mappings:
+ * 4h  = meal
+ * 8h  = balance
+ * 12h = fuel
+ * 16h = flow
+ * 18h = brain
+ * 24h = cell
+ * 36h = adapt
+ * 48h = deep
+ * 72h = long
+ */
+
+.fast-phase-art.art-meal {
+  background-image: url('/assets/fasting-phases/phase-4h.jpg') !important;
+}
+
+.fast-phase-art.art-balance {
+  background-image: url('/assets/fasting-phases/phase-8h.jpg') !important;
+}
+
+.fast-phase-art.art-fuel {
+  background-image: url('/assets/fasting-phases/phase-12h.jpg') !important;
+}
+
+.fast-phase-art.art-flow {
+  background-image: url('/assets/fasting-phases/phase-16h.jpg') !important;
+}
+
+.fast-phase-art.art-brain {
+  background-image: url('/assets/fasting-phases/phase-18h.jpg') !important;
+}
+
+.fast-phase-art.art-cell {
+  background-image: url('/assets/fasting-phases/phase-24h.jpg') !important;
+}
+
+.fast-phase-art.art-adapt {
+  background-image: url('/assets/fasting-phases/phase-36h.jpg') !important;
+}
+
+.fast-phase-art.art-deep {
+  background-image: url('/assets/fasting-phases/phase-48h.jpg') !important;
+}
+
+.fast-phase-art.art-long {
+  background-image: url('/assets/fasting-phases/phase-72h.jpg') !important;
+}
+
+/* Current Phase thumbnail fills its compact visual area. */
+.fast-current-phase.compact-phase-card > .fast-phase-art {
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+}
+
+/* Detailed phase panel displays the complete artwork. */
+.fast-phase-panel > .fast-phase-art {
+  padding: 0 !important;
+  background-color: #06131b !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: contain !important;
+}
+
+/* Remove obsolete generated shapes from both image locations. */
+.fast-phase-art::before,
+.fast-phase-art::after,
+.fast-phase-art > .art-body,
+.fast-phase-art > .art-orbit,
+.fast-phase-art > .art-particle {
+  content: none !important;
+  display: none !important;
+}
+

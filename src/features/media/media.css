@@ -1,0 +1,40 @@
+.media-carousel{height:240px;position:relative;overflow:hidden;background:linear-gradient(135deg,#5c4c8d,#b75f82,#d8894f);display:grid;place-items:center}.media-carousel img,.media-position-preview img{width:100%;height:100%;object-fit:cover}.media-prev,.media-next{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:34px;border:0;border-radius:50%;background:#0009;color:white}.media-prev{left:10px}.media-next{right:10px}.media-count{position:absolute;right:10px;bottom:10px;background:#0009;padding:5px 8px;border-radius:999px;font-size:10px}.media-upload{display:grid!important;grid-template-columns:auto 1fr;align-items:center;border:1px dashed var(--line);padding:13px!important;border-radius:11px;color:var(--accent)!important}.media-upload small{grid-column:2}.media-upload input{display:none}.media-thumbnails{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.media-thumbnails figure{margin:0;height:90px;position:relative;border:2px solid transparent;border-radius:10px;overflow:hidden}.media-thumbnails figure.featured{border-color:var(--primary)}.media-thumbnails img{width:100%;height:100%;object-fit:cover}.media-feature,.media-remove{position:absolute;top:5px;width:26px;height:26px;border:0;border-radius:50%;background:#000b;color:white;display:grid;place-items:center}.media-feature{left:5px}.media-remove{right:5px}.media-feature svg,.media-remove svg{width:13px}.media-position-preview{height:180px;overflow:hidden;border-radius:12px;border:1px solid var(--line)}.media-slider{display:grid;gap:5px!important}
+
+/* Preserve saved activity-photo framing */
+.media-carousel {
+  position: relative;
+  overflow: hidden !important;
+}
+
+.media-carousel > img {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  object-fit: cover !important;
+  transition:
+    transform .2s ease,
+    object-position .2s ease;
+  will-change: transform, object-position;
+}
+
+
+/* Saved activity photo framing */
+.media-carousel {
+  position: relative;
+  overflow: hidden !important;
+}
+
+.media-carousel > img {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 100% !important;
+  min-height: 100% !important;
+  max-width: none !important;
+  object-fit: cover !important;
+  transition:
+    transform .2s ease,
+    object-position .2s ease;
+  will-change: transform, object-position;
+}
