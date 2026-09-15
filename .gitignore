@@ -13,3 +13,13 @@ dist/
 /FitLife-Patch-18-Final-Refactor/
 /peek_rail_package/
 /.patch18-backup/
+
+# FitLife local implementation bundles and backups
+.fitlife-implementation-backups/
+FitLife-*-Implementation/
+FitLife-Daily-Metric-Averages/
+FitLife-Dynamic-Health-Axes/
+FitLife-Health-Option-B/
+FitLife-Health-Option-B-QuickAdd/
+FitLife-Health-Option-B-Visual-History/
+*.before-*
