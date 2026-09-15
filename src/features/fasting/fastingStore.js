@@ -65,7 +65,7 @@ export async function deleteFast(row){
   history(row,true)
   window.dispatchEvent(new CustomEvent('fitlife:fasting-changed',{detail:next}))
   window.dispatchEvent(new CustomEvent('fitlife:fasting-deleted',{detail:{id,row}}))
-  if(window.fitlifeFastingSync?.remove)await window.fitlifeFastingSync.remove(id)
+  if(window.fitlifeFastingSync?.remove)await window.fitlifeFastingSync.remove({...row,id})
   return next
 }
 
